@@ -1,0 +1,56 @@
+.login-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: 100vh;
+    background-image: url("../../../../assets/images/fourp.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding-right: 15%;
+
+
+    .login-box {
+        padding: 20px;
+        width: 40%;
+        height: 50%;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        background: rgba(255, 255, 255, 0.7);
+
+        .title {
+            font-size: 40px;
+            margin-bottom: 10px;
+            line-height: 60px;
+        }
+
+        .subtitle {
+            font-size: 22px;
+            margin-bottom: 30px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mat-form-field {
+            width: 100%;
+            margin-bottom: 1rem;
+
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 1rem;
+        }
+    }
+
+    ::ng-deep {
+        .mat-mdc-text-field-wrapper {
+            background-color: transparent !important;
+        }
+    }
+}
