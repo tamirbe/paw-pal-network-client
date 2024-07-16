@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 export class LoginComponent {
   loginFailed: boolean = false;
   loginForm!: FormGroup;
+  isRegister: boolean = false;
 
   constructor(private authService: AuthService, private fb: FormBuilder, private router: Router) { }
 
@@ -19,6 +20,10 @@ export class LoginComponent {
       username: ['', Validators.required],
       password: ['', Validators.required]
     });
+  }
+
+  toRegister() {
+    this.isRegister = !this.isRegister
   }
 
 

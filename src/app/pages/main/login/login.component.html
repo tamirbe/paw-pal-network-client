@@ -2,7 +2,7 @@
     <div class="login-box">
         <div class="title">Welcome to PawPal Network</div>
         <div class="subtitle">this is the place for your pet</div>
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <form *ngIf="isRegister" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
             <mat-form-field appearance="fill">
                 <mat-label>Username</mat-label>
                 <input matInput type="text" formControlName="username" required>
@@ -14,5 +14,7 @@
             <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid">Login</button>
             <div *ngIf="loginFailed" class="error-message">Invalid username or password</div>
         </form>
+        <button class="toRegisterBtn" mat-raised-button color="primary" (click)="toRegister()">to
+            register</button>
     </div>
 </div>
