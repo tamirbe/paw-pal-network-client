@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../../auth.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -6,12 +6,13 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  styleUrls: ['./login.component.scss']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   loginFailed: boolean = false;
   loginForm!: FormGroup;
   isRegister: boolean = false;
+
 
   constructor(private authService: AuthService, private fb: FormBuilder, private router: Router) { }
 
@@ -26,14 +27,16 @@ export class LoginComponent {
     this.isRegister = !this.isRegister
   }
 
-
   onSubmit() {
     if (this.loginForm.valid) {
       const { username, password } = this.loginForm.value;
-      if (!this.authService.login(username, password)) {
-        this.loginFailed = true;
-      }
-      else this.router.navigate(['home-page'])
+      this.authService.login(username, password).subscribe(success => {
+        if (!success) {
+          this.loginFailed = true;
+        } else {
+          this.router.navigate(['home-page']);
+        }
+      });
     }
   }
 }
