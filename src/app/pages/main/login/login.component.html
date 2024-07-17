@@ -1,8 +1,17 @@
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<img class="background" src="../../../../assets/images/backgroundLogin.png" alt="">
 <div class="login-container">
+    <div class="sentence-wrapper">
+        <p>Welcome to PawPal,<br>Our social network<br> where pet lovers <br>can connect, share, <br>and
+            celebrate the joys!
+        </p>
+    </div>
+    <!-- <app-slideshow></app-slideshow> -->
     <div class="login-box">
-        <div class="title">Welcome to PawPal Network</div>
-        <div class="subtitle">this is the place for your pet</div>
-        <form *ngIf="isRegister" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <form class="loginForm" *ngIf="isRegister" [formGroup]="loginForm" (ngSubmit)="onLoginSubmit()">
+            <div class="title">Login</div>
             <mat-form-field appearance="fill">
                 <mat-label>Username</mat-label>
                 <input matInput type="text" formControlName="username" required>
@@ -11,10 +20,62 @@
                 <mat-label>Password</mat-label>
                 <input matInput type="password" formControlName="password" required>
             </mat-form-field>
-            <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid">Login</button>
+            <button class="submitBtn" mat-raised-button color="primary" type="submit"
+                [disabled]="loginForm.invalid">Login</button>
             <div *ngIf="loginFailed" class="error-message">Invalid username or password</div>
+            <button class="toggleBtn" (click)="toRegister()">Dont have a Account Click Here</button>
         </form>
-        <button class="toRegisterBtn" mat-raised-button color="primary" (click)="toRegister()">to
-            register</button>
+        <form class="registerForm" *ngIf="!isRegister" [formGroup]="registerForm" (ngSubmit)="onRegisterSubmit()">
+            <div class="title">Registration</div>
+            <mat-form-field appearance="fill">
+                <mat-label>Username</mat-label>
+                <input matInput formControlName="username" required>
+                <mat-error *ngIf="registerForm.get('username')?.hasError('required')">
+                    Username is required
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>First Name</mat-label>
+                <input matInput formControlName="firstName" required>
+                <mat-error *ngIf="registerForm.get('firstName')?.hasError('required')">
+                    First Name is required
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>Last Name</mat-label>
+                <input matInput formControlName="lastName" required>
+                <mat-error *ngIf="registerForm.get('lastName')?.hasError('required')">
+                    Last Name is required
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>Email</mat-label>
+                <input matInput formControlName="email" type="email" required>
+                <mat-error *ngIf="registerForm.get('email')?.hasError('required')">
+                    Email is required
+                </mat-error>
+                <mat-error *ngIf="registerForm.get('email')?.hasError('email')">
+                    Please enter a valid email address
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>Password</mat-label>
+                <input matInput formControlName="password" type="password" required>
+                <mat-error *ngIf="registerForm.get('password')?.hasError('required')">
+                    Password is required
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>Date of Birth</mat-label>
+                <input matInput formControlName="dateOfBirth" type="date" required>
+                <mat-error *ngIf="registerForm.get('dateOfBirth')?.hasError('required')">
+                    Date of Birth is required
+                </mat-error>
+            </mat-form-field>
+            <button class="submitBtn" mat-raised-button color="primary" type="submit"
+                [disabled]="registerForm.invalid">Register</button>
+            <div *ngIf="registrationFailed" class="error">Registration failed. Please try again.</div>
+            <button class="toggleBtn" (click)="toRegister()">Go Back for Login</button>
+        </form>
     </div>
 </div>

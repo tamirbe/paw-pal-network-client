@@ -1,39 +1,111 @@
-.login-container {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    height: 100vh;
-    background-image: url("../../../../assets/images/fourp.png");
-    background-repeat: no-repeat;
-    background-size: cover;
-    padding-right: 15%;
+@import '../../../../assets/abstracts/colors.scss';
 
+.background {
+    position: absolute;
+    z-index: -10;
+    width: 100%;
+    height: 65%;
+    bottom: 0;
+}
+
+.login-container {
+    padding: 0 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 90vh;
+    padding-right: 40px;
+
+    .sentence-wrapper {
+        padding: 30px;
+        font-size: 48px;
+        line-height: 90px;
+        font-family: 'Lato', sans-serif;
+        color: #00458b;
+        margin-left: 40px;
+
+        @media (max-width: 1400px) {
+            font-size: 26px;
+            line-height: 60px;
+            padding: 15px;
+            margin-left: 0px;
+        }
+    }
 
     .login-box {
-        padding: 20px;
-        width: 40%;
-        height: 50%;
-        text-align: center;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        background: rgba(255, 255, 255, 0.7);
+        padding-bottom: 55px;
+
+        @media (max-width: 1400px) {
+            padding-bottom: 0;
+        }
 
         .title {
+            width: 100%;
             font-size: 40px;
             margin-bottom: 10px;
-            line-height: 60px;
+            color: #00458b;
+            line-height: 40px;
+
+            @media (max-width: 1400px) {
+                font-size: 26px;
+                padding: 15px;
+            }
         }
 
-        .subtitle {
-            font-size: 22px;
-            margin-bottom: 30px;
-        }
-
-        form {
-            display: flex;
+        .loginForm {
             flex-direction: column;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 335px;
+            width: 700px;
+            padding: 29px 28px;
+            border: 2px solid #c6cdd6;
+            margin-right: 150px;
+            border-radius: 20px;
+            box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+
+            @media (max-width: 1400px) {
+                height: 300px;
+                width: 578px;
+                margin-right: 0px;
+            }
+
+            mat-form-field {
+                width: 220px;
+                margin-bottom: 10px;
+            }
+
+            .title {
+                margin-bottom: 10px;
+            }
+        }
+
+
+        .registerForm {
+            text-align: center;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            height: 335px;
+            width: 700px;
+            padding: 29px 28px;
+            border: 2px solid #c6cdd6;
+            border-radius: 20px;
+            margin-right: 150px;
+            box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+
+            @media (max-width: 1400px) {
+                height: 300px;
+                width: 578px;
+                margin-right: 0px;
+
+                mat-form-field {
+                    width: 180px;
+                }
+            }
         }
 
         .mat-form-field {
@@ -42,14 +114,32 @@
 
         }
 
+        .submitBtn {
+            width: 40%;
+            margin: 0 auto;
+            display: block;
+            margin-top: 20px;
+        }
+
+        .toggleBtn {
+            border: none;
+            width: 80%;
+            margin: 0 auto;
+            display: block;
+            background: none;
+            text-decoration: underline;
+            margin-top: 20px;
+            text-underline-offset: 3px;
+            color: #005cbb;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
         .error-message {
             color: red;
             margin-top: 1rem;
         }
 
-        .toRegisterBtn {
-            margin-top: 20px;
-        }
     }
 
     ::ng-deep {

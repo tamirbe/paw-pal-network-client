@@ -11,7 +11,9 @@ import { Router } from '@angular/router';
 export class LoginComponent implements OnInit {
   loginFailed: boolean = false;
   loginForm!: FormGroup;
-  isRegister: boolean = false;
+  registerForm!: FormGroup;
+  isRegister: boolean = true;
+  registrationFailed: boolean = false;
 
 
   constructor(private authService: AuthService, private fb: FormBuilder, private router: Router) { }
@@ -21,13 +23,22 @@ export class LoginComponent implements OnInit {
       username: ['', Validators.required],
       password: ['', Validators.required]
     });
+    this.registerForm = this.fb.group({
+      username: ['', Validators.required],
+      password: ['', Validators.required],
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      dateOfBirth: ['', Validators.required],
+    });
+
   }
 
   toRegister() {
     this.isRegister = !this.isRegister
   }
 
-  onSubmit() {
+  onLoginSubmit() {
     if (this.loginForm.valid) {
       const { username, password } = this.loginForm.value;
       this.authService.login(username, password).subscribe(success => {
@@ -35,6 +46,18 @@ export class LoginComponent implements OnInit {
           this.loginFailed = true;
         } else {
           this.router.navigate(['home-page']);
+        }
+      });
+    }
+  }
+  onRegisterSubmit() {
+    if (this.registerForm.valid) {
+      const { username, firstName, lastName, email, password, dateOfBirth } = this.registerForm.value;
+      this.authService.register(username, firstName, lastName, email, password, dateOfBirth).subscribe(success => {
+        if (!success) {
+          this.registrationFailed = true;
+        } else {
+          this.toRegister(); // Switch back to login view after successful registration
         }
       });
     }

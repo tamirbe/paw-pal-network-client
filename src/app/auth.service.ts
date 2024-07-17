@@ -9,12 +9,12 @@ import { catchError, map, tap } from 'rxjs/operators';
 })
 export class AuthService {
   private isAuthenticated = false;
-  private apiUrl = 'http://localhost:3000/login'; // Ensure this matches your proxy configuration
+  private apiUrl = 'http://localhost:3000'; // Ensure this matches your proxy configuration
 
   constructor(private router: Router, private http: HttpClient) { }
 
   login(username: string, password: string): Observable<boolean> {
-    const url = `${this.apiUrl}`;
+    const url = `${this.apiUrl}/login`;
     return this.http.post<{ token: string }>(url, { username, password }).pipe(
       map(response => {
         if (response.token) {
@@ -26,6 +26,22 @@ export class AuthService {
       }),
       catchError(error => {
         console.error('Login failed', error);
+        return of(false);
+      })
+    );
+  }
+
+  register(username: string, firstName: string, lastName: string, email: string, password: string, dateOfBirth: string): Observable<boolean> {
+    const url = `${this.apiUrl}/register`;
+    return this.http.post<{ message: string }>(url, { username, firstName, lastName, email, password, dateOfBirth }).pipe(
+      map(response => {
+        if (response.message === 'User registered') {
+          return true;
+        }
+        return false;
+      }),
+      catchError(error => {
+        console.error('Registration failed', error);
         return of(false);
       })
     );

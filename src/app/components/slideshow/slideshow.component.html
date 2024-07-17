@@ -1,0 +1,13 @@
+<div class="slideshow-container">
+    <div *ngFor="let slide of slides; let i = index" class="mySlides" [ngClass]="{'active': i === currentSlide}">
+        <img [src]="slide.image" style="width:100%">
+    </div>
+
+    <a class="prev" (click)="changeSlide(-1)">&#10094;</a>
+    <a class="next" (click)="changeSlide(1)">&#10095;</a>
+</div>
+
+<div style="text-align:center">
+    <span *ngFor="let slide of slides; let i = index" class="dot" [ngClass]="{'active': i === currentSlide}"
+        (click)="currentSlide = i"></span>
+</div>
