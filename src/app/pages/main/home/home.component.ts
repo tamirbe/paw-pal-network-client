@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../../auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -14,9 +15,18 @@ export class HomeComponent {
     { image: '../../../../assets/images/fourp.png', description: 'Napping in my favorite spot.' }
   ];
 
-  constructor(private authService: AuthService) { }
+  constructor(private router: Router, private authService: AuthService) { }
 
   logout() {
     this.authService.logout();
+  }
+  toProfile() {
+    this.router.navigate(['profile']);
+  }
+  toAbout() {
+    this.router.navigate(['about']);
+  }
+  home() {
+    this.router.navigate(['home-page']);
   }
 }

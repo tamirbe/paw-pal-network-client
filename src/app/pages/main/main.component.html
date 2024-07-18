@@ -1,5 +1,5 @@
 <main class="main-wrapper" style="height: 100%; width: 100%;">
-    <img class="logo" src="../../../../assets/images/logo.png" alt="">
+    <img [ngClass]="{ active: (router.url === '/login') }" class="logo" src="assets/images/logo.png" alt="">
     <div class="color"></div>
     <router-outlet></router-outlet>
 </main>

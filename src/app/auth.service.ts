@@ -18,7 +18,7 @@ export class AuthService {
     return this.http.post<{ token: string }>(url, { username, password }).pipe(
       map(response => {
         if (response.token) {
-          localStorage.setItem('authToken', response.token);
+          sessionStorage.setItem('authToken', response.token);
           this.isAuthenticated = true;
           return true;
         }
@@ -49,11 +49,14 @@ export class AuthService {
 
   logout(): void {
     this.isAuthenticated = false;
-    localStorage.removeItem('authToken');
+    sessionStorage.removeItem('authToken');
     this.router.navigate(['/']);
   }
 
   getAuthStatus(): boolean {
+    if (sessionStorage.getItem('authToken')) {
+      this.isAuthenticated = true;
+    }
     return this.isAuthenticated;
   }
 }

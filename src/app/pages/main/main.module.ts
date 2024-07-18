@@ -17,6 +17,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { provideHttpClient } from '@angular/common/http';
 import { SlideshowComponent } from '../../components/slideshow/slideshow.component';
+import { AboutComponent } from './about/about.component';
+import { HeaderComponent } from '../../components/header/header.component';
 
 
 
@@ -26,7 +28,9 @@ import { SlideshowComponent } from '../../components/slideshow/slideshow.compone
         HomeComponent,
         LoginComponent,
         ProfileComponent,
-        SlideshowComponent
+        SlideshowComponent,
+        AboutComponent,
+        HeaderComponent
     ],
     imports: [
         MainRoutingModule,
