@@ -1,12 +1,14 @@
 {
   "name": "paw-pal-network-client",
   "version": "0.0.0",
+  "type": "module",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --proxy-config proxy.conf.json --disable-host-check",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "mocha tests/*.spec.js",
+    "lint": "npx eslint src"
   },
   "private": true,
   "dependencies": {
@@ -28,13 +30,21 @@
     "@angular-devkit/build-angular": "^18.1.0",
     "@angular/cli": "^18.1.0",
     "@angular/compiler-cli": "^18.1.0",
+    "@eslint/js": "^9.7.0",
     "@types/jasmine": "~5.1.0",
+    "@typescript-eslint/eslint-plugin": "^7.16.1",
+    "@typescript-eslint/parser": "^7.16.1",
+    "chai": "^5.1.1",
+    "eslint": "^8.57.0",
+    "globals": "^15.8.0",
     "jasmine-core": "~5.1.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.5.2"
+    "mocha": "^10.6.0",
+    "typescript": "~5.5.2",
+    "typescript-eslint": "^7.16.1"
   }
 }
