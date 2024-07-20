@@ -11,7 +11,8 @@ export default [
       "src/app/components/header/header.component.ts",
       "src/app/pages/main/home/home.component.ts",
       "src/app/pages/main/login/login.component.ts",
-      "src/app/pages/main/main.component.ts"
+      "src/app/pages/main/main.component.ts",
+      "src/app/app.module.ts"
     ],
   },
   {
