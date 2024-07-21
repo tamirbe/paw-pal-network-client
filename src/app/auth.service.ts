@@ -59,4 +59,15 @@ export class AuthService {
     }
     return this.isAuthenticated;
   }
+
+  getSubmitters(): Observable<string[]> {
+    const url = `${this.apiUrl}/about`;
+    return this.http.get<{ submitters: string[] }>(url).pipe(
+      map(response => response.submitters),
+      catchError(error => {
+        console.error('Failed to fetch submitters', error);
+        return of([]);
+      })
+    );
+  }
 }
