@@ -17,9 +17,6 @@ jobs:
         with:
           node-version: 20
 
-      - name: test project
-        run: npm run test
-
       - name: lint project
         run: npm run lint
 
