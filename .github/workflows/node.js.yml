@@ -16,6 +16,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 20
+
           
       - name: deploy app
         run: curl https://api.render.com/deploy/srv-cqdtv9g8fa8c73dsds0g?key=lR9J3RQPr6g
