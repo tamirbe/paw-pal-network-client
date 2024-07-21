@@ -8,7 +8,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "mocha tests/*.spec.js",
-    "lint": "npx eslint src"
+    "lint": "npx eslint src",
+    "deploy": "ng deploy"
   },
   "private": true,
   "dependencies": {
