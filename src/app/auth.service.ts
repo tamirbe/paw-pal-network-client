@@ -30,17 +30,22 @@ export class AuthService {
       })
     );
   }
-
-  register(username: string, firstName: string, lastName: string, email: string, password: string, dateOfBirth: string): Observable<string> {
+  register(username: string, firstName: string, lastName: string, email: string, password: string, dateOfBirth: string): Observable<boolean> {
     const url = `${this.apiUrl}/register`;
     return this.http.post<{ message: string }>(url, { username, firstName, lastName, email, password, dateOfBirth }).pipe(
-      map(response => 'User registered'),
+      map(response => {
+        if (response.message === 'User registered') {
+          return true;
+        }
+        return false;
+      }),
       catchError(error => {
         console.error('Registration failed', error);
-        return of(error.error);
+        return of(false);
       })
     );
   }
+
 
   logout(): void {
     this.isAuthenticated = false;

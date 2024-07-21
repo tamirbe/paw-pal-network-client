@@ -72,10 +72,10 @@
                     Date of Birth is required
                 </mat-error>
             </mat-form-field>
-            <button class="submitBtn" mat-raised-button color="primary" type="submit" [disabled]="registerForm.invalid">Register</button>
-            <div *ngIf="registrationFailed" class="error">{{ registrationErrorMessage }}      
-            </div>
-            <button class="toggleBtn" (click)="toRegister()">Go back to Login</button>
+            <button class="submitBtn" mat-raised-button color="primary" type="submit"
+                [disabled]="registerForm.invalid">Register</button>
+            <div *ngIf="registrationFailed" class="error">Registration failed. Please try again.</div>
+            <button class="toggleBtn" (click)="toRegister()">Go Back for Login</button>
         </form>
     </div>
 </div>

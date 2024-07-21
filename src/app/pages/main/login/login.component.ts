@@ -14,7 +14,7 @@ export class LoginComponent implements OnInit {
   registerForm!: FormGroup;
   isRegister: boolean = true;
   registrationFailed: boolean = false;
-  registrationErrorMessage: string = '';
+
 
   constructor(private authService: AuthService, private fb: FormBuilder, private router: Router) { }
 
@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       dateOfBirth: ['', Validators.required],
     });
-    
+
   }
 
   toRegister() {
@@ -58,14 +58,12 @@ export class LoginComponent implements OnInit {
       });
     }
   }
-
   onRegisterSubmit() {
     if (this.registerForm.valid) {
       const { username, firstName, lastName, email, password, dateOfBirth } = this.registerForm.value;
-      this.authService.register(username, firstName, lastName, email, password, dateOfBirth).subscribe(response => {
-        if (response !== 'User registered') {
+      this.authService.register(username, firstName, lastName, email, password, dateOfBirth).subscribe(success => {
+        if (!success) {
           this.registrationFailed = true;
-          this.registrationErrorMessage = response;
         } else {
           this.toRegister(); // Switch back to login view after successful registration
         }
