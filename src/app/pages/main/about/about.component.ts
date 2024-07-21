@@ -7,13 +7,17 @@ import { AuthService } from '../../../auth.service';
   styleUrls: ['./about.component.scss']
 })
 export class AboutComponent implements OnInit {
-  submitters: string[] = [];
+  description: string = '';
+  members: string[] = [];
+  project: string = '';
 
   constructor(private authService: AuthService) { }
 
   ngOnInit(): void {
-    this.authService.getSubmitters().subscribe(submitters => {
-      this.submitters = submitters;
+    this.authService.getAboutContent().subscribe(content => {
+      this.description = content.description;
+      this.members = content.members;
+      this.project = content.project;
     });
   }
 }

@@ -60,13 +60,12 @@ export class AuthService {
     return this.isAuthenticated;
   }
 
-  getSubmitters(): Observable<string[]> {
+getAboutContent(): Observable<{ description: string, members: string[], project: string }> {
     const url = `${this.apiUrl}/about`;
-    return this.http.get<{ submitters: string[] }>(url).pipe(
-      map(response => response.submitters),
+    return this.http.get<{ description: string, members: string[], project: string }>(url).pipe(
       catchError(error => {
-        console.error('Failed to fetch submitters', error);
-        return of([]);
+        console.error('Failed to fetch about content', error);
+        return of({ description: '', members: [], project: '' });
       })
     );
   }
