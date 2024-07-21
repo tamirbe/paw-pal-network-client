@@ -23,8 +23,11 @@ jobs:
       - name: Build Angular project
         run: npm run build
 
-      - name: Deploy to production
-        run: npm run deploy
-        env:
-          NODE_AUTH_TOKEN: ${https://api.render.com/deploy/srv-cqdtv9g8fa8c73dsds0g?key=lR9J3RQPr6g}
+      - name: test project
+        run: npm run test
 
+      - name: lint project
+        run: npm run lint
+
+      - name: deploy app
+        run: curl https://api.render.com/deploy/srv-cqdtv9g8fa8c73dsds0g?key=lR9J3RQPr6g
