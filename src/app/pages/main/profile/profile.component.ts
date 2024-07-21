@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
@@ -6,5 +7,12 @@ import { Component } from '@angular/core';
   styleUrl: './profile.component.scss'
 })
 export class ProfileComponent {
+  private apiUrl = 'http://localhost:3000'; // Ensure this matches your proxy configuration
 
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+  //getUserDetails(): { }
 }
