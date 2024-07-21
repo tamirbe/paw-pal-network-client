@@ -9,7 +9,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "mocha tests/*.spec.js",
     "lint": "npx eslint src",
-    "deploy": "ng deploy"
+    "deploy": "echo 'Deploying application...'"
   },
   "private": true,
   "dependencies": {
