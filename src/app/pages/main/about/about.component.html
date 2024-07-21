@@ -1,18 +1,7 @@
-<head>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
-  </head>
-  <img class="background" src="../../../../assets/images/backgroundLogin.png" alt="">
-  <div class="login-container">
-    <div class="sentence-wrapper">
-      <p>Welcome to PawPal,<br>Our social network<br> where pet lovers <br>can connect, share, <br>and
-        celebrate the joys!
-      </p>
-    </div>
-    <div class="submitters">
-      <h3>Submitters:</h3>
-      <ul>
+<div class="about-container">
+    <app-header></app-header>
+    <h2>Submitters</h2>
+    <ul>
         <li *ngFor="let submitter of submitters">{{ submitter }}</li>
       </ul>
-    </div>
-  </div>
-  
+</div>
