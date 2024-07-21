@@ -14,7 +14,7 @@ const routes: Routes = [
         component: MainComponent,
         children: [
             { path: "login", component: LoginComponent },
-            { path: "home-page", component: HomeComponent, canActivate: [AuthGuard] },
+            { path: "/home-page", component: HomeComponent, canActivate: [AuthGuard] },
             { path: "profile", component: ProfileComponent, canActivate: [AuthGuard] },
             { path: "about", component: AboutComponent, canActivate: [AuthGuard] },
             { path: "**", redirectTo: 'login' }
