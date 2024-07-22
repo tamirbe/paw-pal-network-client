@@ -6,14 +6,13 @@ import { LoginComponent } from './login/login.component';
 import { ProfileComponent } from './profile/profile.component';
 import { AuthGuard } from '../../app.guard';
 import { AboutComponent } from './about/about.component';
-
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 const routes: Routes = [
     {
         path: "",
         component: MainComponent,
         children: [
-            { path: '', redirectTo: '/login', pathMatch: 'full' },
             { path: 'login', component: LoginComponent },
             { path: 'home-page', component: HomeComponent, canActivate: [AuthGuard] },
             { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
@@ -26,5 +25,8 @@ const routes: Routes = [
 @NgModule({
     imports: [RouterModule.forChild(routes)],
     exports: [RouterModule]
+    //providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }]//want to add
 })
 export class MainRoutingModule { }
+
+
