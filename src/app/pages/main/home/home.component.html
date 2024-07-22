@@ -1,9 +1,25 @@
 <div class="home-container">
     <app-header></app-header>
     <div class="content-section">
+        <!-- Form for creating a new post -->
+        <form (submit)="onSubmit()">
+            <textarea placeholder="What's on your mind?" [(ngModel)]="newPost.description" name="description"></textarea>
+            <input type="file" (change)="onFileSelected($event)" accept="image/*" />
+            <button type="submit">Post</button>
+        </form>
+
+        <!-- Display existing posts -->
         <div class="post" *ngFor="let post of posts">
             <img [src]="post.image" alt="Post image">
             <p>{{ post.description }}</p>
+            <div class="post-actions">
+                <button (click)="toggleLike(post)" [class.liked]="post.liked">
+                    <i class="fas fa-heart"></i> {{ post.likes }}
+                </button>
+                <button (click)="sharePost(post)">
+                    <i class="fas fa-share"></i> Share
+                </button>
+            </div>
         </div>
     </div>
 </div>
