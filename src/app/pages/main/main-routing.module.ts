@@ -23,12 +23,11 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    //declarations: AppComponent,// try to add
     imports: [RouterModule.forChild(routes)],
     exports: [RouterModule],
     providers: [
         { provide: LocationStrategy, useClass: HashLocationStrategy } //add
-    ]
+    ],
 })
 
 export class MainRoutingModule { }

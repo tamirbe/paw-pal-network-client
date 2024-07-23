@@ -19,6 +19,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { SlideshowComponent } from '../../components/slideshow/slideshow.component';
 import { AboutComponent } from './about/about.component';
 import { HeaderComponent } from '../../components/header/header.component';
+import { LocationStrategy, HashLocationStrategy } from '@angular/common'; //add
 
 
 
@@ -43,7 +44,12 @@ import { HeaderComponent } from '../../components/header/header.component';
         CommonModule,
         MatButtonModule, MatCardModule, MatToolbarModule
     ],
-    providers: [AuthService, AuthGuard, provideHttpClient()],
+    providers: [
+        AuthService, 
+        AuthGuard, 
+        provideHttpClient(), 
+        { provide: LocationStrategy, useClass: HashLocationStrategy } // add
+    ],
 })
 export class MainModule {
 }
