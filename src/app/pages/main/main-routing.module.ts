@@ -6,7 +6,7 @@ import { LoginComponent } from './login/login.component';
 import { ProfileComponent } from './profile/profile.component';
 import { AuthGuard } from '../../app.guard';
 import { AboutComponent } from './about/about.component';
-import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common'; //add
 
 const routes: Routes = [
     {
@@ -21,12 +21,14 @@ const routes: Routes = [
         ],
     },
 ];
-
+providers: [
+    { provide: LocationStrategy, useClass: HashLocationStrategy } //add
+]
 @NgModule({
     imports: [RouterModule.forChild(routes)],
     exports: [RouterModule]
-    //providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }]//want to add
 })
+
 export class MainRoutingModule { }
 
 
