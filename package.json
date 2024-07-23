@@ -8,6 +8,17 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
+ "projects": {
+    "paw-pal-network-client": {
+      "architect": {
+        "build": {
+          "options": {
+            "outputPath": "dist/paw-pal-network-client/browser"
+          }
+        }
+      }
+    }
+  },
   "private": true,
   "dependencies": {
     "@angular/animations": "^18.1.0",
