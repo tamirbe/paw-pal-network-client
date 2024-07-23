@@ -19,6 +19,9 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-  
+        
+      - name: Build dependencies
+        run: npm run build 
+
       - name: deploy app
         run: curl https://api.render.com/deploy/srv-cqdtv9g8fa8c73dsds0g?key=lR9J3RQPr6g
