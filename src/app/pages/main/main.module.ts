@@ -19,7 +19,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { SlideshowComponent } from '../../components/slideshow/slideshow.component';
 import { AboutComponent } from './about/about.component';
 import { HeaderComponent } from '../../components/header/header.component';
-import { LocationStrategy, HashLocationStrategy } from '@angular/common'; //add
+import { LocationStrategy, HashLocationStrategy } from '@angular/common'; //addd
 
 
 
