@@ -6,7 +6,7 @@ import { LoginComponent } from './login/login.component';
 import { ProfileComponent } from './profile/profile.component';
 import { AuthGuard } from '../../app.guard';
 import { AboutComponent } from './about/about.component';
-import { HashLocationStrategy, LocationStrategy } from '@angular/common'; //add
+import { HashLocationStrategy, LocationStrategy } from '@angular/common'; //addd
 
 const routes: Routes = [
     {
