@@ -1,5 +1,149 @@
-<div class="profile-container">
-    <app-header></app-header>
-    <p>profile works!</p>
-    <button>Click Heere !</button>
+<div class="personal-area">
+    <div class="sidebar">
+        <div (click)="toggleMenu()">
+            <img class="icon" src="assets\icons\menuBlue.svg" alt="">
+        </div>
+        <div *ngIf="showMenu">
+            <button mat-button color="primary" (click)="editPersonalDetails()">Edit Personal Details</button>
+            <button mat-button color="primary" (click)="changePassword()">Change Password</button>
+            <button mat-button color="primary" (click)="deleteAccount()">Delete Account</button>
+            <button mat-button color="primary" (click)="viewStatistics()">View Statistics</button>
+            <button mat-button color="primary" (click)="cancelAction()">Cancel</button>
+        </div>
+    </div>
+
+    <h1>My Personal Area</h1>
+
+    <!-- User Details -->
+    <div class="user-details">
+        <p><strong>Username:</strong> {{ user?.username }}</p>
+        <p><strong>First Name:</strong> {{ user?.firstName }}</p>
+        <p><strong>Last Name:</strong> {{ user?.lastName }}</p>
+        <p><strong>Pet:</strong> {{ user?.pet }}</p>
+    </div>
+
+    <!-- Menu Button and Dropdown -->
+
+    <!-- Edit Personal Details Form -->
+    <div *ngIf="editMode" class="edit-form">
+        <h2>Edit Personal Details</h2>
+        <form [formGroup]="userForm" (ngSubmit)="onSubmitUserDetails()">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input id="username" formControlName="username" type="text" />
+            </div>
+            <div class="form-group">
+                <label for="firstName">First Name</label>
+                <input id="firstName" formControlName="firstName" type="text" />
+            </div>
+            <div class="form-group">
+                <label for="lastName">Last Name</label>
+                <input id="lastName" formControlName="lastName" type="text" />
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input id="email" formControlName="email" type="email" />
+            </div>
+            <div class="form-group">
+                <label for="pet">Owned Pet</label>
+                <input id="pet" formControlName="pet" type="text" />
+            </div>
+            <button type="submit" [disabled]="userForm.invalid" class="btn">Save</button>
+        </form>
+    </div>
+
+    <!-- Change Password Form -->
+    <div *ngIf="passwordMode" class="password-form">
+        <h2>Change Password</h2>
+        <form [formGroup]="passwordForm" (ngSubmit)="onSubmitPasswordChange()">
+            <div class="form-group">
+                <label for="currentPassword">Current Password</label>
+                <input id="currentPassword" formControlName="currentPassword" type="password" />
+            </div>
+            <div class="form-group">
+                <label for="newPassword">New Password</label>
+                <input id="newPassword" formControlName="newPassword" type="password" />
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">Confirm New Password</label>
+                <input id="confirmPassword" formControlName="confirmPassword" type="password" />
+            </div>
+            <button type="submit" [disabled]="passwordForm.invalid" class="btn">Change Password</button>
+            <div *ngIf="passwordForm.errors?.['passwordMismatch']" class="error">
+                Passwords do not match.
+            </div>
+        </form>
+    </div>
+
+    <!-- Delete Account Form -->
+    <div *ngIf="deleteMode" class="delete-form">
+        <h2>Delete Account</h2>
+        <form (ngSubmit)="confirmDeleteAccount()">
+            <div class="form-group">
+                <input type="password" placeholder="Current Password" name="currentPassword" required />
+            </div>
+            <button type="submit" class="btn">Confirm</button>
+            <button type="button" (click)="cancelAction()" class="btn">Cancel</button>
+        </form>
+    </div>
+
+    <!-- Following Section -->
+    <div class="following-section">
+        <h2>Following</h2>
+        <input type="text" placeholder="Search..." />
+        <ul>
+            <li *ngFor="let user of filteredFollowing">
+                <span (click)="goToUserProfile(user)">{{ user }}</span>
+                <button (click)="unfollowUser(user)" class="btn">Unfollow</button>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Uploaded Content Section -->
+    <div class="content-section">
+        <h2>Uploaded Content</h2>
+        <ul>
+            <li *ngFor="let content of uploadedContent">
+                <span>{{ content.title }}</span>
+                <button (click)="removeUploadedContent(content.id)" class="btn">Remove</button>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Favorite Content Section -->
+    <div class="favorite-content-section">
+        <h2>Favorite Content</h2>
+        <ul>
+            <li *ngFor="let content of favoriteContent">
+                <span>{{ content.title }}</span>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Saved Content Section -->
+    <div class="saved-content-section">
+        <h2>Saved Content</h2>
+        <ul>
+            <li *ngFor="let content of savedContent">
+                <span>{{ content.title }}</span>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Statistics Section -->
+    <div *ngIf="statsMode" class="statistics-section">
+        <h2>Statistics</h2>
+        <div>
+            <p>Likes per Post</p>
+            <canvas id="likesChart"></canvas>
+        </div>
+        <div>
+            <p>Content Uploaded per Month</p>
+            <canvas id="uploadsChart"></canvas>
+        </div>
+        <div>
+            <p>Content Liked per Month</p>
+            <canvas id="likedChart"></canvas>
+        </div>
+    </div>
 </div>

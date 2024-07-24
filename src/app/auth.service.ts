@@ -30,7 +30,7 @@ export class AuthService {
       })
     );
   }
-  
+
   register(username: string, firstName: string, lastName: string, email: string, password: string, dateOfBirth: string): Observable<string> {
     const url = `${this.apiUrl}/register`;
     return this.http.post<{ message: string }>(url, { username, firstName, lastName, email, password, dateOfBirth }).pipe(
@@ -56,7 +56,7 @@ export class AuthService {
     return this.isAuthenticated;
   }
 
-getAboutContent(): Observable<{ description: string, members: string[], project: string }> {
+  getAboutContent(): Observable<{ description: string, members: string[], project: string }> {
     const url = `${this.apiUrl}/about`;
     return this.http.get<{ description: string, members: string[], project: string }>(url).pipe(
       catchError(error => {
