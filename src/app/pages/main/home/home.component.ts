@@ -17,16 +17,4 @@ export class HomeComponent {
 
   constructor(private router: Router, private authService: AuthService) { }
 
-  logout() {
-    this.authService.logout();
-  }
-  toProfile() {
-    this.router.navigate(['profile']);
-  }
-  toAbout() {
-    this.router.navigate(['about']);
-  }
-  home() {
-    this.router.navigate(['home-page']);
-  }
 }

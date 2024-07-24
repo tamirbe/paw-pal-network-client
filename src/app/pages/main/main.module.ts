@@ -20,6 +20,7 @@ import { SlideshowComponent } from '../../components/slideshow/slideshow.compone
 import { AboutComponent } from './about/about.component';
 import { HeaderComponent } from '../../components/header/header.component';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common'; //addd
+import { UserService } from './profile/userService';
 
 
 
@@ -45,9 +46,10 @@ import { LocationStrategy, HashLocationStrategy } from '@angular/common'; //addd
         MatButtonModule, MatCardModule, MatToolbarModule
     ],
     providers: [
-        AuthService, 
-        AuthGuard, 
-        provideHttpClient(), 
+        UserService,
+        AuthService,
+        AuthGuard,
+        provideHttpClient(),
         { provide: LocationStrategy, useClass: HashLocationStrategy } // add
     ],
 })
