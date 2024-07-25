@@ -4,6 +4,8 @@ import { User } from './user.model'; // Import the User interface
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { switchMap, catchError } from 'rxjs/operators';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { AuthService } from '../../../auth.service';
 
 @Component({
   selector: 'app-profile',
@@ -26,7 +28,9 @@ export class ProfileComponent implements OnInit {
   userForm!: FormGroup; // Form for personal details
   passwordForm!: FormGroup; // Form for password change
 
-  constructor(private fb: FormBuilder, private userService: UserService) { }
+  private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
+
+  constructor(private fb: FormBuilder, private userService: UserService, private authService: AuthService, private http: HttpClient) { }
 
   ngOnInit(): void {
     this.initForms();
@@ -59,7 +63,10 @@ export class ProfileComponent implements OnInit {
 
   // Load user profile and related data
   private loadUserData(): void {
-    this.userService.getUserProfile().subscribe(data => {
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    this.http.get<User>(`${this.apiUrl}/profile`, { headers }).subscribe(data => {
       this.user = data;
       this.userForm.patchValue(data);
     });
@@ -71,22 +78,34 @@ export class ProfileComponent implements OnInit {
   }
 
   private loadUserFollowing(): void {
-    this.userService.getUserFollowing().subscribe(data => {
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    this.http.get<string[]>(`${this.apiUrl}/following`, { headers }).subscribe(data => {
       this.following = data;
       this.filteredFollowing = [...data];
     });
   }
 
   private loadUploadedContent(): void {
-    this.userService.getUploadedContent().subscribe(data => this.uploadedContent = data);
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    this.http.get<any[]>(`${this.apiUrl}/uploaded-content`, { headers }).subscribe(data => this.uploadedContent = data);
   }
 
   private loadFavoriteContent(): void {
-    this.userService.getFavoriteContent().subscribe(data => this.favoriteContent = data);
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    this.http.get<any[]>(`${this.apiUrl}/favorite-content`, { headers }).subscribe(data => this.favoriteContent = data);
   }
 
   private loadSavedContent(): void {
-    this.userService.getSavedContent().subscribe(data => this.savedContent = data);
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    this.http.get<any[]>(`${this.apiUrl}/saved-content`, { headers }).subscribe(data => this.savedContent = data);
   }
 
   goToUserProfile(username: string) {
@@ -95,7 +114,8 @@ export class ProfileComponent implements OnInit {
   }
 
   // Search functionality for following users
-  searchFollowing(query: string) {
+  searchFollowing(event: Event) {
+    const query = (event.target as HTMLInputElement).value;
     this.filteredFollowing = this.following.filter(user =>
       user.toLowerCase().includes(query.toLowerCase())
     );
@@ -104,8 +124,11 @@ export class ProfileComponent implements OnInit {
   // Handle form submissions
   onSubmitUserDetails(): void {
     if (this.userForm.valid) {
-      this.userService.updateUserProfile(this.userForm.value).pipe(
-        switchMap(() => this.userService.getUserProfile()),
+      const token = this.authService.getToken();
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+      this.http.put(`${this.apiUrl}/profile`, this.userForm.value, { headers }).pipe(
+        switchMap(() => this.http.get<User>(`${this.apiUrl}/profile`, { headers })),
         catchError(error => {
           console.error('Error updating user profile:', error);
           return [];
@@ -123,7 +146,10 @@ export class ProfileComponent implements OnInit {
   onSubmitPasswordChange(): void {
     if (this.passwordForm.valid) {
       const { currentPassword, newPassword } = this.passwordForm.value;
-      this.userService.changeUserPassword(currentPassword, newPassword).pipe(
+      const token = this.authService.getToken();
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+      this.http.post(`${this.apiUrl}/change-password`, { currentPassword, newPassword }, { headers }).pipe(
         catchError(error => {
           console.error('Error changing password:', error);
           return [];
@@ -162,8 +188,11 @@ export class ProfileComponent implements OnInit {
 
   // Unfollow user
   unfollowUser(username: string): void {
-    this.userService.unfollowUser(username).pipe(
-      switchMap(() => this.userService.getUserFollowing()),
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    this.http.post(`${this.apiUrl}/unfollow`, { username }, { headers }).pipe(
+      switchMap(() => this.http.get<string[]>(`${this.apiUrl}/following`, { headers })),
       catchError(error => {
         console.error('Error unfollowing user:', error);
         return [];
@@ -177,8 +206,11 @@ export class ProfileComponent implements OnInit {
 
   // Remove uploaded content
   removeUploadedContent(contentId: string): void {
-    this.userService.removeUploadedContent(contentId).pipe(
-      switchMap(() => this.userService.getUploadedContent()),
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    this.http.delete(`${this.apiUrl}/uploaded-content/${contentId}`, { headers }).pipe(
+      switchMap(() => this.http.get<any[]>(`${this.apiUrl}/uploaded-content`, { headers })),
       catchError(error => {
         console.error('Error removing content:', error);
         return [];
@@ -191,7 +223,10 @@ export class ProfileComponent implements OnInit {
 
   // Confirm and cancel actions
   confirmDeleteAccount(): void {
-    this.userService.deleteAccount().pipe(
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    this.http.delete(`${this.apiUrl}/delete-account`, { headers }).pipe(
       catchError(error => {
         console.error('Error deleting account:', error);
         return [];
