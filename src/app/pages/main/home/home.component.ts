@@ -4,10 +4,11 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../../auth.service';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 interface Post {
   _id?: string;
-  image: string;
+  image?: string;
   description: string;
   author: { username: string, firstName: string, lastName: string };
   createdAt: Date;
@@ -29,7 +30,7 @@ export class HomeComponent implements OnInit {
 
   private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
 
-  constructor(private router: Router, private authService: AuthService, private fb: FormBuilder, private http: HttpClient) { }
+  constructor(private sanitizer: DomSanitizer,private router: Router, private authService: AuthService, private fb: FormBuilder, private http: HttpClient) { }
 
   ngOnInit(): void {
     this.postForm = this.fb.group({
@@ -43,15 +44,20 @@ export class HomeComponent implements OnInit {
     try {
       const token = this.authService.getToken();
       console.log('Sending request to /feed with token:', token);
-
+  
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-      this.posts = await firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/feed`, { headers }));
+      this.posts = await firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/posts`, { headers }));
       
       console.log('Posts loaded:', this.posts);
     } catch (error) {
       console.error('Error loading feed:', error);
     }
   }
+
+  sanitizeImageUrl(url: string): SafeUrl {
+    return this.sanitizer.bypassSecurityTrustUrl(url);
+  }
+  
 
   onFileChange(event: any): void {
     const file = event.target.files[0];
