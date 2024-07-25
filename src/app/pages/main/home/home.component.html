@@ -18,9 +18,9 @@
 
       <!-- Display information -->
       <div class="info-group">
-        <button class="info-button" (click)="likePost(post)">Like ({{ post.likes.length || 0 }})</button>
-        <button class="info-button" (click)="sharePost(post)">Share ({{ post.shares.length || 0 }})</button>
-        <button class="info-button" (click)="savePost(post)">Save ({{ post.savedBy.length || 0 }})</button>
+        <button class="info-button" (click)="likePost(post)">Like ({{ post.likes ? post.likes.length : 0 }})</button>
+        <button class="info-button" (click)="sharePost(post)">Share ({{ post.shares ? post.shares.length : 0 }})</button>
+        <button class="info-button" (click)="savePost(post)">Save ({{ post.savedBy ? post.savedBy.length : 0 }})</button>
       </div>
     </div>
   </div>
