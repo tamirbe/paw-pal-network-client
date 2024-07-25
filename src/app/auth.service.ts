@@ -55,5 +55,17 @@ export class AuthService {
     }
     return this.isAuthenticated;
   }
+  setToken(token: string): void {
+    sessionStorage.setItem('authToken', token);
+  }
 
+  getToken(): string | null {
+    const token = sessionStorage.getItem('authToken');
+    console.log('Token retrieved:', token); //add
+    return token;
+  }
+
+  removeToken(): void {
+    sessionStorage.removeItem('authToken');
+  }
 }

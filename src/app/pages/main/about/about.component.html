@@ -1,12 +1,14 @@
 <div class="about-container">
   <h2>About Us</h2>
-  <p>{{ description }}</p>
+  <div *ngIf="aboutContent$ | async as content">
+    <p>{{ content.description }}</p>
 
-  <h3>Project</h3>
-  <p>{{ project }}</p>
+    <h3>Project</h3>
+    <p>{{ content.project }}</p>
 
-  <h3>Members</h3>
-  <ul>
-    <li *ngFor="let member of members">{{ member }}</li>
-  </ul>
+    <h3>Members</h3>
+    <ul>
+      <li *ngFor="let member of content.members">{{ member }}</li>
+    </ul>
+  </div>
 </div>
