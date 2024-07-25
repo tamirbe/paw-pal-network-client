@@ -46,7 +46,7 @@ export class HomeComponent implements OnInit {
 
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
       this.posts = await firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/feed`, { headers }));
-      
+
       console.log('Posts loaded:', this.posts);
     } catch (error) {
       console.error('Error loading feed:', error);
