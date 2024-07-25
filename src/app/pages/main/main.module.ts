@@ -21,6 +21,8 @@ import { AboutComponent } from './about/about.component';
 import { HeaderComponent } from '../../components/header/header.component';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common'; //addd
 import { UserService } from './profile/userService';
+import { RouterModule } from '@angular/router'; // add
+import { SearchResultsComponent } from './search-results/search-results.component'; // add
 
 
 
@@ -32,7 +34,8 @@ import { UserService } from './profile/userService';
         ProfileComponent,
         SlideshowComponent,
         AboutComponent,
-        HeaderComponent
+        HeaderComponent,
+        SearchResultsComponent, // add
     ],
     imports: [
         MainRoutingModule,
@@ -43,7 +46,9 @@ import { UserService } from './profile/userService';
         NgIf,
         MatCheckboxModule,
         CommonModule,
-        MatButtonModule, MatCardModule, MatToolbarModule
+        MatButtonModule, MatCardModule, MatToolbarModule,
+        RouterModule // add
+
     ],
     providers: [
         UserService,

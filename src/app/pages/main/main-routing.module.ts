@@ -7,6 +7,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { AuthGuard } from '../../app.guard';
 import { AboutComponent } from './about/about.component';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common'; //addd
+import { SearchResultsComponent } from './search-results/search-results.component'; // add
 
 const routes: Routes = [
     {
@@ -17,7 +18,9 @@ const routes: Routes = [
             { path: 'home-page', component: HomeComponent, canActivate: [AuthGuard] },
             { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
             { path: 'about', component: AboutComponent, canActivate: [AuthGuard] },
-            { path: '**', redirectTo: '/login' }
+            { path: 'search', component: SearchResultsComponent, canActivate: [AuthGuard] }, // add
+            { path: '**', redirectTo: '/login' },
+            { path: 'profile/:username', component: ProfileComponent}, // add
         ],
     },
 ];
@@ -31,5 +34,3 @@ const routes: Routes = [
 })
 
 export class MainRoutingModule { }
-
-

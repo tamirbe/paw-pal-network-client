@@ -1,30 +1,34 @@
 <div class="home-container">
-  <h2>Home</h2>
+  <h2>Home, Welcome</h2>
+  <div class="search-container">
+    <form (ngSubmit)="onSearch()">
+      <input type="text" placeholder="Search users..." [(ngModel)]="searchQuery" name="query" />
+      <button type="submit">Search</button>
+    </form>
+  </div>
 
   <div class="content-section">
     <div class="post" *ngFor="let post of posts">
-      <img [src]="post.image" alt="Post image" *ngIf="post.image">
-      <p>{{ post.description }}</p>
-      <p><strong>{{ post.author.firstName }} {{ post.author.lastName }} ({{ post.author.username }})</strong> - {{ post.createdAt | date:'short' }}</p>
+      <img class="post-image" [src]="post.image" alt="Post image" *ngIf="post.image">
+      <p class="post-description">{{ post.description }}</p>
+      <p class="post-author">
+        <a [routerLink]="['/profile', post.author.username]"><strong>{{ post.author.firstName }} {{ post.author.lastName }} ({{ post.author.username }})</strong></a> - {{ post.createdAt | date:'short' }}
+      </p>
     
       <!-- Display information -->
       <div class="info-group">
-        <button class="info-button" (click)="likePost(post)">Like ({{ post.likes.length }})</button>
-        <button class="info-button" (click)="sharePost(post)">Share ({{ post.shares.length }})</button>
-        <button class="info-button" (click)="savePost(post)">Save ({{ post.savedBy.length }})</button>
+        <button class="info-button" (click)="likePost(post)">Like ({{ post.likes.length || 0 }})</button>
+        <button class="info-button" (click)="sharePost(post)">Share ({{ post.shares.length || 0 }})</button>
+        <button class="info-button" (click)="savePost(post)">Save ({{ post.savedBy.length || 0 }})</button>
       </div>
     </div>
   </div>
 
-  <div>
+  <div class="form-container">
     <form [formGroup]="postForm" (ngSubmit)="onSubmit()">
       <input type="file" formControlName="image" (change)="onFileChange($event)" />
       <textarea formControlName="description" placeholder="Write something..."></textarea>
       <button type="submit">Upload</button>
     </form>
-  </div>
-
-  <div class="search-container">
-    <input type="text" placeholder="Search users..." (input)="searchUsers($event)" />
   </div>
 </div>

@@ -25,16 +25,7 @@ interface Post {
 export class HomeComponent implements OnInit {
   posts: Post[] = [];
   postForm!: FormGroup;
-  newPost: Post = {
-    image: '',
-    description: '',
-    author: { username: '', firstName: '', lastName: '' },
-    createdAt: new Date(),
-    likes: [],
-    shares: [],
-    savedBy: [],
-    liked: false
-  };
+  searchQuery: string = ''; // add
 
   private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
 
@@ -55,7 +46,7 @@ export class HomeComponent implements OnInit {
 
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
       this.posts = await firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/feed`, { headers }));
-      console.log('Sending request to שששששששששששששששששששששש /feed with token:', token);
+      
       console.log('Posts loaded:', this.posts);
     } catch (error) {
       console.error('Error loading feed:', error);
@@ -141,17 +132,7 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['home-page']);
   }
 
-  async searchUsers(event: any) {
-    const query = (event.target as HTMLInputElement).value;
-    if (query) {
-      try {
-        const token = this.authService.getToken();
-        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-        const users = await firstValueFrom(this.http.get<any[]>(`${this.apiUrl}/search`, { headers, params: { query } }));
-        // Handle search results
-      } catch (error) {
-        console.error('Error searching users:', error);
-      }
-    }
+  onSearch() {
+    this.router.navigate(['/search'], { queryParams: { query: this.searchQuery } });
   }
 }
