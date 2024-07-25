@@ -56,13 +56,4 @@ export class AuthService {
     return this.isAuthenticated;
   }
 
-  getAboutContent(): Observable<{ description: string, members: string[], project: string }> {
-    const url = `${this.apiUrl}/about`;
-    return this.http.get<{ description: string, members: string[], project: string }>(url).pipe(
-      catchError(error => {
-        console.error('Failed to fetch about content', error);
-        return of({ description: '', members: [], project: '' });
-      })
-    );
-  }
 }

@@ -1,5 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../../auth.service';
+import { Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+
+interface AboutContent {
+  description: string;
+  members: string[];
+  project: string;
+}
 
 @Component({
   selector: 'app-about',
@@ -7,17 +15,22 @@ import { AuthService } from '../../../auth.service';
   styleUrls: ['./about.component.scss']
 })
 export class AboutComponent implements OnInit {
-  description: string = '';
-  members: string[] = [];
-  project: string = '';
+  aboutContent$!: Observable<AboutContent>;
+  private apiUrl = 'http://localhost:3000'; // Ensure this matches your proxy configuration
 
-  constructor(private authService: AuthService) { }
+  constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
-    this.authService.getAboutContent().subscribe(content => {
-      this.description = content.description;
-      this.members = content.members;
-      this.project = content.project;
-    });
+    this.aboutContent$ = this.getAboutContent();
+  }
+
+  getAboutContent(): Observable<AboutContent> {
+    const url = `${this.apiUrl}/about`;
+    return this.http.get<AboutContent>(url).pipe(
+      catchError(error => {
+        console.error('Failed to fetch about content', error);
+        return of({ description: '', members: [], project: '' });
+      })
+    );
   }
 }
