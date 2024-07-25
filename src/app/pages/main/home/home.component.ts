@@ -121,7 +121,7 @@ export class HomeComponent implements OnInit {
   }
 
   toProfile() {
-    this.router.navigate(['profile']);
+    this.router.navigate(['profile/:username']);
   }
 
   toAbout() {
