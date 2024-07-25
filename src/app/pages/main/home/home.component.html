@@ -1,25 +1,35 @@
 <div class="home-container">
-    <app-header></app-header>
-    <div class="content-section">
-        <!-- Form for creating a new post -->
-        <form (submit)="onSubmit()">
-            <textarea placeholder="What's on your mind?" [(ngModel)]="newPost.description" name="description"></textarea>
-            <input type="file" (change)="onFileSelected($event)" accept="image/*" />
-            <button type="submit">Post</button>
-        </form>
+  <h2>Home, Welcome</h2>
+  <div class="search-container">
+    <form (ngSubmit)="onSearch()">
+      <input type="text" placeholder="Search users..." [(ngModel)]="searchQuery" name="query" />
+      <button type="submit">Search</button>
+    </form>
+  </div>
 
-        <!-- Display existing posts -->
-        <div class="post" *ngFor="let post of posts">
-            <img [src]="post.image" alt="Post image">
-            <p>{{ post.description }}</p>
-            <div class="post-actions">
-                <button (click)="toggleLike(post)" [class.liked]="post.liked">
-                    <i class="fas fa-heart"></i> {{ post.likes }}
-                </button>
-                <button (click)="sharePost(post)">
-                    <i class="fas fa-share"></i> Share
-                </button>
-            </div>
-        </div>
+  <div class="content-section">
+    <div class="post" *ngFor="let post of posts">
+      <img class="post-image" [src]="post.image" alt="Post image" *ngIf="post.image">
+      <p class="post-description">{{ post.description }}</p>
+      <p class="post-author">
+        <a [routerLink]="['/profile', post.author.username]"><strong>{{ post.author.firstName }} {{ post.author.lastName
+            }} ({{ post.author.username }})</strong></a> - {{ post.createdAt | date:'short' }}
+      </p>
+
+      <!-- Display information -->
+      <div class="info-group">
+        <button class="info-button" (click)="likePost(post)">Like ({{ post.likes.length || 0 }})</button>
+        <button class="info-button" (click)="sharePost(post)">Share ({{ post.shares.length || 0 }})</button>
+        <button class="info-button" (click)="savePost(post)">Save ({{ post.savedBy.length || 0 }})</button>
+      </div>
     </div>
+  </div>
+
+  <div class="form-container">
+    <form [formGroup]="postForm" (ngSubmit)="onSubmit()">
+      <input type="file" formControlName="image" (change)="onFileChange($event)" />
+      <textarea formControlName="description" placeholder="Write something..."></textarea>
+      <button type="submit">Upload</button>
+    </form>
+  </div>
 </div>

@@ -19,6 +19,10 @@ import { provideHttpClient } from '@angular/common/http';
 import { SlideshowComponent } from '../../components/slideshow/slideshow.component';
 import { AboutComponent } from './about/about.component';
 import { HeaderComponent } from '../../components/header/header.component';
+import { LocationStrategy, HashLocationStrategy } from '@angular/common'; //addd
+import { UserService } from './profile/userService';
+import { RouterModule } from '@angular/router'; // add
+import { SearchResultsComponent } from './search-results/search-results.component'; // add
 
 
 
@@ -30,7 +34,8 @@ import { HeaderComponent } from '../../components/header/header.component';
         ProfileComponent,
         SlideshowComponent,
         AboutComponent,
-        HeaderComponent
+        HeaderComponent,
+        SearchResultsComponent, // add
     ],
     imports: [
         MainRoutingModule,
@@ -41,9 +46,17 @@ import { HeaderComponent } from '../../components/header/header.component';
         NgIf,
         MatCheckboxModule,
         CommonModule,
-        MatButtonModule, MatCardModule, MatToolbarModule
+        MatButtonModule, MatCardModule, MatToolbarModule,
+        RouterModule // add
+
     ],
-    providers: [AuthService, AuthGuard, provideHttpClient()],
+    providers: [
+        UserService,
+        AuthService,
+        AuthGuard,
+        provideHttpClient(),
+        { provide: LocationStrategy, useClass: HashLocationStrategy } // add
+    ],
 })
 export class MainModule {
 }

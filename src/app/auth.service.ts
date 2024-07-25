@@ -30,7 +30,7 @@ export class AuthService {
       })
     );
   }
-  
+
   register(username: string, firstName: string, lastName: string, email: string, password: string, dateOfBirth: string): Observable<string> {
     const url = `${this.apiUrl}/register`;
     return this.http.post<{ message: string }>(url, { username, firstName, lastName, email, password, dateOfBirth }).pipe(
@@ -55,14 +55,17 @@ export class AuthService {
     }
     return this.isAuthenticated;
   }
+  setToken(token: string): void {
+    sessionStorage.setItem('authToken', token);
+  }
 
-getAboutContent(): Observable<{ description: string, members: string[], project: string }> {
-    const url = `${this.apiUrl}/about`;
-    return this.http.get<{ description: string, members: string[], project: string }>(url).pipe(
-      catchError(error => {
-        console.error('Failed to fetch about content', error);
-        return of({ description: '', members: [], project: '' });
-      })
-    );
+  getToken(): string | null {
+    const token = sessionStorage.getItem('authToken');
+    console.log('Token retrieved:', token); //add
+    return token;
+  }
+
+  removeToken(): void {
+    sessionStorage.removeItem('authToken');
   }
 }

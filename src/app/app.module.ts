@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { CommonModule } from '@angular/common';
+import { LocationStrategy, HashLocationStrategy } from '@angular/common'; //addd
 
 @NgModule({
     declarations: [
@@ -20,7 +21,8 @@ import { CommonModule } from '@angular/common';
         CUSTOM_ELEMENTS_SCHEMA
     ],
     providers: [
-        provideAnimationsAsync()
+        provideAnimationsAsync(),
+        { provide: LocationStrategy, useClass: HashLocationStrategy } //add
     ],
     bootstrap: [AppComponent]
 })

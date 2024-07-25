@@ -1,117 +1,131 @@
-
-
 .home-container {
-    background-color: #f5f5f5;
-    min-height: 100vh; /* Ensure the container fills the viewport height */
-    padding: 1rem; /* Add padding to the container */
-    display: flex;
-    flex-direction: column;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.search-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.search-container input {
+  width: 70%;
+  padding: 10px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.search-container button {
+  padding: 10px 20px;
+  border: none;
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.search-container button:hover {
+  background-color: #0056b3;
 }
 
 .content-section {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    margin-top: 2rem; /* Add space between header and posts */
+  margin-bottom: 30px;
 }
 
 .post {
-    width: 80%;
-    max-width: 600px; /* Limit maximum width of each post */
-    margin-bottom: 1.5rem; /* Add space between posts */
-    padding: 1rem;
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    overflow: hidden;
-    transition: transform 0.2s ease-in-out;
-    position: relative;
-}
-.post-actions {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.post-actions button {
-    background-color: transparent;
-    border: none;
-    color: #666;
-    cursor: pointer;
-    padding: 0.5rem;
-    display: flex;
-    align-items: center;
-    transition: color 0.3s ease;
+.post-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 5px;
+  margin-bottom: 15px;
 }
 
-.post-actions button i {
-    margin-right: 0.5rem;
+.post-description {
+  font-size: 16px;
+  margin-bottom: 10px;
 }
 
-.post-actions button:hover {
-    color: #333;
+.post-author {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 10px;
 }
 
-.post-actions button.liked {
-    color: #e74c3c; /* Red color for liked posts */
+.post-author a {
+  text-decoration: none;
+  color: #007bff;
 }
 
-.post:hover {
-    transform: translateY(-5px);
+.post-author a:hover {
+  text-decoration: underline;
 }
 
-.post img {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-    object-fit: cover; /* Ensure images maintain aspect ratio */
+.info-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
 }
 
-.post p {
-    margin-top: 0.5rem;
-    font-size: 16px; /* Increase font size for better readability */
-    color: #333;
+.info-button {
+  padding: 10px 15px;
+  border: none;
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
-form {
-    width: 80%;
-    max-width: 600px;
-    background-color: #fff;
-    padding: 1rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    margin-bottom: 1.5rem;
+.info-button:hover {
+  background-color: #0056b3;
 }
 
-form textarea {
-    width: calc(100% - 20px); /* Adjust textarea width */
-    min-height: 80px; /* Ensure textarea is tall enough */
-    padding: 10px;
-    margin-bottom: 1rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    resize: vertical; /* Allow vertical resizing of textarea */
+.form-container {
+  background: #f9f9f9;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-form input[type="file"] {
-    margin-bottom: 1rem;
+.form-container input[type="file"] {
+  display: block;
+  margin-bottom: 10px;
 }
 
-form button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+.form-container textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  font-family: Arial, sans-serif;
 }
 
-form button:hover {
-    background-color: #45a049;
+.form-container button {
+  padding: 10px 20px;
+  border: none;
+  background-color: #28a745;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.form-container button:hover {
+  background-color: #218838;
 }
