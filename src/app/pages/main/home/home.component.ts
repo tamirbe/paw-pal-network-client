@@ -27,6 +27,7 @@ export class HomeComponent implements OnInit {
   posts: Post[] = [];
   postForm!: FormGroup;
   searchQuery: string = ''; // add
+  currentUser: string = ''; // הוסף משתנה לשם המשתמש הנוכחי
 
   private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
 
@@ -38,6 +39,7 @@ export class HomeComponent implements OnInit {
       image: [null]
     });
     this.loadFeed();
+    this.setCurrentUser(); // קבע את שם המשתמש הנוכחי מה- token
   }
 
   async loadFeed() {
@@ -57,7 +59,26 @@ export class HomeComponent implements OnInit {
   sanitizeImageUrl(url: string): SafeUrl {
     return this.sanitizer.bypassSecurityTrustUrl(url);
   }
-  
+
+  setCurrentUser() {
+    const token = this.authService.getToken();
+    if (token) {
+      const decodedToken: any = this.parseJwt(token); // השתמש בפונקציה לחילוץ מידע מה- JWT
+      this.currentUser = decodedToken.username; // הנח שה- token מכיל את שם המשתמש בשדה 'username'
+      console.log('Current user:', this.currentUser); // הוסף לוג כדי לוודא ששם המשתמש חולץ כראוי
+    }
+  }
+
+  parseJwt(token: string): any {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+  }
+
 
   onFileChange(event: any): void {
     const file = event.target.files[0];
@@ -110,18 +131,41 @@ export class HomeComponent implements OnInit {
       console.error('Error sharing post:', error);
     }
   }
-
+  
   async savePost(post: Post) {
     try {
       const token = this.authService.getToken();
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
       await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/save`, {}, { headers }));
-      post.savedBy.push('saved');
+      post.savedBy.push('saved'); // This assumes you have a savedBy array in your Post model
+      console.log('Post saved:', post);
     } catch (error) {
       console.error('Error saving post:', error);
     }
   }
 
+  
+  async deletePost(post: Post) {
+    const confirmed = window.confirm('Are you sure you want to delete this post?');
+    if (!confirmed) {
+      return; // אם המשתמש לא מאשר, הפונקציה תפסיק כאן ולא תמשיך למחוק את הפוסט
+    }
+  
+    try {
+      console.log('Starting delete process for post:', post._id); // לוג התחלה
+      const token = this.authService.getToken();
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+      await firstValueFrom(this.http.delete(`${this.apiUrl}/posts/${post._id}`, { headers }));
+      console.log('Post deleted successfully');
+      setTimeout(() => {
+        this.posts = this.posts.filter(p => p._id !== post._id); // Remove the post from the list after deletion
+      }, 500); // דחייה של חצי שנייה
+    } catch (error) {
+      console.error('Error deleting post:', error);
+    }
+  }
+  
+  
   logout() {
     this.authService.logout();
   }
