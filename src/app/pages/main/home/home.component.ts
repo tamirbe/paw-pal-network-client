@@ -16,6 +16,7 @@ interface Post {
   shares: string[];
   savedBy: string[];
   liked: boolean;
+  shared: boolean;
 }
 
 @Component({
@@ -28,6 +29,10 @@ export class HomeComponent implements OnInit {
   postForm!: FormGroup;
   searchQuery: string = ''; // add
   currentUser: string = ''; // הוסף משתנה לשם המשתמש הנוכחי
+  postToDelete: Post | null = null; // משתנה לשמירת הפוסט למחיקה
+  editingPost: Post | null = null;
+  editSuccess: boolean = false;
+
 
   private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
 
@@ -39,7 +44,7 @@ export class HomeComponent implements OnInit {
       image: [null]
     });
     this.loadFeed();
-    this.setCurrentUser(); // קבע את שם המשתמש הנוכחי מה- token
+    this.setCurrentUser(); 
   }
 
   async loadFeed() {
@@ -63,9 +68,9 @@ export class HomeComponent implements OnInit {
   setCurrentUser() {
     const token = this.authService.getToken();
     if (token) {
-      const decodedToken: any = this.parseJwt(token); // השתמש בפונקציה לחילוץ מידע מה- JWT
-      this.currentUser = decodedToken.username; // הנח שה- token מכיל את שם המשתמש בשדה 'username'
-      console.log('Current user:', this.currentUser); // הוסף לוג כדי לוודא ששם המשתמש חולץ כראוי
+      const decodedToken: any = this.parseJwt(token);
+      this.currentUser = decodedToken.username; 
+      console.log('Current user:', this.currentUser); 
     }
   }
 
@@ -110,7 +115,10 @@ export class HomeComponent implements OnInit {
       const token = this.authService.getToken();
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
       await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/like`, {}, { headers }));
+      await this.loadFeed(); // Reload feed after successful
+
       post.liked = !post.liked;
+
       if (post.liked) {
         post.likes.push('liked');
       } else {
@@ -126,7 +134,16 @@ export class HomeComponent implements OnInit {
       const token = this.authService.getToken();
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
       await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/share`, {}, { headers }));
-      post.shares.push('shared');
+      await this.loadFeed(); // Reload feed after successful
+
+      post.shared = !post.shared;
+
+      if (post.shared) {
+        post.shares.push('shared');
+      } else {
+        post.shares.pop();
+      }
+      
     } catch (error) {
       console.error('Error sharing post:', error);
     }
@@ -144,22 +161,57 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  editPost(post: Post) {
+    this.editingPost = { ...post };  // Clone post to avoid modifying original object
+  }
   
-  async deletePost(post: Post) {
-    const confirmed = window.confirm('Are you sure you want to delete this post?');
-    if (!confirmed) {
-      return; // אם המשתמש לא מאשר, הפונקציה תפסיק כאן ולא תמשיך למחוק את הפוסט
-    }
+  // Save edit function
+  async saveEdit() {
+    if (!this.editingPost) return;
   
     try {
-      console.log('Starting delete process for post:', post._id); // לוג התחלה
+      const token = this.authService.getToken();
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+      await firstValueFrom(this.http.put<Post>(`${this.apiUrl}/posts/${this.editingPost._id}`, this.editingPost, { headers }));
+      this.editSuccess = true;
+      this.editingPost = null;
+      await this.loadFeed();
+    } catch (error) {
+      console.error('Error editing post:', error);
+    }
+  }
+  
+  // Cancel edit function
+  cancelEdit() {
+    this.editingPost = null;
+  }
+  
+  // Close success dialog
+  closeSuccessDialog() {
+    this.editSuccess = false;
+  }
+
+  confirmDelete(post: Post) {
+    this.postToDelete = post;
+  }
+
+  cancelDelete() {
+    this.postToDelete = null; 
+  }
+
+  async deletePost(post: Post) {
+    if (!post) {
+      return;
+    }
+
+    try {
+      console.log('Starting delete process for post:', post._id); 
       const token = this.authService.getToken();
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
       await firstValueFrom(this.http.delete(`${this.apiUrl}/posts/${post._id}`, { headers }));
       console.log('Post deleted successfully');
-      setTimeout(() => {
-        this.posts = this.posts.filter(p => p._id !== post._id); // Remove the post from the list after deletion
-      }, 500); // דחייה של חצי שנייה
+      this.posts = this.posts.filter(p => p._id !== post._id); // Remove the post from the list after deletion
+      this.postToDelete = null;
     } catch (error) {
       console.error('Error deleting post:', error);
     }

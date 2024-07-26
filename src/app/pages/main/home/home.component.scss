@@ -95,6 +95,119 @@ h2 {
   background-color: #0056b3;
 }
 
+.edit-button {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.save-button {
+  background-color: #007bff;
+}
+
+.cancel-button {
+  background-color: #fff;
+  color: #007bff;
+  border: 1px solid #007bff;
+}
+
+.ok-button {
+  background-color: #fff;
+  color: #007bff;
+  border: 1px solid #007bff;
+}
+
+/* Dialog styling */
+.edit-dialog, .success-dialog, .delete-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.edit-dialog textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.edit-dialog input[type="file"] {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.edit-image-preview {
+  max-width: 100%;
+  height: auto;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.success-dialog p {
+  margin: 0;
+}
+
+.success-dialog .ok-button {
+  margin-top: 20px;
+}
+
+.info-button.delete-button {
+  background-color: #dc3545; 
+  color: #fff;
+  right: 10px;
+  bottom: 10px;
+}
+
+.info-button.delete-button:hover {
+  background-color: #b62b39; 
+}
+
+.delete-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.delete-dialog-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.cancel-button {
+  background-color: #fff;
+  color: #007bff;
+  border: 1px solid #007bff;
+}
+
+.cancel-button:hover {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.confirm-button {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.confirm-button:hover {
+  background-color: #b62b39; 
+}
+
 .form-container {
   background: #f9f9f9;
   padding: 20px;
@@ -129,3 +242,5 @@ h2 {
 .form-container button:hover {
   background-color: #218838;
 }
+
+
