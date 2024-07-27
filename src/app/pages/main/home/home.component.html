@@ -7,6 +7,16 @@
     </form>
   </div>
 
+  
+  <div class="form-container">
+    <form [formGroup]="postForm" (ngSubmit)="onSubmit()">
+      <input type="file" formControlName="image" (change)="onFileChange($event)" />
+      <textarea formControlName="description" placeholder="Write something..."></textarea>
+      <button type="submit">Upload</button>
+    </form>
+  </div>
+  
+
   <div class="content-section">
     <div class="post" *ngFor="let post of posts">
       <a [routerLink]="['/profile', post.author.username]">
@@ -15,7 +25,7 @@
       <p class="post-description">{{ post.description }}</p>
       <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image">
       <p class="post-author"></p>
-
+  
       <!-- Display information -->
       <div class="info-group">
         <button class="info-button" (click)="likePost(post)">
@@ -30,15 +40,7 @@
       </div>
     </div>
   </div>
-
-  <div class="form-container">
-    <form [formGroup]="postForm" (ngSubmit)="onSubmit()">
-      <input type="file" formControlName="image" (change)="onFileChange($event)" />
-      <textarea formControlName="description" placeholder="Write something..."></textarea>
-      <button type="submit">Upload</button>
-    </form>
-  </div>
-
+  
   <!-- Edit post modal -->
   <div *ngIf="editingPost" class="edit-dialog">
     <form (ngSubmit)="saveEdit()">

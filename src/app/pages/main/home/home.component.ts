@@ -55,6 +55,8 @@ export class HomeComponent implements OnInit {
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
       this.posts = await firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/posts`, { headers }));
       
+      this.posts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
       console.log('Posts loaded:', this.posts);
     } catch (error) {
       console.error('Error loading feed:', error);
@@ -192,6 +194,7 @@ export class HomeComponent implements OnInit {
     
   removeImage() {
     this.postForm.patchValue({ image: null });  // Clear the file input value
+    this.saveEdit();
   }
   
   // Cancel edit function

@@ -47,6 +47,8 @@ h2 {
   margin-bottom: 20px;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 20px; /* Add top margin here */
+
 }
 
 .post-image {
@@ -217,39 +219,83 @@ h2 {
   background-color: #b62b39; 
 }
 
+
 .form-container {
-  background: #f9f9f9;
-  padding: 20px;
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2); /* Gradient background */
+  padding: 30px; /* Padding around the form */
   border: 1px solid #ddd;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 15px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Slight shadow for depth */
+  max-width: 500px; /* Maximum width of the form */
+  margin: 40px auto; /* Center the form with some top margin */
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 .form-container input[type="file"] {
+  margin-top: 20px; /* Margin above the file input */
   display: block;
-  margin-bottom: 10px;
-}
-
-.form-container textarea {
-  width: 100%;
+  margin-bottom: 15px; /* Margin below the file input */
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  margin-bottom: 10px;
-  font-family: Arial, sans-serif;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+.form-container input[type="file"]:hover {
+  border-color: #007bff; /* Border color on hover */
+}
+
+.form-container textarea {
+  width: 90%;
+  padding: 15px; /* Padding inside the textarea */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 15px; /* Margin below the textarea */
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  resize: vertical; /* Allow vertical resizing */
+  transition: border-color 0.3s ease;
+}
+
+.form-container textarea:hover {
+  border-color: #007bff; /* Border color on hover */
 }
 
 .form-container button {
-  padding: 10px 20px;
+  padding: 12px 25px; /* Padding inside the button */
   border: none;
-  background-color: #28a745;
-  color: #fff;
+  background-color: #28a745; /* Button background color */
+  color: #fff; /* Button text color */
   border-radius: 5px;
   cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s; /* Transition for hover effects */
 }
 
 .form-container button:hover {
-  background-color: #218838;
+  background-color: #218838; /* Button background color on hover */
+  box-shadow: 0 4px 8px rgba(33, 136, 56, 0.4); /* Box shadow on hover */
+  transform: translateY(-2px); /* Slight upward movement on hover */
 }
 
+.form-container button:active {
+  transform: translateY(0); /* Reset movement on active */
+}
 
+@media (max-width: 600px) {
+  .form-container {
+    padding: 20px; /* Reduce padding on mobile */
+    margin: 20px; /* Reduce margin on mobile */
+  }
+
+  .form-container button {
+    width: 100%;
+    padding: 12px; /* Make button full-width on mobile */
+  }
+}
+
+/* Placeholder styling */
+.form-container textarea::placeholder {
+  color: #aaa;
+}
