@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../../../auth.service';
-import { firstValueFrom } from 'rxjs'; // add
+import { firstValueFrom } from 'rxjs';
 
 interface User {
   username: string;
@@ -17,12 +17,14 @@ interface User {
 })
 export class SearchResultsComponent implements OnInit {
   users: User[] = [];
+  query: string = '';
   private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
 
   constructor(
     private route: ActivatedRoute,
     private http: HttpClient,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -43,5 +45,9 @@ export class SearchResultsComponent implements OnInit {
         console.error('Error searching users:', error);
       }
     }
+  }
+
+  goBack() {
+    this.router.navigate(['/previous-page']); // Change '/previous-page' to the actual route you want to go back to
   }
 }
