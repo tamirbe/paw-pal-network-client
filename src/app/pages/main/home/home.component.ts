@@ -112,6 +112,21 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  onTextAreaInput(event: any): void {
+    const text = event.target.value;
+    const isHebrew = /[\u0590-\u05FF]/.test(text);
+    if (isHebrew) {
+      event.target.style.direction = 'rtl';
+    } else {
+      event.target.style.direction = 'ltr';
+    }
+  }
+  
+  getTextDirection(text: string): string {
+    const isHebrew = /[\u0590-\u05FF]/.test(text);
+    return isHebrew ? 'rtl' : 'ltr';
+  }
+
   async likePost(post: Post) {
     try {
       const token = this.authService.getToken();
