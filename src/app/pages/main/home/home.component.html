@@ -47,6 +47,7 @@
       <img *ngIf="editingPost.image" [src]="editingPost.image" alt="Selected image" class="edit-image-preview" />
       <button class="info-button save-button" type="submit">Save</button>
       <button class="info-button cancel-button" (click)="cancelEdit()">Cancel</button>
+      <button type="button" class="info-button remove-image-button" (click)="removeImage()">Remove Image</button>
     </form>
   </div>
 

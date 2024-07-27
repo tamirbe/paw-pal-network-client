@@ -143,6 +143,15 @@ h2 {
   margin-bottom: 10px;
 }
 
+.remove-image-button {
+  background-color: #dc3545; /* Red color */
+  color: white;
+}
+
+.remove-image-button:hover {
+  background-color: #b62b39;
+}
+
 .edit-image-preview {
   max-width: 100%;
   height: auto;

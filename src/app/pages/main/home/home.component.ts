@@ -164,21 +164,34 @@ export class HomeComponent implements OnInit {
   editPost(post: Post) {
     this.editingPost = { ...post };  // Clone post to avoid modifying original object
   }
-  
+
   // Save edit function
   async saveEdit() {
     if (!this.editingPost) return;
-  
+
+    // יצירת הפוסט מחדש עם הפרטים הערוכים
+    const formData = new FormData();
+    formData.append('description', this.editingPost.description);
+    formData.append('image', this.postForm.get('image')?.value);
+    
     try {
       const token = this.authService.getToken();
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-      await firstValueFrom(this.http.put<Post>(`${this.apiUrl}/posts/${this.editingPost._id}`, this.editingPost, { headers }));
+        
+      // מחיקה של הפוסט הקודם
+      await firstValueFrom(this.http.delete(`${this.apiUrl}/posts/${this.editingPost._id}`, { headers }));
+
+      await firstValueFrom(this.http.post(`${this.apiUrl}/posts`, formData, { headers }));
       this.editSuccess = true;
       this.editingPost = null;
       await this.loadFeed();
     } catch (error) {
       console.error('Error editing post:', error);
     }
+  }
+    
+  removeImage() {
+    this.postForm.patchValue({ image: null });  // Clear the file input value
   }
   
   // Cancel edit function
