@@ -29,10 +29,12 @@ export class HomeComponent implements OnInit {
   postForm!: FormGroup;
   searchQuery: string = ''; // add
   currentUser: string = ''; // הוסף משתנה לשם המשתמש הנוכחי
+  currentUserFirstName: string = ''; // הוסף משתנה לשם המשתמש הנוכחי
+
   postToDelete: Post | null = null; // משתנה לשמירת הפוסט למחיקה
   editingPost: Post | null = null;
   editSuccess: boolean = false;
-  
+  selectedFile: File | null = null; // משתנה לשמירת הקובץ
 
 
   private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
@@ -67,30 +69,37 @@ export class HomeComponent implements OnInit {
   sanitizeImageUrl(url: string): SafeUrl {
     return this.sanitizer.bypassSecurityTrustUrl(url);
   }
-
   setCurrentUser() {
     const token = this.authService.getToken();
     if (token) {
       const decodedToken: any = this.parseJwt(token);
+      console.log('Decoded token:', decodedToken); // הצגת כל התוכן של הטוקן
       this.currentUser = decodedToken.username; 
+      this.currentUserFirstName = decodedToken.firstName;
       console.log('Current user:', this.currentUser); 
+      console.log('Current user first name:', this.currentUserFirstName); 
     }
   }
 
   parseJwt(token: string): any {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
-
-    return JSON.parse(jsonPayload);
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+  
+      return JSON.parse(jsonPayload);
+    } catch (error) {
+      console.error('Failed to parse JWT:', error);
+      return null;
+    }
   }
 
 
   onFileChange(event: any): void {
     const file = event.target.files[0];
-    this.postForm.patchValue({ image: file });
+    this.selectedFile = file; // שמירת הקובץ במשתנה
   }
 
   async onSubmit() {
@@ -100,7 +109,9 @@ export class HomeComponent implements OnInit {
 
     const formData = new FormData();
     formData.append('description', this.postForm.get('description')?.value);
-    formData.append('image', this.postForm.get('image')?.value);
+    if (this.selectedFile) {
+      formData.append('image', this.selectedFile); // הוספת הקובץ ל-FormData
+    }
 
     try {
       const token = this.authService.getToken();
@@ -112,6 +123,7 @@ export class HomeComponent implements OnInit {
       console.error('Error:', error);
     }
   }
+
 
   onTextAreaInput(event: any): void {
     const text = event.target.value;
