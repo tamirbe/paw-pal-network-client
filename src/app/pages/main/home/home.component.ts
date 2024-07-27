@@ -32,6 +32,7 @@ export class HomeComponent implements OnInit {
   postToDelete: Post | null = null; // משתנה לשמירת הפוסט למחיקה
   editingPost: Post | null = null;
   editSuccess: boolean = false;
+  
 
 
   private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
