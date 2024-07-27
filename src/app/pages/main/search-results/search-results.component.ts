@@ -48,6 +48,6 @@ export class SearchResultsComponent implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/previous-page']); // Change '/previous-page' to the actual route you want to go back to
+    this.router.navigate(['/home-page']); // Change '/previous-page' to the actual route you want to go back to
   }
 }
