@@ -116,40 +116,47 @@ export class HomeComponent implements OnInit {
     try {
       const token = this.authService.getToken();
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-      await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/like`, {}, { headers }));
-      await this.loadFeed(); // Reload feed after successful
-
-      post.liked = !post.liked;
-
-      if (post.liked) {
-        post.likes.push('liked');
-      } else {
-        post.likes.pop();
-      }
-    } catch (error) {
-      console.error('Error liking post:', error);
-    }
-  }
-
-  async sharePost(post: Post) {
-    try {
-      const token = this.authService.getToken();
-      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-      await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/share`, {}, { headers }));
-      await this.loadFeed(); // Reload feed after successful
-
-      post.shared = !post.shared;
-
-      if (post.shared) {
-        post.shares.push('shared');
-      } else {
-        post.shares.pop();
-      }
       
+      if (post.liked) {
+        // Unlike post
+        await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/unlike`, {}, { headers }));
+        post.liked = false;
+        post.likes = post.likes.filter(like => like !== this.currentUser);
+      } else {
+        // Like post
+        await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/like`, {}, { headers }));
+        post.liked = true;
+        post.likes.push(this.currentUser);
+      }
     } catch (error) {
-      console.error('Error sharing post:', error);
+      console.error('Error liking/unliking post:', error);
     }
   }
+  
+
+async sharePost(post: Post) {
+  try {
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        
+    if (post.shared) {
+      // Unshare post
+      await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/unshare`, {}, { headers }));
+      post.shared = false;
+      post.shares = post.shares.filter(share => share !== this.currentUser); // Remove the current user from the shares array
+    } else {
+      // Share post
+      const sharedPost: Post = await firstValueFrom(this.http.post<Post>(`${this.apiUrl}/posts/${post._id}/share`, {}, { headers }));
+      post.shared = true;
+      post.shares.push('shared'); // Add the current user to the shares array
+      this.posts.push(sharedPost); // Add the new shared post to the list
+    }
+    //await this.loadFeed(); // Reload feed after successful share/unshare
+  } catch (error) {
+    console.error('Error sharing/unsharing post:', error);
+  }
+}
+
   
   async savePost(post: Post) {
     try {
