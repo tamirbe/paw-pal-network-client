@@ -1,5 +1,5 @@
 <div class="search-container">
-  <input type="text" placeholder="Search users..." [(ngModel)]="query" (keyup.enter)="searchUsers(query)" class="search-input"/>
+  <input type="text" placeholder="Search users..." [(ngModel)]="query" (keyup.enter)="searchUsers(query)" class="search-input" (input)="onTextAreaInput($event)"/>
   <button (click)="searchUsers(query)" class="search-button">Search</button>
   <button (click)="goBack()" class="back-button">Back</button>
 </div>

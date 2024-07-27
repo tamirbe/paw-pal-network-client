@@ -121,7 +121,7 @@ export class HomeComponent implements OnInit {
       event.target.style.direction = 'ltr';
     }
   }
-  
+
   getTextDirection(text: string): string {
     const isHebrew = /[\u0590-\u05FF]/.test(text);
     return isHebrew ? 'rtl' : 'ltr';

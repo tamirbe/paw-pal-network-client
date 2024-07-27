@@ -47,6 +47,16 @@ export class SearchResultsComponent implements OnInit {
     }
   }
 
+  onTextAreaInput(event: any): void {
+    const text = event.target.value;
+    const isHebrew = /[\u0590-\u05FF]/.test(text);
+    if (isHebrew) {
+      event.target.style.direction = 'rtl';
+    } else {
+      event.target.style.direction = 'ltr';
+    }
+  }
+  
   goBack() {
     this.router.navigate(['/home-page']); // Change '/previous-page' to the actual route you want to go back to
   }

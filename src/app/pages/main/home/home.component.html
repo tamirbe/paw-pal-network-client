@@ -1,8 +1,8 @@
 <div class="home-container">
-  <h2>Home, Welcome</h2>
+  <h2>Home, Welcome {{ currentUser }}</h2>
   <div class="search-container">
     <form (ngSubmit)="onSearch()">
-      <input type="text" placeholder="Search users..." [(ngModel)]="searchQuery" name="query" />
+      <input type="text" placeholder="Search users..." [(ngModel)]="searchQuery" name="query" (input)="onTextAreaInput($event)"/>
       <button type="submit">Search</button>
     </form>
   </div>
