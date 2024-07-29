@@ -27,8 +27,10 @@
         {{ post.description }}
       </p>
       <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image">
-      <p class="post-author"></p>
-  
+      <p class="post-author">
+        <a [routerLink]="['/profile', post.author.username]"><strong>{{ post.author.firstName }} {{ post.author.lastName }} ({{ post.author.username }})</strong></a> - {{ post.createdAt | date:'short' }}
+      </p>
+
       <!-- Display information -->
       <div class="info-group">
         <button class="info-button" (click)="likePost(post)">
