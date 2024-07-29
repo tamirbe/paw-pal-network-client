@@ -190,7 +190,7 @@ async sharePost(post: Post) {
     try {
       const token = this.authService.getToken();
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-      await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/save`, {}, { headers }));
+      await firstValueFrom(this.http.post<Post>(`${this.apiUrl}/posts/${post._id}/save`, {}, { headers }));
       post.savedBy.push('saved'); // This assumes you have a savedBy array in your Post model
       console.log('Post saved:', post);
     } catch (error) {
