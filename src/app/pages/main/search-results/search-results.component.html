@@ -1,10 +1,19 @@
+<div class="search-container">
+  <input type="text" placeholder="Search users..." [(ngModel)]="query" (keyup.enter)="searchUsers(query)" class="search-input" (input)="onTextAreaInput($event)"/>
+  <button (click)="searchUsers(query)" class="search-button">Search</button>
+  <button (click)="goBack()" class="back-button">Back</button>
+</div>
+
 <div class="search-results-container">
   <h2>Search Results</h2>
-  <div *ngIf="users.length === 0">No results found.</div>
-  <ul>
-    <li *ngFor="let user of users">
-      <a [routerLink]="['/profile', user.username]">
-        {{ user.firstName }} {{ user.lastName }} ({{ user.username }})
+  <div *ngIf="users.length === 0" class="no-results">No results found.</div>
+  <ul class="user-list">
+    <li *ngFor="let user of users" class="user-item">
+      <a [routerLink]="['/profile', user.username]" class="user-link">
+        <div class="user-details">
+          <span class="user-name">{{ user.firstName }} {{ user.lastName }}</span>
+          <span class="user-username">({{ user.username }})</span>
+        </div>
       </a>
     </li>
   </ul>

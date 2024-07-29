@@ -1,35 +1,74 @@
 <div class="home-container">
-  <h2>Home, Welcome</h2>
+  <h2>Welcome, {{ currentUserFirstName }}</h2>
   <div class="search-container">
     <form (ngSubmit)="onSearch()">
-      <input type="text" placeholder="Search users..." [(ngModel)]="searchQuery" name="query" />
+      <input type="text" placeholder="Search users..." [(ngModel)]="searchQuery" name="query" (input)="onTextAreaInput($event)"/>
       <button type="submit">Search</button>
     </form>
   </div>
+
+  
+  <div class="form-container">
+    <form [formGroup]="postForm" (ngSubmit)="onSubmit()">
+      <input type="file" formControlName="image" (change)="onFileChange($event)" />
+      <textarea formControlName="description" placeholder="Write something, {{ currentUserFirstName }}... " (input)="onTextAreaInput($event)"></textarea>
+      <button type="submit">Upload</button>
+    </form>
+  </div>
+  
+  
 
   <div class="content-section">
     <div class="post" *ngFor="let post of posts">
       <a [routerLink]="['/profile', post.author.username]">
         <strong>{{ post.author.firstName }} {{ post.author.lastName }} ({{ post.author.username }})</strong>
       </a> - {{ post.createdAt | date:'short' }}
-      <p class="post-description">{{ post.description }}</p>
+      <p class="post-description" [ngStyle]="{'direction': getTextDirection(post.description)}">
+        {{ post.description }}
+      </p>
       <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image">
-      <p class="post-author"></p>
-    
+      <p class="post-author">
+      </p>
+
       <!-- Display information -->
       <div class="info-group">
-        <button class="info-button" (click)="likePost(post)">Like ({{ post.likes ? post.likes.length : 0 }})</button>
-        <button class="info-button" (click)="sharePost(post)">Share ({{ post.shares ? post.shares.length : 0 }})</button>
-        <button class="info-button" (click)="savePost(post)">Save ({{ post.savedBy ? post.savedBy.length : 0 }})</button>
+        <button class="info-button" (click)="likePost(post)">
+          {{ post.liked ? 'Unlike' : 'Like' }} ({{ post.likes.length }})
+        </button>
+        <button class="info-button" (click)="sharePost(post)">
+          {{ post.shared ? 'Unshare' : 'Share' }} ({{ post.shares.length }})
+        </button>
+        <button class="info-button" (click)="savePost(post)">Save</button>
+        <button class="info-button edit-button" *ngIf="post.author.username === currentUser" (click)="editPost(post)">Edit</button>
+        <button class="info-button delete-button" *ngIf="post.author.username === currentUser" (click)="confirmDelete(post)">Delete</button>
       </div>
     </div>
   </div>
   
-  <div class="form-container">
-    <form [formGroup]="postForm" (ngSubmit)="onSubmit()">
-      <input type="file" formControlName="image" (change)="onFileChange($event)" />
-      <textarea formControlName="description" placeholder="Write something..."></textarea>
-      <button type="submit">Upload</button>
+  <!-- Edit post modal -->
+  <div *ngIf="editingPost" class="edit-dialog">
+    <form (ngSubmit)="saveEdit()">
+      <textarea [(ngModel)]="editingPost.description" name="description" placeholder="Edit description"></textarea>
+      <input type="file" (change)="onFileChange($event)" />
+      <img *ngIf="editingPost.image" [src]="editingPost.image" alt="Selected image" class="edit-image-preview" />
+      <button class="info-button save-button" type="submit">Save</button>
+      <button class="info-button cancel-button" (click)="cancelEdit()">Cancel</button>
+      <button type="button" class="info-button remove-image-button" (click)="removeImage()">Remove Image</button>
     </form>
   </div>
+
+  <!-- Success dialog -->
+  <div *ngIf="editSuccess" class="success-dialog">
+    <p>Your post was edited successfully</p>
+    <button class="info-button ok-button" (click)="closeSuccessDialog()">OK</button>
+  </div>
+
+  <div *ngIf="postToDelete" class="delete-dialog">
+    <p>Are you sure you want to delete this post ?</p>
+    <div class="delete-dialog-buttons">
+      <button class="info-button cancel-button" (click)="cancelDelete()">Cancel</button>
+      <button class="info-button confirm-button" (click)="deletePost(postToDelete)">Confirm</button>
+    </div>
+  </div>
 </div>
+
