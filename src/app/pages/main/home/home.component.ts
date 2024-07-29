@@ -102,6 +102,7 @@ export class HomeComponent implements OnInit {
     this.selectedFile = file; // שמירת הקובץ במשתנה
   }
 
+
   async onSubmit() {
     if (this.postForm.invalid) {
       return;
@@ -119,9 +120,15 @@ export class HomeComponent implements OnInit {
       const response = await firstValueFrom(this.http.post(`${this.apiUrl}/posts`, formData, { headers }));
       console.log('Success:', response);
       this.loadFeed(); // Reload feed after successful submission
+      this.resetForm(); // איפוס הטופס לאחר השליחה
     } catch (error) {
       console.error('Error:', error);
     }
+  }
+
+  resetForm() {
+    this.postForm.reset();
+    this.selectedFile = null;
   }
 
 
