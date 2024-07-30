@@ -109,10 +109,20 @@
     </div>
   
     <!-- Favorite Content Section -->
-    <div class="favorite-content-section">
-      <h2>Favorite Content</h2>
-
+<!-- favorite-content.component.html -->
+<div class="favorite-content-section">
+  <h2>Favorite Content</h2>
+  <div *ngFor="let post of favoriteContent" class="post">
+    <p>{{ post.description }}</p>
+    <div *ngIf="post.image">
+      <img [src]="post.image" alt="Post Image">
     </div>
+    <p>Likes: {{ post.likes.length }}</p>
+    <p>Shares: {{ post.shares.length }}</p>
+    <p>Created At: {{ post.createdAt | date:'medium' }}</p>
+  </div>
+</div>
+
   
     <!-- Saved Content Section -->
     <div class="saved-content-section">

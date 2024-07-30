@@ -206,3 +206,37 @@ $font-family: 'Roboto', sans-serif;
         }
     }
 }
+
+.post {
+    background: #fff;
+    border: 1px solid #ddd;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 20px; /* Add top margin here */
+  
+  }
+  
+  .post-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+    margin-bottom: 15px;
+  }
+  
+  .post-description {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+  
+  .post-author {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 10px;
+  }
+  
+  .post-author a {
+    text-decoration: none;
+    color: #007bff;
+  }

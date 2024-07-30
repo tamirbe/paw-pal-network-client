@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from './userService';
 import { User } from './user.model'; // Import the User interface
+import { Post } from './post.model'; // Import the Post interface
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { switchMap, catchError } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../../../auth.service';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-profile',
@@ -15,6 +17,7 @@ import { AuthService } from '../../../auth.service';
 export class ProfileComponent implements OnInit {
 
   user?: User | null;
+  post?: Post | null;
   following: string[] = [];
   filteredFollowing: string[] = [];
   uploadedContent: any[] = [];
@@ -30,11 +33,20 @@ export class ProfileComponent implements OnInit {
 
   private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
 
-  constructor(private fb: FormBuilder, private userService: UserService, private authService: AuthService, private http: HttpClient) { }
+  constructor(private sanitizer: DomSanitizer,private fb: FormBuilder, private userService: UserService, private authService: AuthService, private http: HttpClient) { }
 
   ngOnInit(): void {
     this.initForms();
     this.loadUserData();
+  }
+
+  getTextDirection(text: string): string {
+    const isHebrew = /[\u0590-\u05FF]/.test(text);
+    return isHebrew ? 'rtl' : 'ltr';
+  }
+
+  sanitizeImageUrl(url: string): SafeUrl {
+    return this.sanitizer.bypassSecurityTrustUrl(url);
   }
 
 
@@ -100,6 +112,7 @@ export class ProfileComponent implements OnInit {
 
     this.http.get<any[]>(`${this.apiUrl}/favorite-content`, { headers }).subscribe(
       data => {
+        console.log(data);
       this.favoriteContent = data;
     });
   }
