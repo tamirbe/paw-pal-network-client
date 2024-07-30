@@ -37,6 +37,7 @@ export class ProfileComponent implements OnInit {
     this.loadUserData();
   }
 
+
   // Initialize the forms
   private initForms(): void {
     this.userForm = this.fb.group({
@@ -81,9 +82,8 @@ export class ProfileComponent implements OnInit {
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    this.http.get<string[]>(`${this.apiUrl}/following`, { headers }).subscribe(data => {
+    this.http.get<any[]>(`${this.apiUrl}/following`, { headers }).subscribe(data => {
       this.following = data;
-      this.filteredFollowing = [...data];
     });
   }
 
@@ -98,7 +98,10 @@ export class ProfileComponent implements OnInit {
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    this.http.get<any[]>(`${this.apiUrl}/favorite-content`, { headers }).subscribe(data => this.favoriteContent = data);
+    this.http.get<any[]>(`${this.apiUrl}/favorite-content`, { headers }).subscribe(
+      data => {
+      this.favoriteContent = data;
+    });
   }
 
   private loadSavedContent(): void {
