@@ -29,9 +29,11 @@ export class HomeComponent implements OnInit {
   postForm!: FormGroup;
   searchQuery: string = ''; // add
   currentUser: string = ''; // הוסף משתנה לשם המשתמש הנוכחי
+  currentUserFirstName: string = '';
   postToDelete: Post | null = null; // משתנה לשמירת הפוסט למחיקה
   editingPost: Post | null = null;
   editSuccess: boolean = false;
+  selectedFile: File | null = null;
   
 
 
@@ -72,19 +74,27 @@ export class HomeComponent implements OnInit {
     const token = this.authService.getToken();
     if (token) {
       const decodedToken: any = this.parseJwt(token);
+      console.log('Decoded token:', decodedToken); // הצגת כל התוכן של הטוקן
       this.currentUser = decodedToken.username; 
-      console.log('Current user:', this.currentUser); 
+      this.currentUserFirstName = decodedToken.firstName;
+      console.log('Current user:', this.currentUser);
+      console.log('Current user first name:', this.currentUserFirstName); 
     }
   }
 
   parseJwt(token: string): any {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
-
-    return JSON.parse(jsonPayload);
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+  
+      return JSON.parse(jsonPayload);
+    } catch (error) {
+      console.error('Failed to parse JWT:', error);
+      return null;
+    }
   }
 
 
@@ -100,7 +110,9 @@ export class HomeComponent implements OnInit {
 
     const formData = new FormData();
     formData.append('description', this.postForm.get('description')?.value);
-    formData.append('image', this.postForm.get('image')?.value);
+    if (this.selectedFile) {
+        formData.append('image', this.selectedFile); // הוספת הקובץ ל-FormData
+      }
 
     try {
       const token = this.authService.getToken();
@@ -108,9 +120,15 @@ export class HomeComponent implements OnInit {
       const response = await firstValueFrom(this.http.post(`${this.apiUrl}/posts`, formData, { headers }));
       console.log('Success:', response);
       this.loadFeed(); // Reload feed after successful submission
+      this.resetForm(); // איפוס הטופס לאחר השליחה
     } catch (error) {
       console.error('Error:', error);
     }
+  }
+
+  resetForm() {
+    this.postForm.reset();
+    this.selectedFile = null;
   }
 
   onTextAreaInput(event: any): void {
@@ -148,8 +166,8 @@ export class HomeComponent implements OnInit {
       console.error('Error liking/unliking post:', error);
     }
   }
-  
 
+  
 async sharePost(post: Post) {
   try {
     const token = this.authService.getToken();
@@ -173,12 +191,13 @@ async sharePost(post: Post) {
   }
 }
 
+
   
   async savePost(post: Post) {
     try {
       const token = this.authService.getToken();
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-      await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/save`, {}, { headers }));
+      await firstValueFrom(this.http.post<Post>(`${this.apiUrl}/posts/${post._id}/save`, {}, { headers }));
       post.savedBy.push('saved'); // This assumes you have a savedBy array in your Post model
       console.log('Post saved:', post);
     } catch (error) {
@@ -217,7 +236,6 @@ async sharePost(post: Post) {
     
   removeImage() {
     this.postForm.patchValue({ image: null });  // Clear the file input value
-    this.saveEdit();
   }
   
   // Cancel edit function
