@@ -23,6 +23,7 @@ import { LocationStrategy, HashLocationStrategy } from '@angular/common'; //addd
 import { UserService } from './profile/userService';
 import { RouterModule } from '@angular/router'; // add
 import { SearchResultsComponent } from './search-results/search-results.component'; // add
+import { MatIconModule } from '@angular/material/icon';
 
 
 
@@ -47,8 +48,8 @@ import { SearchResultsComponent } from './search-results/search-results.componen
         MatCheckboxModule,
         CommonModule,
         MatButtonModule, MatCardModule, MatToolbarModule,
-        RouterModule // add
-
+        RouterModule, // add
+        MatIconModule
     ],
     providers: [
         UserService,

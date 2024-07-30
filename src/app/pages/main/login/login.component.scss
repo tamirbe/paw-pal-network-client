@@ -15,20 +15,33 @@
     align-items: center;
     height: 90vh;
     padding-right: 40px;
+    flex-direction: row;
+
+
+    @media (max-width: 1100px) {
+        flex-direction: column;
+        padding-top: 100px;
+        justify-content: flex-start;
+    }
 
     .sentence-wrapper {
         padding: 30px;
-        font-size: 48px;
+        font-size: 36px;
         line-height: 90px;
         font-family: 'Lato', sans-serif;
         color: #00458b;
-        margin-left: 40px;
+        width: 470px;
 
         @media (max-width: 1400px) {
             font-size: 26px;
             line-height: 60px;
             padding: 15px;
             margin-left: 0px;
+        }
+
+        @media (max-width: 1100px) {
+            text-align: center;
+            width: 100%;
         }
     }
 
@@ -58,7 +71,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 335px;
+            height: 385px;
             width: 700px;
             padding: 29px 28px;
             border: 2px solid #c6cdd6;
@@ -66,19 +79,28 @@
             border-radius: 20px;
             box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 
+            @media (max-width: 1600px) {
+                margin-right: 100px;
+            }
+
             @media (max-width: 1400px) {
                 height: 300px;
                 width: 578px;
                 margin-right: 0px;
+                margin-right: 50px;
             }
 
             mat-form-field {
                 width: 220px;
-                margin-bottom: 10px;
+                margin-bottom: 20px;
             }
 
             .title {
                 margin-bottom: 10px;
+            }
+
+            .showSuccessMsg {
+                color: green;
             }
         }
 
@@ -89,7 +111,7 @@
             align-items: center;
             flex-wrap: wrap;
             justify-content: space-between;
-            height: 335px;
+            height: 385px;
             width: 700px;
             padding: 29px 28px;
             border: 2px solid #c6cdd6;
@@ -98,20 +120,20 @@
             box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 
             @media (max-width: 1400px) {
-                height: 300px;
+                height: 390px;
                 width: 578px;
                 margin-right: 0px;
 
                 mat-form-field {
                     width: 180px;
+                    margin-bottom: 20px;
                 }
             }
+
         }
 
-        .mat-form-field {
-            width: 100%;
-            margin-bottom: 1rem;
-
+        mat-form-field {
+            margin-bottom: 20px;
         }
 
         .submitBtn {
@@ -137,7 +159,12 @@
 
         .error-message {
             color: red;
-            margin-top: 1rem;
+            margin-top: 20px;
+        }
+
+        .showSuccessMsg {
+            color: green;
+            margin-top: 20px;
         }
 
     }
@@ -145,6 +172,10 @@
     ::ng-deep {
         .mat-mdc-text-field-wrapper {
             background-color: transparent !important;
+        }
+
+        .mat-mdc-form-field-error-wrapper {
+            padding: 0;
         }
     }
 }
