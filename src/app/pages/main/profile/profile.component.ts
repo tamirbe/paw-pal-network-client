@@ -33,7 +33,7 @@ export class ProfileComponent implements OnInit {
 
   private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
 
-  constructor(private sanitizer: DomSanitizer,private fb: FormBuilder, private userService: UserService, private authService: AuthService, private http: HttpClient) { }
+  constructor(private sanitizer: DomSanitizer, private fb: FormBuilder, private userService: UserService, private authService: AuthService, private http: HttpClient) { }
 
   ngOnInit(): void {
     this.initForms();
@@ -103,7 +103,10 @@ export class ProfileComponent implements OnInit {
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    this.http.get<any[]>(`${this.apiUrl}/uploaded-content`, { headers }).subscribe(data => this.uploadedContent = data);
+    this.http.get<any[]>(`${this.apiUrl}/uploaded-content`, { headers }).subscribe(
+      data => {
+        this.uploadedContent = data;
+      });
   }
 
   private loadFavoriteContent(): void {
@@ -112,9 +115,8 @@ export class ProfileComponent implements OnInit {
 
     this.http.get<any[]>(`${this.apiUrl}/favorite-content`, { headers }).subscribe(
       data => {
-        console.log(data);
-      this.favoriteContent = data;
-    });
+        this.favoriteContent = data;
+      });
   }
 
   private loadSavedContent(): void {
