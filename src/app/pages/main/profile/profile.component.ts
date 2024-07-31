@@ -86,8 +86,6 @@ export class ProfileComponent implements OnInit {
 
     this.loadUserFollowing();
     this.loadUploadedContent();
-    this.loadFavoriteContent();
-    this.loadSavedContent();
   }
 
   private loadUserFollowing(): void {
@@ -202,6 +200,14 @@ export class ProfileComponent implements OnInit {
 
   viewStatistics(): void {
     this.statsMode = true;
+  }
+
+  savedPosts(): void {
+    this.loadSavedContent();
+  }
+
+  favoritePosts(): void {
+    this.loadFavoriteContent();
   }
 
   // Unfollow user
