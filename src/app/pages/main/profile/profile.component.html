@@ -121,6 +121,7 @@
       <div *ngIf="post.image">
         <img [src]="post.image" alt="Post Image">
       </div>
+      <p>author : {{post.authorName}}</p>
       <p>Likes: {{ post.likes.length }}</p>
       <p>Shares: {{ post.shares.length }}</p>
       <p>Created At: {{ post.createdAt | date:'medium' }}</p>
