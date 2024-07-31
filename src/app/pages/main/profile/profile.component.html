@@ -103,7 +103,20 @@
   <!-- Uploaded Content Section -->
   <div *ngIf="uploadMode" class="content-section">
     <h2>Uploaded Content</h2>
-    <div *ngFor="let post of uploadedContent" class="post">
+
+    <!-- Sort Options -->
+    <div class="sort-options">
+      <label>
+        <input type="radio" name="sort" (change)="sortPosts('date')" [checked]="sortOption === 'date'">
+        Sort by Date
+      </label>
+      <label>
+        <input type="radio" name="sort" (change)="sortPosts('likes')" [checked]="sortOption === 'likes'">
+        Sort by Likes
+      </label>
+    </div>
+
+    <div *ngFor="let post of sortedContent" class="post">
       <p>{{ post.description }}</p>
       <div *ngIf="post.image">
         <img [src]="post.image" alt="Post Image">

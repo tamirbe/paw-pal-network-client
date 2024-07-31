@@ -23,6 +23,8 @@ export class ProfileComponent implements OnInit {
   uploadedContent: any[] = [];
   favoriteContent: any[] = [];
   savedContent: any[] = [];
+  sortedContent: any[] = [];
+  sortOption: string = 'date';
   showMenu: boolean = false;
   editMode: boolean = false;
   passwordMode: boolean = false;
@@ -107,6 +109,7 @@ export class ProfileComponent implements OnInit {
     this.http.get<any[]>(`${this.apiUrl}/uploaded-content`, { headers }).subscribe(
       data => {
         this.uploadedContent = data;
+        this.sortPosts(this.sortOption);
       });
   }
 
@@ -249,6 +252,15 @@ export class ProfileComponent implements OnInit {
     this.editMode = false;
     this.uploadMode = false;
     this.loadFavoriteContent();
+  }
+
+  sortPosts(option: string): void {
+    this.sortOption = option;
+    if (option === 'likes') {
+      this.sortedContent = [...this.uploadedContent].sort((a, b) => b.likes.length - a.likes.length);
+    } else {
+      this.sortedContent = [...this.uploadedContent].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    }
   }
 
   // Unfollow user
