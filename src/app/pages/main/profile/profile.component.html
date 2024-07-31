@@ -117,34 +117,45 @@
 
   <!-- Favorite Content Section -->
   <!-- favorite-content.component.html -->
-  <div *ngIf="favoriteMode" class="favorite-content-section">
-    <h2>Favorite Content</h2>
-    <div *ngFor="let post of favoriteContent" class="post">
-      <p>{{ post.description }}</p>
-      <div *ngIf="post.image">
-        <img [src]="post.image" alt="Post Image">
+
+  <div *ngIf="favoriteMode"> 
+    <div class="favorite-content-section">
+      <h2>Favorite Content</h2>
+      <div class="scrollable-content">
+        <div *ngFor="let post of favoriteContent" class="post">
+          <p>{{ post.description }}</p>
+          <div *ngIf="post.image">
+            <img [src]="post.image" alt="Post Image">
+          </div>
+          <p>author : {{post.authorName}}</p>
+          <p>Likes: {{ post.likes.length }}</p>
+          <p>Shares: {{ post.shares.length }}</p>
+          <p>Created At: {{ post.createdAt | date:'medium' }}</p>
+        </div>
       </div>
-      <p>author : {{post.authorName}}</p>
-      <p>Likes: {{ post.likes.length }}</p>
-      <p>Shares: {{ post.shares.length }}</p>
-      <p>Created At: {{ post.createdAt | date:'medium' }}</p>
     </div>
     <button type="button" (click)="cancelAction()" class="btn">Return</button>
   </div>
 
 
+
+
   <!-- Saved Content Section -->
-  <div *ngIf="savedMode" class="saved-content-section">
-    <h2>Saved Content</h2>
-    <div *ngFor="let post of savedContent" class="post">
-      <p>{{ post.description }}</p>
-      <div *ngIf="post.image">
-        <img [src]="post.image" alt="Post Image">
+  <div *ngIf="savedMode">
+    <div class="saved-content-section">
+      <h2>Saved Content</h2>
+      <div class="scrollable-content">
+        <div *ngFor="let post of savedContent" class="post">
+          <p>{{ post.description }}</p>
+          <div *ngIf="post.image">
+            <img [src]="post.image" alt="Post Image">
+          </div>
+          <p>author : {{post.authorName}}</p>
+          <p>Likes: {{ post.likes.length }}</p>
+          <p>Shares: {{ post.shares.length }}</p>
+          <p>Created At: {{ post.createdAt | date:'medium' }}</p>
+        </div>
       </div>
-      <p>author : {{post.authorName}}</p>
-      <p>Likes: {{ post.likes.length }}</p>
-      <p>Shares: {{ post.shares.length }}</p>
-      <p>Created At: {{ post.createdAt | date:'medium' }}</p>
     </div>
     <button type="button" (click)="cancelAction()" class="btn">Return</button>
   </div>
