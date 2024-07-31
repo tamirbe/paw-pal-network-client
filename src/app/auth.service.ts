@@ -68,15 +68,4 @@ export class AuthService {
     sessionStorage.removeItem('authToken');
   }
 
-  async getCurrentUser(): Promise<any> {
-    try {
-      const token = this.getToken();
-      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-      const user = await firstValueFrom(this.http.get<any>(`${this.apiUrl}/current-user`, { headers }));
-      return user;
-    } catch (error) {
-      console.error('Error loading current user:', error);
-      return null;
-    }
-  }
 }
