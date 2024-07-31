@@ -96,8 +96,9 @@ export class HomeComponent implements OnInit {
 
   onFileChange(event: any): void {
     const file = event.target.files[0];
-    this.selectedFile = file; // שמירת הקובץ במשתנה
+    this.postForm.patchValue({Image : file}); // שמירת הקובץ במשתנה
   }
+
 
   async onSubmit() {
     if (this.postForm.invalid) {
@@ -116,9 +117,15 @@ export class HomeComponent implements OnInit {
       const response = await firstValueFrom(this.http.post(`${this.apiUrl}/posts`, formData, { headers }));
       console.log('Success:', response);
       this.loadFeed(); // Reload feed after successful submission
+      this.resetForm(); // איפוס הטופס לאחר השליחה
     } catch (error) {
       console.error('Error:', error);
     }
+  }
+
+  resetForm() {
+    this.postForm.reset();
+    this.selectedFile = null;
   }
 
 
