@@ -55,14 +55,12 @@ export class SearchResultsComponent implements OnInit {
       const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
       }).join(''));
-  
       return JSON.parse(jsonPayload);
     } catch (error) {
       console.error('Failed to parse JWT:', error);
       return null;
     }
   }
-
 
   async searchUsers(query: string) {
     if (query) {
@@ -109,7 +107,7 @@ export class SearchResultsComponent implements OnInit {
       console.error('Error following user:', error);
     }
   }
-  
+
   async unfollowUser(username: string) {
     try {
       const token = this.authService.getToken();
@@ -127,7 +125,6 @@ export class SearchResultsComponent implements OnInit {
       console.error('Error unfollowing user:', error);
     }
   }
-  
 
   isFollowing(username: string): boolean {
     return this.following.includes(username);
