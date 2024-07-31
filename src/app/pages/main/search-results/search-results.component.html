@@ -9,7 +9,7 @@
   <div *ngIf="users.length === 0" class="no-results">No results found.</div>
   <ul class="user-list">
     <li *ngFor="let user of users" class="user-item">
-      <a [routerLink]="['/profile', user.username]" class="user-link">
+      <a [routerLink]="[user.username === currentUsername ? '/profile' : '/another', user.username]" class="user-link">
         <div class="user-details">
           <span class="user-name">{{ user.firstName }} {{ user.lastName }}</span>
           <span class="user-username">({{ user.username }})</span>
