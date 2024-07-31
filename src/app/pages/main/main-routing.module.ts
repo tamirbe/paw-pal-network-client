@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes ,Router, Event, NavigationEnd} from '@angular/router';//add Router, Event, NavigationEnd
 import { MainComponent } from './main.component';
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
@@ -33,5 +33,15 @@ const routes: Routes = [
         { provide: LocationStrategy, useClass: HashLocationStrategy } //add
     ],
 })
+/*export class AppRoutingModule { //add export class AppRoutingModule
+    constructor(private router: Router) {
+      this.router.events.subscribe((event: Event) => {
+        if (event instanceof NavigationEnd) {
+          window.scrollTo(0, 0);
+        }
+      });
+    }
+  }
 
+  */
 export class MainRoutingModule { }
