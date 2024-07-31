@@ -109,7 +109,7 @@ export class ProfileComponent implements OnInit {
     this.http.get<any[]>(`${this.apiUrl}/uploaded-content`, { headers }).subscribe(
       data => {
         this.uploadedContent = data;
-        this.sortPosts(this.sortOption);
+        this.sortedContent = this.sortPosts(this.uploadedContent, this.sortOption);
       });
   }
 
@@ -120,6 +120,8 @@ export class ProfileComponent implements OnInit {
     this.http.get<any[]>(`${this.apiUrl}/favorite-content`, { headers }).subscribe(
       data => {
         this.favoriteContent = data;
+        this.sortedContent = this.sortPosts(this.favoriteContent, this.sortOption);
+
       });
   }
 
@@ -254,13 +256,15 @@ export class ProfileComponent implements OnInit {
     this.loadFavoriteContent();
   }
 
-  sortPosts(option: string): void {
+  sortPosts(contentArray: any[], option: string): any[] {
     this.sortOption = option;
+    let sortedArray = [];
     if (option === 'likes') {
-      this.sortedContent = [...this.uploadedContent].sort((a, b) => b.likes.length - a.likes.length);
+      sortedArray = [...contentArray].sort((a, b) => b.likes.length - a.likes.length);
     } else {
-      this.sortedContent = [...this.uploadedContent].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      sortedArray = [...contentArray].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     }
+    return sortedArray;
   }
 
   // Unfollow user
