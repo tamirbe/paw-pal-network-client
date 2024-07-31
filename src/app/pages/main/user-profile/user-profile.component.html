@@ -1,0 +1,20 @@
+<div *ngIf="user" class="profile-container">
+    <h2>{{ user?.firstName }} {{ user?.lastName }}'s Profile</h2>
+    <p><strong>Username:</strong> {{ user?.username }}</p>
+    <p><strong>Email:</strong> {{ user?.email }}</p>
+    
+    <!-- הצגת פרטים נוספים של המשתמש -->
+    
+    <!-- אם זה המשתמש הנוכחי, לא נציג את האפשרות לערוך כאן כי הוא יופנה לקומפוננטה אחרת -->
+    <div *ngIf="isCurrentUser">
+      <h3>My Profile Details</h3>
+      <!-- הצגת פרטים נוספים שניתן לערוך -->
+    </div>
+    
+    <!-- אם זה לא המשתמש הנוכחי -->
+    <div *ngIf="!isCurrentUser">
+      <h3>About {{ user?.firstName }}</h3>
+      <!-- הצגת פרטים נוספים שאינם ניתנים לעריכה -->
+    </div>
+  </div>
+  

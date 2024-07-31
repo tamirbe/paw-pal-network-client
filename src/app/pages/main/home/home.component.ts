@@ -102,6 +102,7 @@ export class HomeComponent implements OnInit {
     this.selectedFile = file; // שמירת הקובץ במשתנה
   }
 
+
   async onSubmit() {
     if (this.postForm.invalid) {
       return;
