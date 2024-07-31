@@ -29,12 +29,12 @@ export class HomeComponent implements OnInit {
   postForm!: FormGroup;
   searchQuery: string = ''; // add
   currentUser: string = ''; // הוסף משתנה לשם המשתמש הנוכחי
-  currentUserFirstName: string = ''; // הוסף משתנה לשם המשתמש הנוכחי
-
+  currentUserFirstName: string = '';
   postToDelete: Post | null = null; // משתנה לשמירת הפוסט למחיקה
   editingPost: Post | null = null;
   editSuccess: boolean = false;
-  selectedFile: File | null = null; // משתנה לשמירת הקובץ
+  selectedFile: File | null = null;
+  
 
 
   private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
@@ -76,7 +76,7 @@ export class HomeComponent implements OnInit {
       console.log('Decoded token:', decodedToken); // הצגת כל התוכן של הטוקן
       this.currentUser = decodedToken.username; 
       this.currentUserFirstName = decodedToken.firstName;
-      console.log('Current user:', this.currentUser); 
+      console.log('Current user:', this.currentUser);
       console.log('Current user first name:', this.currentUserFirstName); 
     }
   }
@@ -99,7 +99,7 @@ export class HomeComponent implements OnInit {
 
   onFileChange(event: any): void {
     const file = event.target.files[0];
-    this.postForm.patchValue({Image : file}); // שמירת הקובץ במשתנה
+    this.selectedFile = file; // שמירת הקובץ במשתנה
   }
 
 
@@ -111,8 +111,8 @@ export class HomeComponent implements OnInit {
     const formData = new FormData();
     formData.append('description', this.postForm.get('description')?.value);
     if (this.selectedFile) {
-      formData.append('image', this.selectedFile); // הוספת הקובץ ל-FormData
-    }
+        formData.append('image', this.selectedFile); // הוספת הקובץ ל-FormData
+      }
 
     try {
       const token = this.authService.getToken();
@@ -130,7 +130,6 @@ export class HomeComponent implements OnInit {
     this.postForm.reset();
     this.selectedFile = null;
   }
-
 
   onTextAreaInput(event: any): void {
     const text = event.target.value;
@@ -167,8 +166,8 @@ export class HomeComponent implements OnInit {
       console.error('Error liking/unliking post:', error);
     }
   }
-  
 
+  
 async sharePost(post: Post) {
   try {
     const token = this.authService.getToken();
@@ -191,6 +190,7 @@ async sharePost(post: Post) {
     console.error('Error sharing/unsharing post:', error);
   }
 }
+
 
   
   async savePost(post: Post) {
@@ -236,7 +236,6 @@ async sharePost(post: Post) {
     
   removeImage() {
     this.postForm.patchValue({ image: null });  // Clear the file input value
-    this.saveEdit();
   }
   
   // Cancel edit function
