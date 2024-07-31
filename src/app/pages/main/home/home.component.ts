@@ -100,6 +100,7 @@ export class HomeComponent implements OnInit {
   onFileChange(event: any): void {
     const file = event.target.files[0];
     this.selectedFile = file; // שמירת הקובץ במשתנה
+    this.postForm.patchValue({image: file})
   }
 
 
