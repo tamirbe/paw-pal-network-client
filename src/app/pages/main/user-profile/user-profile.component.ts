@@ -52,14 +52,11 @@ export class UserProfileComponent implements OnInit {
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
       this.user = await firstValueFrom(this.http.get<User>(`${this.apiUrl}/users/${username}`, { headers }));
       
-      // בדיקה אם המשתמש הנוכחי הוא זה שמציגים את הפרופיל שלו
-      const currentUser = await this.authService.getCurrentUser();
-      if (currentUser.username === username) {
-        this.isCurrentUser = true;
-      } else {
-        this.isCurrentUser = false;
-        this.user.isFollowing = this.isFollowing(this.user.username);
-      }
+// שליחת בקשה לשרת לקבל את רשימת העוקבים של המשתמש הנוכחי
+      const followingResponse = await firstValueFrom(this.http.get<{ following: string[] }>(`${this.apiUrl}/current-user-following`, { headers }));
+      
+// בדיקה אם המשתמש שהפרופיל שלו נצפה נמצא ברשימת העוקבים
+      this.user.isFollowing = followingResponse.following.includes(username);
     } catch (error) {
       console.error('Error loading user profile:', error);
     }
