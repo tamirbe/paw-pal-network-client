@@ -14,9 +14,8 @@
   <!-- אם זה לא המשתמש הנוכחי -->
   <div *ngIf="!isCurrentUser">
     <h3>About {{ user?.firstName }}</h3>
-    <button *ngIf="user?.username && !following.includes(user.username!)" (click)="followUser(user.username!)" class="follow-button">Follow</button>
-    <button *ngIf="user?.username && following.includes(user.username!)" class="follow-button">Following</button>
-    <button *ngIf="user?.username" (click)="addFriend(user.username!)" class="add-friend-button">Add Friend</button>
+    <button *ngIf="user?.username && !user.isFollowing" (click)="followUser(user.username!)" class="follow-button">Follow</button>
+    <button *ngIf="user?.username && user.isFollowing" (click)="unfollowUser(user.username!)" class="unfollow-button">Unfollow</button>
   </div>
 
   <!-- הצגת הפוסטים של המשתמש -->

@@ -9,7 +9,7 @@ interface User {
   firstName: string;
   lastName: string;
   email: string;
-  // שדות נוספים בהתאם למודל המשתמש
+  isFollowing?: boolean; // Optional property to track following status
 }
 
 interface Post {
@@ -58,6 +58,7 @@ export class UserProfileComponent implements OnInit {
         this.isCurrentUser = true;
       } else {
         this.isCurrentUser = false;
+        this.user.isFollowing = this.isFollowing(this.user.username);
       }
     } catch (error) {
       console.error('Error loading user profile:', error);
@@ -85,6 +86,10 @@ export class UserProfileComponent implements OnInit {
     }
   }
 
+  isFollowing(username: string): boolean {
+    return this.following.includes(username);
+  }
+
   async followUser(username: string) {
     if (!username) return;
     try {
@@ -92,21 +97,28 @@ export class UserProfileComponent implements OnInit {
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
       await firstValueFrom(this.http.post(`${this.apiUrl}/following`, { username }, { headers }));
       this.following.push(username);
+      if (this.user && this.user.username === username) {
+        this.user.isFollowing = true;
+      }
       console.log(`Followed user: ${username}`);
     } catch (error) {
       console.error('Error following user:', error);
     }
   }
 
-  async addFriend(username: string) {
+  async unfollowUser(username: string) {
     if (!username) return;
     try {
       const token = this.authService.getToken();
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-      await firstValueFrom(this.http.post(`${this.apiUrl}/friends`, { username }, { headers }));
-      console.log(`Added friend: ${username}`);
+      await firstValueFrom(this.http.post(`${this.apiUrl}/unfollow`, { username }, { headers }));
+      this.following = this.following.filter(u => u !== username);
+      if (this.user && this.user.username === username) {
+        this.user.isFollowing = false;
+      }
+      console.log(`Unfollowed user: ${username}`);
     } catch (error) {
-      console.error('Error adding friend:', error);
+      console.error('Error unfollowing user:', error);
     }
   }
 }
