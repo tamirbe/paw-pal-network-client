@@ -56,7 +56,7 @@ export class HomeComponent implements OnInit {
       console.log('Sending request to /feed with token:', token);
   
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-      this.posts = await firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/feed`, { headers }));
+      this.posts = await firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/posts`, { headers }));
       
       this.posts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
@@ -99,7 +99,7 @@ export class HomeComponent implements OnInit {
 
   onFileChange(event: any): void {
     const file = event.target.files[0];
-    this.selectedFile = file; // שמירת הקובץ במשתנה
+    this.postForm.patchValue({image : file}); // שמירת הקובץ במשתנה
   }
 
   async onSubmit() {
