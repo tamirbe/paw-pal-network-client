@@ -10,7 +10,6 @@
       <button mat-button color="primary" (click)="savedPosts()">Saved Content</button>
       <button mat-button color="primary" (click)="favoritePosts()">Favorite Content</button>
       <button mat-button color="primary" (click)="deleteAccount()">Delete Account</button>
-      <button mat-button color="primary" (click)="cancelAction()">Cancel</button>
     </div>
   </div>
 
@@ -49,6 +48,7 @@
         <input id="pet" formControlName="pet" type="text" />
       </div>
       <button type="submit" [disabled]="userForm.invalid" class="btn">Save</button>
+      <button type="button" (click)="cancelAction()" class="btn">Cancel</button>
     </form>
   </div>
 
@@ -69,6 +69,7 @@
         <input id="confirmPassword" formControlName="confirmPassword" type="password" />
       </div>
       <button type="submit" [disabled]="passwordForm.invalid" class="btn">Change Password</button>
+      <button type="button" (click)="cancelAction()" class="btn">Cancel</button>
       <div *ngIf="passwordForm.errors?.['passwordMismatch']" class="error">
         Passwords do not match.
       </div>
@@ -128,6 +129,7 @@
       <p>Shares: {{ post.shares.length }}</p>
       <p>Created At: {{ post.createdAt | date:'medium' }}</p>
     </div>
+    <button type="button" (click)="cancelAction()" class="btn">Return</button>
   </div>
 
 
@@ -144,6 +146,7 @@
       <p>Shares: {{ post.shares.length }}</p>
       <p>Created At: {{ post.createdAt | date:'medium' }}</p>
     </div>
+    <button type="button" (click)="cancelAction()" class="btn">Return</button>
   </div>
 
   <!-- Statistics Section -->
@@ -161,5 +164,6 @@
       <p>Content Liked per Month</p>
       <canvas id="likedChart"></canvas>
     </div>
+    <button type="button" (click)="cancelAction()" class="btn">Return</button>
   </div>
 </div>
