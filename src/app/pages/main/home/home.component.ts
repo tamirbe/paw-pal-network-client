@@ -29,13 +29,6 @@ export class HomeComponent implements OnInit {
   postForm!: FormGroup;
   searchQuery: string = ''; // add
   currentUser: string = ''; // הוסף משתנה לשם המשתמש הנוכחי
-  currentUserFirstName: string = ''; // הוסף משתנה לשם המשתמש הנוכחי
-
-  postToDelete: Post | null = null; // משתנה לשמירת הפוסט למחיקה
-  editingPost: Post | null = null;
-  editSuccess: boolean = false;
-  selectedFile: File | null = null; // משתנה לשמירת הקובץ
-
 
   private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
 
@@ -47,7 +40,7 @@ export class HomeComponent implements OnInit {
       image: [null]
     });
     this.loadFeed();
-    this.setCurrentUser(); 
+    this.setCurrentUser(); // קבע את שם המשתמש הנוכחי מה- token
   }
 
   async loadFeed() {
@@ -56,7 +49,7 @@ export class HomeComponent implements OnInit {
       console.log('Sending request to /feed with token:', token);
   
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-      this.posts = await firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/feed`, { headers }));
+      this.posts = await firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/posts`, { headers }));
       
       this.posts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
@@ -69,31 +62,24 @@ export class HomeComponent implements OnInit {
   sanitizeImageUrl(url: string): SafeUrl {
     return this.sanitizer.bypassSecurityTrustUrl(url);
   }
+
   setCurrentUser() {
     const token = this.authService.getToken();
     if (token) {
-      const decodedToken: any = this.parseJwt(token);
-      console.log('Decoded token:', decodedToken); // הצגת כל התוכן של הטוקן
-      this.currentUser = decodedToken.username; 
-      this.currentUserFirstName = decodedToken.firstName;
-      console.log('Current user:', this.currentUser); 
-      console.log('Current user first name:', this.currentUserFirstName); 
+      const decodedToken: any = this.parseJwt(token); // השתמש בפונקציה לחילוץ מידע מה- JWT
+      this.currentUser = decodedToken.username; // הנח שה- token מכיל את שם המשתמש בשדה 'username'
+      console.log('Current user:', this.currentUser); // הוסף לוג כדי לוודא ששם המשתמש חולץ כראוי
     }
   }
 
   parseJwt(token: string): any {
-    try {
-      const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-      }).join(''));
-  
-      return JSON.parse(jsonPayload);
-    } catch (error) {
-      console.error('Failed to parse JWT:', error);
-      return null;
-    }
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
   }
 
 
@@ -190,14 +176,12 @@ async sharePost(post: Post) {
   } catch (error) {
     console.error('Error sharing/unsharing post:', error);
   }
-}
-
   
   async savePost(post: Post) {
     try {
       const token = this.authService.getToken();
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-      await firstValueFrom(this.http.post<Post>(`${this.apiUrl}/posts/${post._id}/save`, {}, { headers }));
+      await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/save`, {}, { headers }));
       post.savedBy.push('saved'); // This assumes you have a savedBy array in your Post model
       console.log('Post saved:', post);
     } catch (error) {
@@ -205,71 +189,22 @@ async sharePost(post: Post) {
     }
   }
 
-  editPost(post: Post) {
-    this.editingPost = { ...post };  // Clone post to avoid modifying original object
-  }
-
-  // Save edit function
-  async saveEdit() {
-    if (!this.editingPost) return;
-
-    // יצירת הפוסט מחדש עם הפרטים הערוכים
-    const formData = new FormData();
-    formData.append('description', this.editingPost.description);
-    formData.append('image', this.postForm.get('image')?.value);
-    
-    try {
-      const token = this.authService.getToken();
-      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-        
-      // מחיקה של הפוסט הקודם
-      await firstValueFrom(this.http.delete(`${this.apiUrl}/posts/${this.editingPost._id}`, { headers }));
-
-      await firstValueFrom(this.http.post(`${this.apiUrl}/posts`, formData, { headers }));
-      this.editSuccess = true;
-      this.editingPost = null;
-      await this.loadFeed();
-    } catch (error) {
-      console.error('Error editing post:', error);
-    }
-  }
-    
-  removeImage() {
-    this.postForm.patchValue({ image: null });  // Clear the file input value
-    this.saveEdit();
-  }
   
-  // Cancel edit function
-  cancelEdit() {
-    this.editingPost = null;
-  }
-  
-  // Close success dialog
-  closeSuccessDialog() {
-    this.editSuccess = false;
-  }
-
-  confirmDelete(post: Post) {
-    this.postToDelete = post;
-  }
-
-  cancelDelete() {
-    this.postToDelete = null; 
-  }
-
   async deletePost(post: Post) {
-    if (!post) {
-      return;
+    const confirmed = window.confirm('Are you sure you want to delete this post?');
+    if (!confirmed) {
+      return; // אם המשתמש לא מאשר, הפונקציה תפסיק כאן ולא תמשיך למחוק את הפוסט
     }
-
+  
     try {
-      console.log('Starting delete process for post:', post._id); 
+      console.log('Starting delete process for post:', post._id); // לוג התחלה
       const token = this.authService.getToken();
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
       await firstValueFrom(this.http.delete(`${this.apiUrl}/posts/${post._id}`, { headers }));
       console.log('Post deleted successfully');
-      this.posts = this.posts.filter(p => p._id !== post._id); // Remove the post from the list after deletion
-      this.postToDelete = null;
+      setTimeout(() => {
+        this.posts = this.posts.filter(p => p._id !== post._id); // Remove the post from the list after deletion
+      }, 500); // דחייה של חצי שנייה
     } catch (error) {
       console.error('Error deleting post:', error);
     }

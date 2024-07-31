@@ -7,6 +7,28 @@
     </form>
   </div>
 
+<<<<<<< HEAD
+=======
+  <div class="content-section">
+    <div class="post" *ngFor="let post of posts">
+      <a [routerLink]="['/profile', post.author.username]">
+        <strong>{{ post.author.firstName }} {{ post.author.lastName }} ({{ post.author.username }})</strong>
+      </a> - {{ post.createdAt | date:'short' }}
+      <p class="post-description">{{ post.description }}</p>
+      <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image">
+      <p class="post-author"></p>
+    
+      <!-- Display information -->
+      <div class="info-group">
+        <button class="info-button" (click)="likePost(post)">Like ({{ post.likes ? post.likes.length : 0 }})</button>
+        <button class="info-button" (click)="sharePost(post)">Share ({{ post.shares ? post.shares.length : 0 }})</button>
+        <button class="info-button" (click)="savePost(post)">Save ({{ post.savedBy ? post.savedBy.length : 0 }})</button>
+        <button class="info-button" *ngIf="post.author.username === currentUser" (click)="deletePost(post)">Delete</button> <!-- כפתור המחיקה מוצג רק אם המשתמש הנוכחי הוא המחבר -->
+
+      </div>
+    </div>
+  </div>
+>>>>>>> 759626a3f4bef3f002fc394567f096ddc33629ef
   
   <div class="form-container">
     <form [formGroup]="postForm" (ngSubmit)="onSubmit()">
