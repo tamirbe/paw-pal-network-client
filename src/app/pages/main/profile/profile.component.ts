@@ -28,6 +28,9 @@ export class ProfileComponent implements OnInit {
   passwordMode: boolean = false;
   deleteMode: boolean = false;
   statsMode: boolean = false;
+  uploadMode: boolean = true;
+  savedMode: boolean = false;
+  favoriteMode: boolean = false;
   userForm!: FormGroup; // Form for personal details
   passwordForm!: FormGroup; // Form for password change
 
@@ -188,25 +191,63 @@ export class ProfileComponent implements OnInit {
   // Mode toggles
   editPersonalDetails(): void {
     this.editMode = true;
+    this.favoriteMode = false;
+    this.uploadMode = false;
+    this.savedMode = false;
+    this.statsMode = false;
+    this.deleteMode = false;
+    this.passwordMode = false;
   }
 
   changePassword(): void {
     this.passwordMode = true;
+    this.editMode = false;
+    this.favoriteMode = false;
+    this.uploadMode = false;
+    this.savedMode = false;
+    this.statsMode = false;
+    this.deleteMode = false;
   }
 
   deleteAccount(): void {
     this.deleteMode = true;
+    this.passwordMode = false;
+    this.editMode = false;
+    this.favoriteMode = false;
+    this.uploadMode = false;
+    this.savedMode = false;
+    this.statsMode = false;
   }
 
   viewStatistics(): void {
     this.statsMode = true;
+    this.deleteMode = false;
+    this.passwordMode = false;
+    this.editMode = false;
+    this.favoriteMode = false;
+    this.uploadMode = false;
+    this.savedMode = false;
   }
 
   savedPosts(): void {
+    this.savedMode = true;
+    this.statsMode = false;
+    this.deleteMode = false;
+    this.passwordMode = false;
+    this.editMode = false;
+    this.favoriteMode = false;
+    this.uploadMode = false;
     this.loadSavedContent();
   }
 
   favoritePosts(): void {
+    this.favoriteMode = true;
+    this.savedMode = false;
+    this.statsMode = false;
+    this.deleteMode = false;
+    this.passwordMode = false;
+    this.editMode = false;
+    this.uploadMode = false;
     this.loadFavoriteContent();
   }
 
@@ -266,5 +307,8 @@ export class ProfileComponent implements OnInit {
     this.passwordMode = false;
     this.deleteMode = false;
     this.statsMode = false;
+    this.savedMode = false;
+    this.favoriteMode = false;
+    this.uploadMode = true;
   }
 }

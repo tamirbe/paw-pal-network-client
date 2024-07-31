@@ -17,7 +17,7 @@
   <h1>My Personal Area</h1>
 
   <!-- User Details -->
-  <div class="user-details">
+  <div *ngIf="uploadMode" class="user-details">
     <p><strong>Username:</strong> {{ user?.username }}</p>
     <p><strong>First Name:</strong> {{ user?.firstName }}</p>
     <p><strong>Last Name:</strong> {{ user?.lastName }}</p>
@@ -88,7 +88,7 @@
   </div>
 
   <!-- Following Section -->
-  <div class="following-section">
+  <div *ngIf="uploadMode" class="following-section">
     <h2>Following</h2>
     <input type="text" placeholder="Search..." (input)="searchFollowing($event)" />
     <ul>
@@ -100,7 +100,7 @@
   </div>
 
   <!-- Uploaded Content Section -->
-  <div class="content-section">
+  <div *ngIf="uploadMode" class="content-section">
     <h2>Uploaded Content</h2>
     <div *ngFor="let post of uploadedContent" class="post">
       <p>{{ post.description }}</p>
@@ -116,7 +116,7 @@
 
   <!-- Favorite Content Section -->
   <!-- favorite-content.component.html -->
-  <div class="favorite-content-section">
+  <div *ngIf="favoriteMode" class="favorite-content-section">
     <h2>Favorite Content</h2>
     <div *ngFor="let post of favoriteContent" class="post">
       <p>{{ post.description }}</p>
@@ -132,7 +132,7 @@
 
 
   <!-- Saved Content Section -->
-  <div class="saved-content-section">
+  <div *ngIf="savedMode" class="saved-content-section">
     <h2>Saved Content</h2>
     <div *ngFor="let post of savedContent" class="post">
       <p>{{ post.description }}</p>
