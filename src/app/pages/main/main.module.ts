@@ -24,6 +24,7 @@ import { UserService } from './profile/userService';
 import { RouterModule } from '@angular/router'; // add
 import { SearchResultsComponent } from './search-results/search-results.component'; // add
 import { UserProfileComponent } from './user-profile/user-profile.component'; // עדכן את הנתיב בהתאם למיקום של UserProfileComponent
+import { MatIconModule } from '@angular/material/icon';
 
 
 
@@ -49,7 +50,8 @@ import { UserProfileComponent } from './user-profile/user-profile.component'; //
         MatCheckboxModule,
         CommonModule,
         MatButtonModule, MatCardModule, MatToolbarModule,
-        RouterModule // add
+        RouterModule,
+        MatIconModule
 
     ],
     providers: [

@@ -50,28 +50,72 @@
         </select>
       </div>
       <button type="submit" [disabled]="userForm.invalid" class="btn">Save</button>
-      <button type="button" (click)="cancelUserEdit()" class="btn">Cancel</button>
+      <button type="button" (click)="cancelEdit()" class="btn">Cancel</button>
     </form>
   </div>
 
   <!-- Change Password Form -->
   <div *ngIf="passwordMode" class="password-form">
     <h2>Change Password</h2>
-    <form [formGroup]="passwordForm" (ngSubmit)="onSubmitPasswordChange()">
-      <div class="form-group">
-        <label for="currentPassword">Current Password</label>
-        <input id="currentPassword" formControlName="currentPassword" type="password" />
-      </div>
-      <div class="form-group">
-        <label for="newPassword">New Password</label>
-        <input id="newPassword" formControlName="newPassword" type="password" />
-      </div>
-      <div class="form-group">
-        <label for="confirmPassword">Confirm New Password</label>
-        <input id="confirmPassword" formControlName="confirmPassword" type="password" />
-      </div>
-      <button type="submit" [disabled]="passwordForm.invalid" class="btn">Change Password</button>
-      <button type="button" (click)="cancelAction()" class="btn">Cancel</button>
+    <form style="display: flex; flex-direction: column; gap: 30px; margin-top: 30px;" [formGroup]="passwordForm"
+      (ngSubmit)="onSubmitPasswordChange()">
+      <mat-form-field appearance="fill">
+        <mat-label>curent password</mat-label>
+        <input matInput [type]="hide ? 'password' : 'text'" formControlName="currentPassword" required />
+        <button mat-icon-button matSuffix (click)="togglePasswordVisibility()" type="button"
+          [attr.aria-label]="'Toggle password visibility'" [attr.aria-pressed]="!hide">
+          <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        <mat-error *ngIf="passwordForm.get('currentPassword')?.hasError('required')">
+          Password is required
+        </mat-error>
+        <mat-error *ngIf="
+        passwordForm.get('currentPassword')?.hasError('minlength') ||
+        passwordForm.get('currentPassword')?.hasError('maxlength') ||
+        passwordForm.get('currentPassword')?.hasError('pattern')
+          ">
+          Password is not suitable
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>new password</mat-label>
+        <input matInput [type]="hide ? 'password' : 'text'" formControlName="newPassword" required />
+        <button mat-icon-button matSuffix (click)="togglePasswordVisibility()" type="button"
+          [attr.aria-label]="'Toggle password visibility'" [attr.aria-pressed]="!hide">
+          <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        <mat-error *ngIf="passwordForm.get('newPassword')?.hasError('required')">
+          Password is required
+        </mat-error>
+        <mat-error *ngIf="
+        passwordForm.get('newPassword')?.hasError('minlength') ||
+        passwordForm.get('newPassword')?.hasError('maxlength') ||
+        passwordForm.get('newPassword')?.hasError('pattern')
+          ">
+          Password is not suitable
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>reapet assword</mat-label>
+        <input matInput [type]="hide ? 'password' : 'text'" formControlName="confirmPassword" required />
+        <button mat-icon-button matSuffix (click)="togglePasswordVisibility()" type="button"
+          [attr.aria-label]="'Toggle password visibility'" [attr.aria-pressed]="!hide">
+          <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        <mat-error *ngIf="passwordForm.get('confirmPassword')?.hasError('required')">
+          Password is required
+        </mat-error>
+        <mat-error *ngIf="
+        passwordForm.get('confirmPassword')?.hasError('minlength') ||
+        passwordForm.get('confirmPassword')?.hasError('maxlength') ||
+        passwordForm.get('confirmPassword')?.hasError('pattern')
+          ">
+          Password is not suitable
+        </mat-error>
+      </mat-form-field>
+      <button type="submit" [disabled]="passwordForm.invalid" class="btn">Change
+        Password</button>
+      <button type="button" (click)="cancelEdit()" class="btn">Cancel</button>
       <div *ngIf="passwordForm.errors?.['passwordMismatch']" class="error">
         Passwords do not match.
       </div>

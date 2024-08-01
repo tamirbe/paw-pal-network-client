@@ -86,6 +86,10 @@ $font-family: 'Roboto', sans-serif;
         color: #0056b3;
     }
 
+    mat-form-field {
+        width: 240px;
+    }
+
 
 
 
@@ -107,9 +111,7 @@ $font-family: 'Roboto', sans-serif;
         }
 
         input[type="text"],
-        input[type="email"],
-        input[type="password"],
-        select {
+        input[type="email"] {
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
@@ -290,4 +292,14 @@ $font-family: 'Roboto', sans-serif;
 
 .btnDelete:hover {
     background-color: #b62b39;
+}
+
+::ng-deep {
+    .mat-mdc-text-field-wrapper {
+        background-color: transparent !important;
+    }
+
+    .mat-mdc-form-field-error-wrapper {
+        padding: 0;
+    }
 }

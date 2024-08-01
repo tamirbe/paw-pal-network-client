@@ -35,9 +35,10 @@ export class ProfileComponent implements OnInit {
   uploadMode: boolean = true;
   savedMode: boolean = false;
   favoriteMode: boolean = false;
-  petOptions: string[] = ['Dog', 'Cat', 'Bird', 'Fish','Hamster','Rabbit','Guniea Pig','Turtle','Snake','Lizard', 'No Pets'];
+  petOptions: string[] = ['Dog', 'Cat', 'Bird', 'Fish', 'Hamster', 'Rabbit', 'Guniea Pig', 'Turtle', 'Snake', 'Lizard', 'No Pets'];
   userForm!: FormGroup; // Form for personal details
-  passwordForm!: FormGroup; // Form for password change
+  passwordForm!: FormGroup;
+  hide = true;// Form for password change
 
   private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
 
@@ -70,9 +71,13 @@ export class ProfileComponent implements OnInit {
 
     this.passwordForm = this.fb.group({
       currentPassword: ['', Validators.required],
-      newPassword: ['', [Validators.required, Validators.minLength(6)]],
+      newPassword: ['', [
+        Validators.required,
+        Validators.minLength(8), Validators.maxLength(20),
+        Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*])[A-Za-z\\d!@#$%^&*].{8,}$')
+      ]],
       confirmPassword: ['', Validators.required]
-    }, { validators: ProfileComponent.passwordMatchValidator });
+    });
   }
 
   // Validator to ensure new and confirm passwords match
@@ -80,6 +85,10 @@ export class ProfileComponent implements OnInit {
     const newPassword = form.get('newPassword')?.value;
     const confirmPassword = form.get('confirmPassword')?.value;
     return newPassword === confirmPassword ? null : { passwordMismatch: true };
+  }
+
+  togglePasswordVisibility(): void {
+    this.hide = !this.hide;
   }
 
   // Load user profile and related data
@@ -192,9 +201,11 @@ export class ProfileComponent implements OnInit {
         })
       ).subscribe(() => {
         console.log('Password changed successfully');
-        this.passwordForm.reset();
-        this.passwordMode = false;
       });
+      this.passwordMode = false;
+      this.loadUserData();
+      this.uploadMode = true;
+      this.passwordForm.reset();
     } else {
       console.error('Password form is invalid');
     }
@@ -343,10 +354,12 @@ export class ProfileComponent implements OnInit {
     this.uploadMode = true;
   }
 
-  cancelUserEdit(): void {
+  cancelEdit(): void {
     this.loadUserData();
     this.cancelAction();
   }
+
+
 
   async deletePost(post: Post) {
     if (!post) {
