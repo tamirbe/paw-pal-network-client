@@ -73,11 +73,8 @@ export class HomeComponent implements OnInit {
     const token = this.authService.getToken();
     if (token) {
       const decodedToken: any = this.parseJwt(token);
-      console.log('Decoded token:', decodedToken); // הצגת כל התוכן של הטוקן
       this.currentUser = decodedToken.username; 
       this.currentUserFirstName = decodedToken.firstName;
-      console.log('Current user:', this.currentUser);
-      console.log('Current user first name:', this.currentUserFirstName); 
     }
   }
 
