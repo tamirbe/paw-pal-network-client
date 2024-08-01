@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { firstValueFrom, Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 
 @Injectable({
@@ -9,7 +9,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 })
 export class AuthService {
   private isAuthenticated = false;
-  private apiUrl = 'https://paw-pal-network-server.onrender.com'; // Ensure this matches your proxy configuration
+  private apiUrl = 'http://localhost:3000'; // Ensure this matches your proxy configuration
 
   constructor(private router: Router, private http: HttpClient) { }
 
@@ -30,7 +30,7 @@ export class AuthService {
       })
     );
   }
-  
+
   register(username: string, firstName: string, lastName: string, email: string, password: string, dateOfBirth: string): Observable<string> {
     const url = `${this.apiUrl}/register`;
     return this.http.post<{ message: string }>(url, { username, firstName, lastName, email, password, dateOfBirth }).pipe(
@@ -55,14 +55,17 @@ export class AuthService {
     }
     return this.isAuthenticated;
   }
-
-getAboutContent(): Observable<{ description: string, members: string[], project: string }> {
-    const url = `${this.apiUrl}/about`;
-    return this.http.get<{ description: string, members: string[], project: string }>(url).pipe(
-      catchError(error => {
-        console.error('Failed to fetch about content', error);
-        return of({ description: '', members: [], project: '' });
-      })
-    );
+  setToken(token: string): void {
+    sessionStorage.setItem('authToken', token);
   }
+
+  getToken(): string | null {
+    const token = sessionStorage.getItem('authToken');
+    return token;
+  }
+
+  removeToken(): void {
+    sessionStorage.removeItem('authToken');
+  }
+
 }
