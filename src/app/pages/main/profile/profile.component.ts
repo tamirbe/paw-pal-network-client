@@ -8,6 +8,7 @@ import { switchMap, catchError } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../../../auth.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
@@ -18,6 +19,7 @@ export class ProfileComponent implements OnInit {
 
   user?: User | null;
   post?: Post | null;
+  postToDelete: Post | null = null; // משתנה לשמירת הפוסט למחיקה
   following: string[] = [];
   filteredFollowing: string[] = [];
   uploadedContent: any[] = [];
@@ -120,6 +122,7 @@ export class ProfileComponent implements OnInit {
     this.http.get<any[]>(`${this.apiUrl}/favorite-content`, { headers }).subscribe(
       data => {
         this.favoriteContent = data;
+        console.log(data);
         this.sortedContent = this.sortPosts(this.favoriteContent, this.sortOption);
 
       });
@@ -257,13 +260,16 @@ export class ProfileComponent implements OnInit {
   }
 
   sortPosts(contentArray: any[], option: string): any[] {
+    console.log(contentArray);
     this.sortOption = option;
     let sortedArray = [];
     if (option === 'likes') {
       sortedArray = [...contentArray].sort((a, b) => b.likes.length - a.likes.length);
+      console.log(sortedArray)
     } else {
       sortedArray = [...contentArray].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     }
+    console.log(sortedArray)
     return sortedArray;
   }
 
@@ -326,5 +332,24 @@ export class ProfileComponent implements OnInit {
     this.savedMode = false;
     this.favoriteMode = false;
     this.uploadMode = true;
+  }
+
+  async deletePost(post: Post) {
+    if (!post) {
+      return;
+    }
+
+    try {
+      console.log('Starting delete process for post:', post._id);
+      const token = this.authService.getToken();
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+      await firstValueFrom(this.http.delete(`${this.apiUrl}/posts/${post._id}`, { headers }));
+      console.log('Post deleted successfully');
+      this.uploadedContent = this.uploadedContent.filter(p => p._id !== post._id); // Remove the post from the list after deletion
+      this.postToDelete = null;
+    } catch (error) {
+      console.error('Error deleting post:', error);
+    }
+    this.loadUploadedContent();
   }
 }
