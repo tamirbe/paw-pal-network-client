@@ -74,6 +74,8 @@ $font-family: 'Roboto', sans-serif;
             &:hover {
                 background: #ebebeb;
             }
+
+
         }
     }
 
@@ -255,14 +257,36 @@ $font-family: 'Roboto', sans-serif;
     display: flex;
     align-items: center;
     margin-bottom: 20px;
-  
+
     label {
-      margin-right: 15px;
-      display: flex;
-      align-items: center;
-  
-      input {
-        margin-right: 5px;
-      }
+        margin-right: 15px;
+        display: flex;
+        align-items: center;
+
+        input {
+            margin-right: 5px;
+        }
     }
-  }
+}
+
+.btn {
+    background-color: #35dc3b;
+    color: #fff;
+    right: 10px;
+    bottom: 10px;
+}
+
+.btn:hover {
+    background-color: #35dc3b;
+}
+
+.btnDelete {
+    background-color: #dc3545;
+    color: #fff;
+    right: 10px;
+    bottom: 10px;
+}
+
+.btnDelete:hover {
+    background-color: #b62b39;
+}

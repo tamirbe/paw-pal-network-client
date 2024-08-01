@@ -132,7 +132,13 @@ export class ProfileComponent implements OnInit {
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    this.http.get<any[]>(`${this.apiUrl}/saved-content`, { headers }).subscribe(data => this.savedContent = data);
+    this.http.get<any[]>(`${this.apiUrl}/saved-content`, { headers }).subscribe(
+      data => {
+        this.savedContent = data;
+        console.log(data);
+        this.sortedContent = this.sortPosts(this.savedContent, this.sortOption);
+
+      });
   }
 
   goToUserProfile(username: string) {
