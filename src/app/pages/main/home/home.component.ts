@@ -60,7 +60,6 @@ export class HomeComponent implements OnInit {
       
       this.posts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
-      console.log('Posts loaded:', this.posts);
     } catch (error) {
       console.error('Error loading feed:', error);
     }
@@ -76,8 +75,6 @@ export class HomeComponent implements OnInit {
       console.log('Decoded token:', decodedToken); // הצגת כל התוכן של הטוקן
       this.currentUser = decodedToken.username; 
       this.currentUserFirstName = decodedToken.firstName;
-      console.log('Current user:', this.currentUser); 
-      console.log('Current user first name:', this.currentUserFirstName); 
     }
   }
 
