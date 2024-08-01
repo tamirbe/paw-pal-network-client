@@ -45,10 +45,12 @@
       </div>
       <div class="form-group">
         <label for="pet">Owned Pet</label>
-        <input id="pet" formControlName="pet" type="text" />
+        <select id="pet" formControlName="pet">
+          <option *ngFor="let pet of petOptions" [value]="pet">{{ pet }}</option>
+        </select>
       </div>
       <button type="submit" [disabled]="userForm.invalid" class="btn">Save</button>
-      <button type="button" (click)="cancelAction()" class="btn">Cancel</button>
+      <button type="button" (click)="cancelUserEdit()" class="btn">Cancel</button>
     </form>
   </div>
 

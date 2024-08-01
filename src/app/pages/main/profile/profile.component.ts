@@ -35,6 +35,7 @@ export class ProfileComponent implements OnInit {
   uploadMode: boolean = true;
   savedMode: boolean = false;
   favoriteMode: boolean = false;
+  petOptions: string[] = ['Dog', 'Cat', 'Bird', 'Fish','Hamster','Rabbit','Guniea Pig','Turtle','Snake','Lizard', 'No Pets'];
   userForm!: FormGroup; // Form for personal details
   passwordForm!: FormGroup; // Form for password change
 
@@ -156,24 +157,26 @@ export class ProfileComponent implements OnInit {
 
   // Handle form submissions
   onSubmitUserDetails(): void {
-    if (this.userForm.valid) {
-      const token = this.authService.getToken();
-      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
-      this.http.put(`${this.apiUrl}/profile`, this.userForm.value, { headers }).pipe(
-        switchMap(() => this.http.get<User>(`${this.apiUrl}/profile`, { headers })),
-        catchError(error => {
-          console.error('Error updating user profile:', error);
-          return [];
-        })
-      ).subscribe(data => {
-        this.user = data;
-        console.log('User profile updated successfully');
-        this.editMode = false;
-      });
-    } else {
-      console.error('User details form is invalid');
+    if (this.userForm.invalid) {
+      return;
     }
+
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    this.http.put(`${this.apiUrl}/user-details`, this.userForm.value, { headers }).subscribe(
+      response => {
+        console.log('User details updated successfully');
+        // Handle success
+        this.editMode = false;
+        this.loadUserData();
+        this.uploadMode = true;
+      },
+      error => {
+        console.error('Error updating user details', error);
+        // Handle error
+      }
+    );
   }
 
   onSubmitPasswordChange(): void {
@@ -338,6 +341,11 @@ export class ProfileComponent implements OnInit {
     this.savedMode = false;
     this.favoriteMode = false;
     this.uploadMode = true;
+  }
+
+  cancelUserEdit(): void {
+    this.loadUserData();
+    this.cancelAction();
   }
 
   async deletePost(post: Post) {
