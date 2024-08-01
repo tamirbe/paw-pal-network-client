@@ -67,19 +67,27 @@ export class SearchResultsComponent implements OnInit {
       try {
         const token = this.authService.getToken();
         const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-        this.users = await firstValueFrom(this.http.get<User[]>(`${this.apiUrl}/search`, { headers, params: { query } }));
-        console.log('Search results:', this.users);
+        const users = await firstValueFrom(this.http.get<User[]>(`${this.apiUrl}/search`, { headers, params: { query } }));
 
         // Update the following status for each user
-        this.users.forEach(user => {
+        users.forEach(user => {
           user.isFollowing = this.isFollowing(user.username);
         });
+
+        // Separate current user from the rest
+        const currentUserIndex = users.findIndex(user => user.username === this.currentUsername);
+        if (currentUserIndex !== -1) {
+          const currentUser = users.splice(currentUserIndex, 1)[0];
+          this.users = [currentUser, ...users];
+        } else {
+          this.users = users;
+        }
+
       } catch (error) {
         console.error('Error searching users:', error);
       }
     }
   }
-
   onTextAreaInput(event: any): void {
     const text = event.target.value;
     const isHebrew = /[\u0590-\u05FF]/.test(text);

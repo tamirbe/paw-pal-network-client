@@ -7,7 +7,7 @@
 }
 
 .search-input {
-  width: 60%;
+  width: 40%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -112,7 +112,7 @@ h2 {
   position: relative; /* Add this to position the button absolutely within the user item */
 }
 
-.follow-button,.unfollow-button {
+.follow-button {
   padding: 5px 10px;
   font-size: 14px;
   border: none;
@@ -127,6 +127,25 @@ h2 {
   transform: translateY(-50%); /* Adjust the vertical position */
 
   &:hover {
-    background-color: #218838;
+    background-color: #1d7c33;
+  }
+}
+
+.unfollow-button {
+  padding: 5px 10px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  background-color: #dc3545;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  position: absolute; /* Position the button absolutely */
+  right: 10px; /* Adjust the value to control the distance from the right edge */
+  top: 50%; /* Center the button vertically */
+  transform: translateY(-50%); /* Adjust the vertical position */
+
+  &:hover {
+    background-color: #9e2330;
   }
 }
