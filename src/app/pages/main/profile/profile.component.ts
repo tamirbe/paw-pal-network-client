@@ -328,10 +328,10 @@ export class ProfileComponent implements OnInit {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     this.http.post(`${this.apiUrl}/unfollow`, { username }, { headers }).pipe(
-      switchMap(() => this.http.get<string[]>(`${this.apiUrl}/following`, { headers })),
+      switchMap(() => this.http.get<string[]>(`${this.apiUrl}/current-user-following`, { headers })),
       catchError(error => {
         console.error('Error unfollowing user:', error);
-        return [];
+        return ([]);
       })
     ).subscribe(data => {
       this.following = data;

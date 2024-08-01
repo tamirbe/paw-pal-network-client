@@ -135,16 +135,18 @@
     </form>
   </div>
 
-    <!-- Following Section -->
+  <!-- Following Section -->
   <div *ngIf="followMode" class="following-section">
     <h2>Following</h2>
     <input type="text" placeholder="Search..." [(ngModel)]="searchTerm" />
     <button type="button" (click)="filterFollowing(searchTerm)" class="btn">Search</button>
     <div *ngFor="let username of filteredFollowing" class="user">
-      <p>{{username}}</p>
+      <p>{{ username }}</p>
+      <button type="button" (click)="unfollowUser(username)" class="btn unfollow-btn">Unfollow</button>
     </div>
     <button type="button" (click)="cancelAction()" class="btn">Return</button>
   </div>
+
 
   <!-- Uploaded Content Section -->
   <div *ngIf="uploadMode" class="content-section">
