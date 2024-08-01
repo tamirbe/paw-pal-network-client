@@ -7,31 +7,57 @@
     </form>
   </div>
 
-  
+
+
   <div class="form-container">
+    <h4>Share things with your friends</h4>
     <form [formGroup]="postForm" (ngSubmit)="onSubmit()">
-      <input type="file" formControlName="image" (change)="onFileChange($event)" />
-      <textarea formControlName="description" placeholder="Write something..., {{currentUserFirstName}}" (input)="onTextAreaInput($event)"></textarea>
-      <button type="submit">Upload</button>
-    </form>
+      <div class="file-upload-container">
+        <input id="file-upload" type="file" formControlName="image" (change)="onFileChange($event)" />
+      </div>
+      
+      <textarea formControlName="description" placeholder="Write something... {{currentUserFirstName}}" (input)="onTextAreaInput($event)"></textarea>
+      <label for="file-upload" class="custom-file-upload">
+        <img src="../../../../assets/icons/addimage.svg" alt="Upload Icon" class="upload-icon">
+      </label>
+      <div class="button-container">
+        <button type="submit">Upload</button>
+      </div>
+      </form>
   </div>
+  
+  
+  
   
   
 
   <div class="content-section">
     <div class="post" *ngFor="let post of posts">
-      <a [routerLink]="['/profile', post.author.username]">
-        <strong>{{ post.author.firstName }} {{ post.author.lastName }} ({{ post.author.username }})</strong>
-      </a> - {{ post.createdAt | date:'short' }}
+      <div class="post-header">
+        <ng-container *ngIf="!post.systemPost; else systemPost">
+          <a [routerLink]="[post.author.username === currentUser ? '/profile' : '/another', post.author.username]" class="user-link">
+            <img [src]="'../../../../assets/icons/userprofile.svg'" alt="Profile Image" class="profile-image lower-image" width="35" height="35">
+            <strong>{{ post.author.firstName }} {{ post.author.lastName }} ({{ post.author.username }})</strong>
+          </a>
+        </ng-container>
+        <ng-template #systemPost>
+          <div class="user-link">
+            <img [src]="'../../../../assets/icons/system.svg'" alt="Profile Image" class="profile-image lower-image" width="35" height="35">
+            <strong>{{ post.author.firstName }} {{ post.author.lastName }} </strong>
+          </div>
+        </ng-template>
+        <span class="post-date">{{ post.createdAt | date:'short' }}</span>
+      </div>
       <p class="post-description" [ngStyle]="{'direction': getTextDirection(post.description)}">
         {{ post.description }}
       </p>
       <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image">
-      <p class="post-author">
-      </p>
+      <p class="post-author"></p>
+
 
       <!-- Display information -->
       <div class="info-group">
+        <div *ngIf="!post.systemPost" class="info-group">
         <button class="info-button" (click)="likePost(post)">
           {{ post.liked ? 'Unlike' : 'Like' }} ({{ post.likes.length }})
         </button>
@@ -43,6 +69,7 @@
         <button class="info-button delete-button" *ngIf="post.author.username === currentUser" (click)="confirmDelete(post)">Delete</button>
       </div>
     </div>
+  </div>
   </div>
   
   <!-- Edit post modal -->

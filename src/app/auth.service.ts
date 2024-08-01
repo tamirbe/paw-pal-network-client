@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { firstValueFrom, Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 
 @Injectable({
@@ -61,11 +61,11 @@ export class AuthService {
 
   getToken(): string | null {
     const token = sessionStorage.getItem('authToken');
-    console.log('Token retrieved:', token); //add
     return token;
   }
 
   removeToken(): void {
     sessionStorage.removeItem('authToken');
   }
+
 }

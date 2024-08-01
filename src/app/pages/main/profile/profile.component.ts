@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from './userService';
 import { User } from './user.model'; // Import the User interface
+import { Post } from './post.model'; // Import the Post interface
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { switchMap, catchError } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../../../auth.service';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-profile',
@@ -15,27 +17,43 @@ import { AuthService } from '../../../auth.service';
 export class ProfileComponent implements OnInit {
 
   user?: User | null;
+  post?: Post | null;
   following: string[] = [];
   filteredFollowing: string[] = [];
   uploadedContent: any[] = [];
   favoriteContent: any[] = [];
   savedContent: any[] = [];
+  sortedContent: any[] = [];
+  sortOption: string = 'date';
   showMenu: boolean = false;
   editMode: boolean = false;
   passwordMode: boolean = false;
   deleteMode: boolean = false;
   statsMode: boolean = false;
+  uploadMode: boolean = true;
+  savedMode: boolean = false;
+  favoriteMode: boolean = false;
   userForm!: FormGroup; // Form for personal details
   passwordForm!: FormGroup; // Form for password change
 
   private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
 
-  constructor(private fb: FormBuilder, private userService: UserService, private authService: AuthService, private http: HttpClient) { }
+  constructor(private sanitizer: DomSanitizer, private fb: FormBuilder, private userService: UserService, private authService: AuthService, private http: HttpClient) { }
 
   ngOnInit(): void {
     this.initForms();
     this.loadUserData();
   }
+
+  getTextDirection(text: string): string {
+    const isHebrew = /[\u0590-\u05FF]/.test(text);
+    return isHebrew ? 'rtl' : 'ltr';
+  }
+
+  sanitizeImageUrl(url: string): SafeUrl {
+    return this.sanitizer.bypassSecurityTrustUrl(url);
+  }
+
 
   // Initialize the forms
   private initForms(): void {
@@ -73,17 +91,14 @@ export class ProfileComponent implements OnInit {
 
     this.loadUserFollowing();
     this.loadUploadedContent();
-    this.loadFavoriteContent();
-    this.loadSavedContent();
   }
 
   private loadUserFollowing(): void {
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    this.http.get<string[]>(`${this.apiUrl}/following`, { headers }).subscribe(data => {
+    this.http.get<any[]>(`${this.apiUrl}/following`, { headers }).subscribe(data => {
       this.following = data;
-      this.filteredFollowing = [...data];
     });
   }
 
@@ -91,14 +106,23 @@ export class ProfileComponent implements OnInit {
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    this.http.get<any[]>(`${this.apiUrl}/uploaded-content`, { headers }).subscribe(data => this.uploadedContent = data);
+    this.http.get<any[]>(`${this.apiUrl}/uploaded-content`, { headers }).subscribe(
+      data => {
+        this.uploadedContent = data;
+        this.sortedContent = this.sortPosts(this.uploadedContent, this.sortOption);
+      });
   }
 
   private loadFavoriteContent(): void {
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    this.http.get<any[]>(`${this.apiUrl}/favorite-content`, { headers }).subscribe(data => this.favoriteContent = data);
+    this.http.get<any[]>(`${this.apiUrl}/favorite-content`, { headers }).subscribe(
+      data => {
+        this.favoriteContent = data;
+        this.sortedContent = this.sortPosts(this.favoriteContent, this.sortOption);
+
+      });
   }
 
   private loadSavedContent(): void {
@@ -172,18 +196,75 @@ export class ProfileComponent implements OnInit {
   // Mode toggles
   editPersonalDetails(): void {
     this.editMode = true;
+    this.favoriteMode = false;
+    this.uploadMode = false;
+    this.savedMode = false;
+    this.statsMode = false;
+    this.deleteMode = false;
+    this.passwordMode = false;
   }
 
   changePassword(): void {
     this.passwordMode = true;
+    this.editMode = false;
+    this.favoriteMode = false;
+    this.uploadMode = false;
+    this.savedMode = false;
+    this.statsMode = false;
+    this.deleteMode = false;
   }
 
   deleteAccount(): void {
     this.deleteMode = true;
+    this.passwordMode = false;
+    this.editMode = false;
+    this.favoriteMode = false;
+    this.uploadMode = false;
+    this.savedMode = false;
+    this.statsMode = false;
   }
 
   viewStatistics(): void {
     this.statsMode = true;
+    this.deleteMode = false;
+    this.passwordMode = false;
+    this.editMode = false;
+    this.favoriteMode = false;
+    this.uploadMode = false;
+    this.savedMode = false;
+  }
+
+  savedPosts(): void {
+    this.savedMode = true;
+    this.statsMode = false;
+    this.deleteMode = false;
+    this.passwordMode = false;
+    this.editMode = false;
+    this.favoriteMode = false;
+    this.uploadMode = false;
+    this.loadSavedContent();
+  }
+
+  favoritePosts(): void {
+    this.favoriteMode = true;
+    this.savedMode = false;
+    this.statsMode = false;
+    this.deleteMode = false;
+    this.passwordMode = false;
+    this.editMode = false;
+    this.uploadMode = false;
+    this.loadFavoriteContent();
+  }
+
+  sortPosts(contentArray: any[], option: string): any[] {
+    this.sortOption = option;
+    let sortedArray = [];
+    if (option === 'likes') {
+      sortedArray = [...contentArray].sort((a, b) => b.likes.length - a.likes.length);
+    } else {
+      sortedArray = [...contentArray].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    }
+    return sortedArray;
   }
 
   // Unfollow user
@@ -242,5 +323,8 @@ export class ProfileComponent implements OnInit {
     this.passwordMode = false;
     this.deleteMode = false;
     this.statsMode = false;
+    this.savedMode = false;
+    this.favoriteMode = false;
+    this.uploadMode = true;
   }
 }
