@@ -141,7 +141,9 @@
     <input type="text" placeholder="Search..." [(ngModel)]="searchTerm" />
     <button type="button" (click)="filterFollowing(searchTerm)" class="btn">Search</button>
     <div *ngFor="let username of filteredFollowing" class="user">
-      <p>{{ username }}</p>
+      <a [routerLink]="[username === user?.username ? '/profile' : '/another', username]" class="user-link">
+        <p>{{ username }}</p>
+      </a>
       <button type="button" (click)="unfollowUser(username)" class="btn unfollow-btn">Unfollow</button>
     </div>
     <button type="button" (click)="cancelAction()" class="btn">Return</button>
