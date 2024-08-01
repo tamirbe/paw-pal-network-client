@@ -165,15 +165,15 @@ export class HomeComponent implements OnInit {
       
       if (post.liked) {
         // Unlike post
-        await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/unlike`, {}, { headers }));
         post.liked = false;
         post.likes = post.likes.filter(like => like !== this.currentUser);
       } else {
         // Like post
-        await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/like`, {}, { headers }));
         post.liked = true;
         post.likes.push(this.currentUser);
       }
+      await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/like`, {}, { headers }));
+
     } catch (error) {
       console.error('Error liking/unliking post:', error);
     }
