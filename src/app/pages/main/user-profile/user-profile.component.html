@@ -1,7 +1,14 @@
+<div class="search-container">
+  <form (ngSubmit)="onSearch()">
+    <input type="text" placeholder="Search users..." [(ngModel)]="searchQuery" name="query" (input)="onTextAreaInput($event)"/>
+    <button type="submit">Search</button>
+  </form>
+</div>
+
 <div *ngIf="user" class="profile-container">
-  <h2>{{ user?.firstName }} {{ user?.lastName }}'s Profile</h2>
-  <p><strong>Username:</strong> {{ user?.username }}</p>
-  <p><strong>Email:</strong> {{ user?.email }}</p>
+  <h2>{{ user.firstName }} {{ user.lastName }}'s Profile</h2>
+  <p><strong>Username:</strong> {{ user.username }}</p>
+  <p><strong>Email:</strong> {{ user.email }}</p>
   
   <!-- הצגת פרטים נוספים של המשתמש -->
   
@@ -13,14 +20,14 @@
   
   <!-- אם זה לא המשתמש הנוכחי -->
   <div *ngIf="!isCurrentUser">
-    <h3>About {{ user?.firstName }}</h3>
+    <h3>About {{ user.firstName }}</h3>
     <button *ngIf="user?.username && !user.isFollowing" (click)="followUser(user.username!)" class="follow-button">Follow</button>
     <button *ngIf="user?.username && user.isFollowing" (click)="unfollowUser(user.username!)" class="unfollow-button">Unfollow</button>
   </div>
 
 <!-- הצגת הפוסטים של המשתמש -->
 <div class="user-posts">
-  <h3>{{ user?.firstName }}'s Posts</h3>
+  <h3>{{ user.firstName }}'s Posts</h3>
   <div class="content-section">
     <div class="post" *ngFor="let post of sortedContent">
       <div class="post-header">

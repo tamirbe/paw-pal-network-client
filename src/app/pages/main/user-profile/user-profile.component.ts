@@ -41,6 +41,7 @@ export class UserProfileComponent implements OnInit {
   sortedContent: Post[] = [];
   sortOption: string = 'date';
   currentUsername: string = ''; // משתנה לשם המשתמש הנוכחי
+  searchQuery: string = ''; // add
 
   constructor(
     private route: ActivatedRoute,
@@ -104,6 +105,7 @@ export class UserProfileComponent implements OnInit {
       this.uploadedContent = await firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/public-uploaded-content/${username}`));
       console.log(this.uploadedContent);
       this.sortedContent = this.sortPosts(this.uploadedContent, this.sortOption);
+
     } catch (error) {
       console.error('Error loading public uploaded-content list:', error);
     }
@@ -173,20 +175,27 @@ export class UserProfileComponent implements OnInit {
   }
 
   sanitizeImageUrl(url: string): SafeUrl {
+
     return this.sanitizer.bypassSecurityTrustUrl(url);
   }
 
-  likePost(post: Post): void {
-    // Add logic to like the post
+  onTextAreaInput(event: any): void {
+    const text = event.target.value;
+    const isHebrew = /[\u0590-\u05FF]/.test(text);
+    if (isHebrew) {
+      event.target.style.direction = 'rtl';
+    } else {
+      event.target.style.direction = 'ltr';
+    }
   }
 
-  sharePost(post: Post): void {
-    // Add logic to share the post
-  }
-
-  savePost(post: Post): void {
-    // Add logic to save the post
+  
+  onSearch() {
+    this.router.navigate(['/search'], { queryParams: { query: this.searchQuery } });
   }
 
 
+  goBack() {
+    this.router.navigate(['/home-page']); // Change '/previous-page' to the actual route you want to go back to
+  }
 }
