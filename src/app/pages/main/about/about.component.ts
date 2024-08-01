@@ -21,7 +21,7 @@ export class AboutComponent implements OnInit {
   messageForm!: FormGroup;
   messageSent: boolean = false;
   currentUserName: string = ''; // הוספת משתנה לאחסון שם המשתמש הנוכחי
-  private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
+  private apiUrl = 'https://paw-pal-network-server.onrender.com'; // Adjust this to your backend URL
 
   constructor(private http: HttpClient, private fb: FormBuilder, private authService: AuthService) { }
 
