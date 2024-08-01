@@ -226,12 +226,12 @@ h2 {
 
 
 .form-container {
-  background: linear-gradient(135deg, #f5f7fa, #c3cfe2); /* Gradient background */
-  padding: 30px; /* Padding around the form */
-  border: 1px solid #ddd;
+  background: linear-gradient(135deg, #fffbfb, #c3d6f3); /* Gradient background */
+  padding: 20px; /* Padding around the form */
+  border: 1px solid #acacac;
   border-radius: 15px; /* Rounded corners */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Slight shadow for depth */
-  max-width: 500px; /* Maximum width of the form */
+  max-width: 700px; /* Maximum width of the form */
   margin: 40px auto; /* Center the form with some top margin */
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
@@ -269,6 +269,7 @@ h2 {
 
 .form-container button {
   padding: 12px 25px; /* Padding inside the button */
+  
   border: none;
   background-color: #28a745; /* Button background color */
   color: #fff; /* Button text color */
@@ -279,6 +280,7 @@ h2 {
 }
 
 .form-container button:hover {
+  
   background-color: #218838; /* Button background color on hover */
   box-shadow: 0 4px 8px rgba(33, 136, 56, 0.4); /* Box shadow on hover */
   transform: translateY(-2px); /* Slight upward movement on hover */
@@ -295,12 +297,71 @@ h2 {
   }
 
   .form-container button {
-    width: 100%;
-    padding: 12px; /* Make button full-width on mobile */
+    width: auto; /* Do not make button full-width on mobile */
+    padding: 10px 20px; /* Make button smaller */
+    font-size: 14px; /* Smaller font size */
+  }
+
+  .custom-file-upload {
+    width: 40px;
+    height: 40px;
+    line-height: 26px;
+  }
+
+  .custom-file-upload .upload-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .button-container {
+    justify-content: flex-end; /* Keep the button to the right */
+    margin-top: 10px; /* Adjust margin if needed */
   }
 }
 
-/* Placeholder styling */
-.form-container textarea::placeholder {
-  color: #aaa;
+/* עיצוב כפתור ה-Upload */
+.button-container {
+  display: flex;
+  justify-content: flex-end; /* הזזת הכפתור ימינה */
+  margin-top: -50px; /* העלאת הכפתור כלפי מעלה */
+}
+
+
+
+
+/* עיצוב הכפתור להעלאת קובץ */
+.file-upload-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.custom-file-upload {
+  display: inline-block;
+  padding: 10px;
+  cursor: pointer;
+  background-color: #a5bdd6;
+  color: white;
+  border-radius: 50%;
+  font-size: 24px;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  line-height: 30px;
+  transition: background-color 0.3s ease;
+}
+
+.custom-file-upload .upload-icon {
+  width: 24px;
+  height: 24px;
+  margin-top: 13px;
+}
+
+.custom-file-upload:hover {
+  background-color: #2865a7;
+}
+
+#file-upload {
+  display: none;
 }
