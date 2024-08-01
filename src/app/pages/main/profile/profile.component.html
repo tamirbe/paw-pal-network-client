@@ -9,6 +9,7 @@
       <button mat-button color="primary" (click)="viewStatistics()">View Statistics</button>
       <button mat-button color="primary" (click)="savedPosts()">Saved Content</button>
       <button mat-button color="primary" (click)="favoritePosts()">Favorite Content</button>
+      <button mat-button color="primary" (click)="showFollowing()">Following</button>
       <button mat-button color="primary" (click)="deleteAccount()">Delete Account</button>
     </div>
   </div>
@@ -134,16 +135,15 @@
     </form>
   </div>
 
-  <!-- Following Section -->
-  <div *ngIf="uploadMode" class="following-section">
+    <!-- Following Section -->
+  <div *ngIf="followMode" class="following-section">
     <h2>Following</h2>
-    <input type="text" placeholder="Search..." (input)="searchFollowing($event)" />
-    <ul>
-      <li *ngFor="let user of filteredFollowing">
-        <span (click)="goToUserProfile(user)">{{ user }}</span>
-        <button (click)="unfollowUser(user)" class="btn">Unfollow</button>
-      </li>
-    </ul>
+    <input type="text" placeholder="Search..." [(ngModel)]="searchTerm" />
+    <button type="button" (click)="filterFollowing(searchTerm)" class="btn">Search</button>
+    <div *ngFor="let username of filteredFollowing" class="user">
+      <p>{{username}}</p>
+    </div>
+    <button type="button" (click)="cancelAction()" class="btn">Return</button>
   </div>
 
   <!-- Uploaded Content Section -->
