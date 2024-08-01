@@ -17,6 +17,7 @@ interface Post {
   savedBy: string[];
   liked: boolean;
   shared: boolean;
+  systemPost?: boolean;
 }
 
 @Component({
@@ -56,16 +57,29 @@ export class HomeComponent implements OnInit {
       console.log('Sending request to /feed with token:', token);
   
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-      this.posts = await firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/feed`, { headers }));
+      const userPosts  = await firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/feed`, { headers }));
       
-      this.posts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      const systemPosts: Post[] = [
+        {
+          description: 'Welcome to our platform! Stay tuned for updates.',
+          author: { username: 'system', firstName: 'System', lastName: '' },
+          createdAt: new Date(),
+          likes: [],
+          shares: [],
+          savedBy: [],
+          liked: false,
+          shared: false,
+          systemPost: true
+        },
+        // הוסף פוסטים נוספים של המערכת כאן
+      ];
+      this.posts = [...systemPosts, ...userPosts ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
       console.log('Posts loaded:', this.posts);
     } catch (error) {
       console.error('Error loading feed:', error);
     }
   }
-
   sanitizeImageUrl(url: string): SafeUrl {
     return this.sanitizer.bypassSecurityTrustUrl(url);
   }
@@ -209,27 +223,28 @@ async sharePost(post: Post) {
 
   // Save edit function
   async saveEdit() {
-    if (!this.editingPost) return;
+        if (!this.editingPost) return;
 
-    // יצירת הפוסט מחדש עם הפרטים הערוכים
-    const formData = new FormData();
-    formData.append('description', this.editingPost.description);
-    formData.append('image', this.postForm.get('image')?.value);
+        // יצירת הפוסט מחדש עם הפרטים הערוכים
+        const formData = new FormData();
+        formData.append('description', this.editingPost.description);
+        formData.append('image', this.postForm.get('image')?.value);
     
-    try {
-      const token = this.authService.getToken();
-      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        try {
+          const token = this.authService.getToken();
+          const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
         
-      // מחיקה של הפוסט הקודם
-      await firstValueFrom(this.http.delete(`${this.apiUrl}/posts/${this.editingPost._id}`, { headers }));
+          // מחיקה של הפוסט הקודם
+          await firstValueFrom(this.http.delete(`${this.apiUrl}/posts/${this.editingPost._id}`, { headers }));
 
-      await firstValueFrom(this.http.post(`${this.apiUrl}/posts`, formData, { headers }));
-      this.editSuccess = true;
-      this.editingPost = null;
-      await this.loadFeed();
-    } catch (error) {
-      console.error('Error editing post:', error);
-    }
+          await firstValueFrom(this.http.post(`${this.apiUrl}/posts`, formData, { headers }));
+          this.editSuccess = true;
+          this.editingPost = null;
+          await this.loadFeed();
+        } catch (error) {
+          console.error('Error editing post:', error);
+        }
+    
   }
     
   removeImage() {
