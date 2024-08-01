@@ -1,0 +1,151 @@
+.search-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 10px;
+}
+
+.search-input {
+  width: 40%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  transition: box-shadow 0.3s ease;
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  }
+}
+
+.search-button, .back-button {
+  padding: 10px 20px;
+  margin-left: 10px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #0056b3;
+  }
+}
+
+.back-button {
+  background-color: #6c757d;
+
+  &:hover {
+    background-color: #5a6268;
+  }
+}
+
+.search-results-container {
+  font-family: Arial, sans-serif;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.no-results {
+  text-align: center;
+  color: #777;
+  font-size: 18px;
+}
+
+.user-list {
+  list-style: none;
+  padding: 0;
+}
+
+.user-item {
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: scale(1.02);
+  }
+}
+
+.user-link {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-weight: bold;
+  font-size: 16px;
+  color: #333;
+}
+
+.user-username {
+  font-size: 14px;
+  color: #666;
+}
+
+
+.user-item {
+  position: relative; /* Add this to position the button absolutely within the user item */
+}
+
+.follow-button {
+  padding: 5px 10px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  background-color: #28a745;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  position: absolute; /* Position the button absolutely */
+  right: 10px; /* Adjust the value to control the distance from the right edge */
+  top: 50%; /* Center the button vertically */
+  transform: translateY(-50%); /* Adjust the vertical position */
+
+  &:hover {
+    background-color: #1d7c33;
+  }
+}
+
+.unfollow-button {
+  padding: 5px 10px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  background-color: #dc3545;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  position: absolute; /* Position the button absolutely */
+  right: 10px; /* Adjust the value to control the distance from the right edge */
+  top: 50%; /* Center the button vertically */
+  transform: translateY(-50%); /* Adjust the vertical position */
+
+  &:hover {
+    background-color: #9e2330;
+  }
+}

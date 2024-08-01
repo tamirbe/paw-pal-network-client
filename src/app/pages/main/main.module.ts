@@ -20,6 +20,11 @@ import { SlideshowComponent } from '../../components/slideshow/slideshow.compone
 import { AboutComponent } from './about/about.component';
 import { HeaderComponent } from '../../components/header/header.component';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common'; //addd
+import { UserService } from './profile/userService';
+import { RouterModule } from '@angular/router'; // add
+import { SearchResultsComponent } from './search-results/search-results.component'; // add
+import { MatIconModule } from '@angular/material/icon';
+import { UserProfileComponent } from './user-profile/user-profile.component'; // עדכן את הנתיב בהתאם למיקום של UserProfileComponent
 
 
 
@@ -31,7 +36,9 @@ import { LocationStrategy, HashLocationStrategy } from '@angular/common'; //addd
         ProfileComponent,
         SlideshowComponent,
         AboutComponent,
-        HeaderComponent
+        HeaderComponent,
+        SearchResultsComponent, // add
+        UserProfileComponent, // add
     ],
     imports: [
         MainRoutingModule,
@@ -42,12 +49,15 @@ import { LocationStrategy, HashLocationStrategy } from '@angular/common'; //addd
         NgIf,
         MatCheckboxModule,
         CommonModule,
-        MatButtonModule, MatCardModule, MatToolbarModule
+        MatButtonModule, MatCardModule, MatToolbarModule,
+        RouterModule, // add
+        MatIconModule
     ],
     providers: [
-        AuthService, 
-        AuthGuard, 
-        provideHttpClient(), 
+        UserService,
+        AuthService,
+        AuthGuard,
+        provideHttpClient(),
         { provide: LocationStrategy, useClass: HashLocationStrategy } // add
     ],
 })

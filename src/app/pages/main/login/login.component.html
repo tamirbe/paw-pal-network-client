@@ -4,9 +4,8 @@
 <img class="background" src="../../../../assets/images/backgroundLogin.png" alt="">
 <div class="login-container">
     <div class="sentence-wrapper">
-        <p>Welcome to PawPal,<br>Our social network<br> where pet lovers <br>can connect, share, <br>and
-            celebrate the joys!
-        </p>
+        Welcome to PawPal, Our social network where pet lovers can connect, share, and
+        celebrate the joys!
     </div>
     <!-- <app-slideshow></app-slideshow> -->
     <div class="login-box">
@@ -15,42 +14,94 @@
             <mat-form-field appearance="fill">
                 <mat-label>Username</mat-label>
                 <input matInput type="text" formControlName="username" required>
+                <mat-error *ngIf="loginForm.get('username')?.hasError('required')">
+                    Username is required
+                </mat-error>
+                <mat-error *ngIf="loginForm.get('username')?.hasError('minlength')">
+                    Username must be at least 2 characters long
+                </mat-error>
+                <mat-error *ngIf="loginForm.get('username')?.hasError('maxlength')">
+                    Username cannot be more than 20 characters long
+                </mat-error>
             </mat-form-field>
             <mat-form-field appearance="fill">
                 <mat-label>Password</mat-label>
-                <input matInput type="password" formControlName="password" required>
+                <input matInput [type]="hide ? 'password' : 'text'" formControlName="password" required />
+                <button mat-icon-button matSuffix (click)="togglePasswordVisibility()" type="button"
+                    [attr.aria-label]="'Toggle password visibility'" [attr.aria-pressed]="!hide">
+                    <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+                <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
+                    Password is required
+                </mat-error>
+                <mat-error *ngIf="
+                loginForm.get('password')?.hasError('minlength') ||
+                loginForm.get('password')?.hasError('maxlength') ||
+                loginForm.get('password')?.hasError('pattern')
+                  ">
+                    Password is not suitable
+                </mat-error>
             </mat-form-field>
+            <div *ngIf="loginFailed" class="error-message">Invalid username or password</div>
+            <div *ngIf="showSuccessMsg" class="showSuccessMsg">Registration was success!!</div>
             <button class="submitBtn" mat-raised-button color="primary" type="submit"
                 [disabled]="loginForm.invalid">Login</button>
-            <div *ngIf="loginFailed" class="error-message">Invalid username or password</div>
             <button class="toggleBtn" (click)="toRegister()">Dont have a Account Click Here</button>
         </form>
         <form class="registerForm" *ngIf="!isRegister" [formGroup]="registerForm" (ngSubmit)="onRegisterSubmit()">
             <div class="title">Registration</div>
             <mat-form-field appearance="fill">
                 <mat-label>Username</mat-label>
-                <input matInput formControlName="username" required>
+                <input matInput formControlName="username" required />
                 <mat-error *ngIf="registerForm.get('username')?.hasError('required')">
                     Username is required
                 </mat-error>
+                <mat-error *ngIf="registerForm.get('username')?.hasError('minlength')">
+                    Username must be at least 2 characters long
+                </mat-error>
+                <mat-error *ngIf="registerForm.get('username')?.hasError('maxlength')">
+                    Username cannot be more than 20 characters long
+                </mat-error>
             </mat-form-field>
+
             <mat-form-field appearance="fill">
                 <mat-label>First Name</mat-label>
-                <input matInput formControlName="firstName" required>
+                <input matInput formControlName="firstName" required />
                 <mat-error *ngIf="registerForm.get('firstName')?.hasError('required')">
                     First Name is required
                 </mat-error>
+                <mat-error *ngIf="registerForm.get('firstName')?.hasError('minlength')">
+                    First Name must be at least 2 characters long
+                </mat-error>
+                <mat-error *ngIf="registerForm.get('firstName')?.hasError('maxlength')">
+                    First Name cannot be more than 20 characters long
+                </mat-error>
+                <mat-error *ngIf="registerForm.get('firstName')?.hasError('pattern')">
+                    First Name cannot contain numbers or special characters
+                </mat-error>
             </mat-form-field>
+
             <mat-form-field appearance="fill">
                 <mat-label>Last Name</mat-label>
-                <input matInput formControlName="lastName" required>
+                <input matInput formControlName="lastName" required />
                 <mat-error *ngIf="registerForm.get('lastName')?.hasError('required')">
                     Last Name is required
                 </mat-error>
+                <mat-error *ngIf="registerForm.get('lastName')?.hasError('minlength')">
+                    Last Name must be at least 2 characters long
+                </mat-error>
+                <mat-error *ngIf="registerForm.get('lastName')?.hasError('maxlength')">
+                    Last Name cannot be more than 20 characters long
+                </mat-error>
+                <mat-error
+                    *ngIf="!registerForm.get('lastName')?.hasError('minlength') && !registerForm.get('lastName')?.hasError('maxlength') && registerForm.get('lastName')?.hasError('pattern')">
+                    Last Name cannot contain numbers or special characters
+                </mat-error>
             </mat-form-field>
+
             <mat-form-field appearance="fill">
                 <mat-label>Email</mat-label>
-                <input matInput formControlName="email" type="email" required>
+                <input matInput formControlName="email" type="email" required />
                 <mat-error *ngIf="registerForm.get('email')?.hasError('required')">
                     Email is required
                 </mat-error>
@@ -58,22 +109,42 @@
                     Please enter a valid email address
                 </mat-error>
             </mat-form-field>
+
             <mat-form-field appearance="fill">
                 <mat-label>Password</mat-label>
-                <input matInput formControlName="password" type="password" required>
+                <input matInput [type]="hide ? 'password' : 'text'" formControlName="password" required />
+                <button mat-icon-button matSuffix (click)="togglePasswordVisibility()" type="button"
+                    [attr.aria-label]="'Toggle password visibility'" [attr.aria-pressed]="!hide">
+                    <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
                 <mat-error *ngIf="registerForm.get('password')?.hasError('required')">
                     Password is required
                 </mat-error>
+                <mat-error *ngIf="
+                    registerForm.get('password')?.hasError('minlength') ||
+                    registerForm.get('password')?.hasError('maxlength') ||
+                    registerForm.get('password')?.hasError('pattern')
+                  ">
+                    Password is not suitable
+                </mat-error>
             </mat-form-field>
+
             <mat-form-field appearance="fill">
                 <mat-label>Date of Birth</mat-label>
-                <input matInput formControlName="dateOfBirth" type="date" required>
+                <input matInput formControlName="dateOfBirth" type="date" required />
                 <mat-error *ngIf="registerForm.get('dateOfBirth')?.hasError('required')">
                     Date of Birth is required
                 </mat-error>
+                <mat-error *ngIf="registerForm.get('dateOfBirth')?.hasError('dateOfBirthRange')">
+                    Date of Birth must be between 1940 and 2024
+                </mat-error>
             </mat-form-field>
-            <button class="submitBtn" mat-raised-button color="primary" type="submit" [disabled]="registerForm.invalid">Register</button>
-            <div *ngIf="registrationFailed" class="error">{{ registrationErrorMessage }}      
+            <div class="password">password need to contain 8-20 characters at least 1 big letter 1 small letter 1 number
+                and special
+                character</div>
+            <button class="submitBtn" mat-raised-button color="primary" type="submit"
+                [disabled]="registerForm.invalid">Register</button>
+            <div *ngIf="registrationFailed" class="error">{{ registrationErrorMessage }}
             </div>
             <button class="toggleBtn" (click)="toRegister()">Go back to Login</button>
         </form>
