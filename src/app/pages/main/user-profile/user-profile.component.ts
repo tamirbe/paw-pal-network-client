@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../../../auth.service';
 import { firstValueFrom } from 'rxjs';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 interface User {
   username: string;
@@ -13,9 +14,16 @@ interface User {
 }
 
 interface Post {
-  title: string;
-  content: string;
-  // שדות נוספים בהתאם למודל הפוסטים
+  author: string; // או authorName
+  authorName: string;
+  authorProfileImage: string; 
+  createdAt: Date;
+  description: string;
+  image?: string;
+  likes: any[];
+  shares: any[];
+  liked?: boolean;
+  shared?: boolean;
 }
 
 @Component({
@@ -29,21 +37,50 @@ export class UserProfileComponent implements OnInit {
   isCurrentUser: boolean = false; // משתנה לבדיקה אם זה המשתמש הנוכחי
   following: string[] = []; // משתנה לשמירת רשימת העוקבים
   private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
+  uploadedContent: any[] = [];
+  sortedContent: Post[] = [];
+  sortOption: string = 'date';
+  currentUsername: string = ''; // משתנה לשם המשתמש הנוכחי
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private http: HttpClient,
-    private authService: AuthService
+    private authService: AuthService,
+    private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit(): void {
     this.route.params.subscribe(async params => {
       const username = params['username'];
+      this.setCurrentUser(); // הגדרת המשתמש הנוכחי
       await this.loadUserProfile(username);
-      await this.loadUserPosts(username);
+      await this.loadPublicUserPosts(username);
       await this.loadFollowingList(); // טעינת רשימת העוקבים
     });
+  }
+
+  setCurrentUser() {
+    const token = this.authService.getToken();
+    if (token) {
+      const decodedToken: any = this.parseJwt(token);
+      this.currentUsername = decodedToken.username;
+    }
+  }
+
+  parseJwt(token: string): any {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+  
+      return JSON.parse(jsonPayload);
+    } catch (error) {
+      console.error('Failed to parse JWT:', error);
+      return null;
+    }
   }
 
   async loadUserProfile(username: string) {
@@ -62,14 +99,25 @@ export class UserProfileComponent implements OnInit {
     }
   }
 
-  async loadUserPosts(username: string) {
+  async loadPublicUserPosts(username: string) {
     try {
-      const token = this.authService.getToken();
-      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-      this.userPosts = await firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/users/${username}/posts`, { headers }));
+      this.uploadedContent = await firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/public-uploaded-content/${username}`));
+      console.log(this.uploadedContent);
+      this.sortedContent = this.sortPosts(this.uploadedContent, this.sortOption);
     } catch (error) {
-      console.error('Error loading user posts:', error);
+      console.error('Error loading public uploaded-content list:', error);
     }
+  }
+
+  sortPosts(contentArray: any[], option: string): any[] {
+    this.sortOption = option;
+    let sortedArray = [];
+    if (option === 'likes') {
+      sortedArray = [...contentArray].sort((a, b) => b.likes.length - a.likes.length);
+    } else {
+      sortedArray = [...contentArray].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    }
+    return sortedArray;
   }
 
   async loadFollowingList() {
@@ -118,4 +166,27 @@ export class UserProfileComponent implements OnInit {
       console.error('Error unfollowing user:', error);
     }
   }
+
+  getTextDirection(text: string): string {
+    const isHebrew = /[\u0590-\u05FF]/.test(text);
+    return isHebrew ? 'rtl' : 'ltr';
+  }
+
+  sanitizeImageUrl(url: string): SafeUrl {
+    return this.sanitizer.bypassSecurityTrustUrl(url);
+  }
+
+  likePost(post: Post): void {
+    // Add logic to like the post
+  }
+
+  sharePost(post: Post): void {
+    // Add logic to share the post
+  }
+
+  savePost(post: Post): void {
+    // Add logic to save the post
+  }
+
+
 }

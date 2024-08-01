@@ -18,12 +18,25 @@
     <button *ngIf="user?.username && user.isFollowing" (click)="unfollowUser(user.username!)" class="unfollow-button">Unfollow</button>
   </div>
 
-  <!-- הצגת הפוסטים של המשתמש -->
-  <div class="user-posts">
-    <h3>{{ user?.firstName }}'s Posts</h3>
-    <div *ngFor="let post of userPosts" class="post-item">
-      <h4>{{ post.title }}</h4>
-      <p>{{ post.content }}</p>
+<!-- הצגת הפוסטים של המשתמש -->
+<div class="user-posts">
+  <h3>{{ user?.firstName }}'s Posts</h3>
+  <div class="content-section">
+    <div class="post" *ngFor="let post of sortedContent">
+      <div class="post-header">
+        <a [routerLink]="[post.authorName === currentUsername ? '/profile' : '/another', post.authorName]" class="user-link">
+          <img [src]="'../../../../assets/icons/userprofile.svg'" alt="Profile Image" class="profile-image">
+          <strong>{{ post.authorName }}</strong>
+        </a>
+        <span class="post-date">{{ post.createdAt | date:'short' }}</span>
+      </div>
+      <div class="post-body">
+        <p class="post-description" [ngStyle]="{'direction': getTextDirection(post.description)}">
+          {{ post.description }}
+        </p>
+        <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image">
+      </div>
     </div>
   </div>
+</div>
 </div>
