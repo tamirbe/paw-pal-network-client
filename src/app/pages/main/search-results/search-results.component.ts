@@ -55,7 +55,6 @@ export class SearchResultsComponent implements OnInit {
       const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
       }).join(''));
-  
       return JSON.parse(jsonPayload);
     } catch (error) {
       console.error('Failed to parse JWT:', error);
@@ -63,25 +62,32 @@ export class SearchResultsComponent implements OnInit {
     }
   }
 
-
   async searchUsers(query: string) {
     if (query) {
       try {
         const token = this.authService.getToken();
         const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-        this.users = await firstValueFrom(this.http.get<User[]>(`${this.apiUrl}/search`, { headers, params: { query } }));
-        console.log('Search results:', this.users);
+        const users = await firstValueFrom(this.http.get<User[]>(`${this.apiUrl}/search`, { headers, params: { query } }));
 
         // Update the following status for each user
-        this.users.forEach(user => {
+        users.forEach(user => {
           user.isFollowing = this.isFollowing(user.username);
         });
+
+        // Separate current user from the rest
+        const currentUserIndex = users.findIndex(user => user.username === this.currentUsername);
+        if (currentUserIndex !== -1) {
+          const currentUser = users.splice(currentUserIndex, 1)[0];
+          this.users = [currentUser, ...users];
+        } else {
+          this.users = users;
+        }
+
       } catch (error) {
         console.error('Error searching users:', error);
       }
     }
   }
-
   onTextAreaInput(event: any): void {
     const text = event.target.value;
     const isHebrew = /[\u0590-\u05FF]/.test(text);
@@ -109,7 +115,7 @@ export class SearchResultsComponent implements OnInit {
       console.error('Error following user:', error);
     }
   }
-  
+
   async unfollowUser(username: string) {
     try {
       const token = this.authService.getToken();
@@ -127,7 +133,6 @@ export class SearchResultsComponent implements OnInit {
       console.error('Error unfollowing user:', error);
     }
   }
-  
 
   isFollowing(username: string): boolean {
     return this.following.includes(username);
