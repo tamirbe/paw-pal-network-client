@@ -27,9 +27,6 @@
   </div>
   
   
-  
-  
-  
 
   <div class="content-section">
     <div class="post" *ngFor="let post of posts">
@@ -49,12 +46,40 @@
         <span class="post-date">{{ post.createdAt | date:'short' }}</span>
       </div>
       
+////////////////////////////////
+<div class="shared-post-container">
+  <div class="shared-info" *ngIf="post.sharedText && post.sharedBy">
+    <p><strong>Shared by {{ post.sharedBy.firstName }} {{ post.sharedBy.lastName }}:</strong> {{ post.sharedText }}</p>
+    <span class="shared-date">{{ post.sharedAt | date:'short' }}</span>
+  </div>
+  <div class="shared-post">
+    <div class="post-header">
+      <a [routerLink]="['/another', post.author.username]" class="user-link">
+        <img [src]="'../../../../assets/icons/userprofile.svg'" alt="Profile Image" class="profile-image lower-image" width="35" height="35">
+        <strong>{{ post.author.firstName }} {{ post.author.lastName }} ({{ post.author.username }})</strong>
+      </a>
+      <span class="post-date">{{ post.createdAt | date:'short' }}</span>
+    </div>
+    <p class="post-description" [ngStyle]="{'direction': getTextDirection(post.description)}">
+      {{ post.description }}
+    </p>
+    <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image">
+  </div>
+</div>
+////////////////////////////////
+
+
+      
       <p class="post-description" [ngStyle]="{'direction': getTextDirection(post.description)}">
         {{ post.description }}
       </p>
       <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image">
       <p class="post-author"></p>
       
+
+
+
+
 
       <!-- Display information -->
       <div class="info-group">

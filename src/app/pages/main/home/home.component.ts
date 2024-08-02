@@ -28,6 +28,7 @@ interface Post {
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
+  
 })
 export class HomeComponent implements OnInit {
   posts: Post[] = [];
@@ -40,6 +41,7 @@ export class HomeComponent implements OnInit {
   editingPost: Post | null = null;
   editSuccess: boolean = false;
   selectedFile: File | null = null;
+  
 
   private apiUrl = 'http://localhost:3000';
 
