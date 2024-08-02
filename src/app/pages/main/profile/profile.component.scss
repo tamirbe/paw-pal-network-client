@@ -99,8 +99,7 @@ $font-family: 'Roboto', sans-serif;
     .following-section,
     .content-section,
     .favorite-content-section,
-    .saved-content-section,
-    .statistics-section {
+    .saved-content-section {
         margin-bottom: 30px;
 
         .form-group,
@@ -209,12 +208,36 @@ $font-family: 'Roboto', sans-serif;
     }
 
     .statistics-section {
-        canvas {
-            width: 100%;
-            height: 300px;
-            margin-bottom: 20px;
+        margin: 20px;
+      
+        h2 {
+          margin-bottom: 20px;
         }
-    }
+      
+        div {
+          margin-bottom: 30px;
+        }
+      
+        canvas {
+          max-width: 100%;
+        }
+      
+        .btn {
+          display: inline-block;
+          padding: 10px 20px;
+          margin-top: 20px;
+          background-color: #007bff;
+          color: #fff;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+      
+          &:hover {
+            background-color: #0056b3;
+          }
+        }
+      }
+      
 }
 
 .post {
@@ -270,17 +293,6 @@ $font-family: 'Roboto', sans-serif;
             margin-right: 5px;
         }
     }
-}
-
-.btn {
-    background-color: #35dc3b;
-    color: #fff;
-    right: 10px;
-    bottom: 10px;
-}
-
-.btn:hover {
-    background-color: #35dc3b;
 }
 
 .btnDelete {

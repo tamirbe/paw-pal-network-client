@@ -61,6 +61,7 @@ export class ProfileComponent implements OnInit {
   }
 
 
+
   // Initialize the forms
   private initForms(): void {
     this.userForm = this.fb.group({
@@ -175,6 +176,11 @@ export class ProfileComponent implements OnInit {
     }
   }
 
+  loadStatistics(): void {
+
+
+  }
+
   // Handle form submissions
   onSubmitUserDetails(): void {
     if (this.userForm.invalid) {
@@ -270,6 +276,7 @@ export class ProfileComponent implements OnInit {
     this.uploadMode = false;
     this.savedMode = false;
     this.followMode = false;
+    this.loadStatistics();
   }
 
   savedPosts(): void {
