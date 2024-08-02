@@ -6,7 +6,7 @@ import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../../auth.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
-interface Post {
+export interface Post {
   _id?: string;
   image?: string;
   description: string;
@@ -31,6 +31,7 @@ interface Post {
 })
 export class HomeComponent implements OnInit {
   posts: Post[] = [];
+  sharedPosts: Post[] = [];
   postForm!: FormGroup;
   searchQuery: string = '';
   currentUser: string = '';
@@ -65,7 +66,7 @@ export class HomeComponent implements OnInit {
       const token = this.authService.getToken();
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
   
-      const [userPosts, sharedPosts] = await Promise.all([
+      const [userPosts, userSharedPosts] = await Promise.all([
         firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/feed`, { headers })),
         this.loadSharedPosts(headers)
       ]);
@@ -83,11 +84,13 @@ export class HomeComponent implements OnInit {
           shared: false,
           systemPost: true
         },
-        // הוסף פוסטים נוספים של המערכת כאן
       ];
-      this.posts = [...systemPosts, ...userPosts, ...sharedPosts].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+      this.posts = [...systemPosts, ...userPosts].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      this.sharedPosts = userSharedPosts.sort((a, b) => new Date(b.sharedAt!).getTime() - new Date(a.sharedAt!).getTime());
 
       console.log('Posts loaded:', this.posts);
+      console.log('Shared Posts loaded:', this.sharedPosts);
     } catch (error) {
       console.error('Error loading feed:', error);
     }
@@ -96,19 +99,23 @@ export class HomeComponent implements OnInit {
   async loadSharedPosts(headers: HttpHeaders): Promise<Post[]> {
     try {
       const sharedPosts = await firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/share`, { headers }));
-      return sharedPosts.map(post => {
-        const shareDetails = post.shares.find(share => share.user === this.currentUser);
-        
-        return {
-          ...post,
-          sharedText: shareDetails ? shareDetails.text : '',
-          sharedAt: shareDetails ? new Date(shareDetails.createdAt) : undefined,
-          sharedBy: {
-            firstName: this.currentUserFirstName,
-            lastName: this.currentUserLastName
+      const userShares: Post[] = [];
+      sharedPosts.forEach(post => {
+        post.shares.forEach(share => {
+          if (share.user === this.currentUser) {
+            userShares.push({
+              ...post,
+              sharedText: share.text,
+              sharedAt: new Date(share.createdAt),
+              sharedBy: {
+                firstName: this.currentUserFirstName,
+                lastName: this.currentUserLastName
+              }
+            });
           }
-        };
+        });
       });
+      return userShares;
     } catch (error) {
       console.error('Error loading shared posts:', error);
       return [];

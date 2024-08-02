@@ -25,6 +25,8 @@ import { RouterModule } from '@angular/router'; // add
 import { SearchResultsComponent } from './search-results/search-results.component'; // add
 import { MatIconModule } from '@angular/material/icon';
 import { UserProfileComponent } from './user-profile/user-profile.component'; // עדכן את הנתיב בהתאם למיקום של UserProfileComponent
+import { RegularPostComponent } from '../../pages/main/home/regular-post.component'; // add
+import { SharedPostComponent } from '../../pages/main/home/shared-post.component'; //add
 
 
 
@@ -39,6 +41,8 @@ import { UserProfileComponent } from './user-profile/user-profile.component'; //
         HeaderComponent,
         SearchResultsComponent, // add
         UserProfileComponent, // add
+        RegularPostComponent,
+        SharedPostComponent,    
     ],
     imports: [
         MainRoutingModule,
