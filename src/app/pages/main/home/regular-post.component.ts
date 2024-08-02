@@ -4,6 +4,8 @@ import { Post } from './home.component';
 @Component({
   selector: 'app-regular-post',
   templateUrl: './regular-post.component.html',
+  styleUrls: ['./home.component.scss']
+
 })
 export class RegularPostComponent {
   @Input() post!: Post;

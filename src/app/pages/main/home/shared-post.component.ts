@@ -4,6 +4,8 @@ import { Post } from './home.component';
 @Component({
   selector: 'app-shared-post',
   templateUrl: './shared-post.component.html',
+  styleUrls: ['./home.component.scss']
+
 })
 export class SharedPostComponent {
   @Input() post!: Post;
