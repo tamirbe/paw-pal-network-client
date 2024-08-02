@@ -291,6 +291,26 @@ export class HomeComponent implements OnInit {
     this.postToDelete = null;
   }
 
+
+
+    async confirmUnshare(post: Post) {
+    if (!post) {
+      return;
+    }
+
+    try {
+      console.log('Starting delete process for post:', post._id); 
+      const token = this.authService.getToken();
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+      await firstValueFrom(this.http.delete(`${this.apiUrl}/share/${post._id}`, { headers }));
+      console.log('Post deleted successfully');
+      this.posts = this.posts.filter(p => p._id !== post._id);
+      this.postToDelete = null;
+    } catch (error) {
+      console.error('Error deleting post:', error);
+    }
+  }
+
   async deletePost(post: Post) {
     if (!post) {
       return;
