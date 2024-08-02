@@ -95,27 +95,27 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  async loadSharedPosts(headers: HttpHeaders): Promise<Post[]> {
-    try {
-      const sharedPosts = await firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/share`, { headers }));
-      return sharedPosts.map(post => {
-        const shareDetails = post.shares.find(share => share.user === this.currentUser);
-        
-        return {
-          ...post,
-          sharedText: shareDetails ? shareDetails.text : '',
-          sharedAt: shareDetails ? new Date(shareDetails.createdAt) : undefined,
-          sharedBy: {
-            firstName: this.currentUserFirstName,
-            lastName: this.currentUserLastName
-          }
-        };
-      });
-    } catch (error) {
-      console.error('Error loading shared posts:', error);
-      return [];
-    }
+async loadSharedPosts(headers: HttpHeaders): Promise<Post[]> {
+  try {
+    const sharedPosts = await firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/share`, { headers }));
+    return sharedPosts.map(post => {
+      const shareDetails = post.shares.find(share => share.user === this.currentUser);
+      return {
+        ...post,
+        sharedText: shareDetails ? shareDetails.text : '',
+        sharedAt: shareDetails ? new Date(shareDetails.createdAt) : undefined,
+        sharedBy: {
+          firstName: this.currentUserFirstName,
+          lastName: this.currentUserLastName
+        },
+        isSharedPost: true // Adding this property to identify shared posts
+      };
+    });
+  } catch (error) {
+    console.error('Error loading shared posts:', error);
+    return [];
   }
+}
 
   sanitizeImageUrl(url: string): SafeUrl {
     return this.sanitizer.bypassSecurityTrustUrl(url);
