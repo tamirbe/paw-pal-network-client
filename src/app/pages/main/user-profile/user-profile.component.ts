@@ -175,7 +175,7 @@ export class UserProfileComponent implements OnInit {
   }
 
   sanitizeImageUrl(url: string): SafeUrl {
-
+    console.log(this.sanitizer.bypassSecurityTrustUrl(url));
     return this.sanitizer.bypassSecurityTrustUrl(url);
   }
 

@@ -106,8 +106,8 @@ export class HomeComponent implements OnInit {
           sharedText: shareDetails ? shareDetails.text : '',
           sharedAt: shareDetails ? new Date(shareDetails.createdAt) : undefined,
           sharedBy: {
-            firstName: this.currentUserFirstName,
-            lastName: this.currentUserLastName
+            firstName: 'ssd',
+            lastName: 'this.currentUserLastName'
           }
         };
       });
@@ -118,6 +118,7 @@ export class HomeComponent implements OnInit {
   }
 
   sanitizeImageUrl(url: string): SafeUrl {
+    console.log(this.sanitizer.bypassSecurityTrustUrl(url));
     return this.sanitizer.bypassSecurityTrustUrl(url);
   }
 
