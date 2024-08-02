@@ -13,34 +13,45 @@ interface Post {
   author: { username: string, firstName: string, lastName: string };
   createdAt: Date;
   likes: string[];
-  shares: string[];
-  savedBy: string[];
+  shares: { user: string, text: string, createdAt: Date }[];
+  saves: string[];
+  saved: boolean;
   liked: boolean;
   shared: boolean;
   systemPost?: boolean;
+  sharedText?: string;
+  sharedAt?: Date;
+  sharedBy?: { firstName: string, lastName: string };
 }
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
+  
 })
 export class HomeComponent implements OnInit {
   posts: Post[] = [];
   postForm!: FormGroup;
-  searchQuery: string = ''; // add
-  currentUser: string = ''; // הוסף משתנה לשם המשתמש הנוכחי
+  searchQuery: string = '';
+  currentUser: string = '';
   currentUserFirstName: string = '';
-  postToDelete: Post | null = null; // משתנה לשמירת הפוסט למחיקה
+  currentUserLastName: string = '';
+  postToDelete: Post | null = null;
   editingPost: Post | null = null;
   editSuccess: boolean = false;
   selectedFile: File | null = null;
   
 
+  private apiUrl = 'http://localhost:3000';
 
-  private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
-
-  constructor(private sanitizer: DomSanitizer,private router: Router, private authService: AuthService, private fb: FormBuilder, private http: HttpClient) { }
+  constructor(
+    private sanitizer: DomSanitizer,
+    private router: Router,
+    private authService: AuthService,
+    private fb: FormBuilder,
+    private http: HttpClient
+  ) { }
 
   ngOnInit(): void {
     this.postForm = this.fb.group({
@@ -54,11 +65,13 @@ export class HomeComponent implements OnInit {
   async loadFeed() {
     try {
       const token = this.authService.getToken();
-      console.log('Sending request to /feed with token:', token);
-  
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-      const userPosts  = await firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/feed`, { headers }));
-      
+  
+      const [userPosts, sharedPosts] = await Promise.all([
+        firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/feed`, { headers })),
+        this.loadSharedPosts(headers)
+      ]);
+  
       const systemPosts: Post[] = [
         {
           description: 'Welcome to our platform! Stay tuned for updates.',
@@ -66,29 +79,56 @@ export class HomeComponent implements OnInit {
           createdAt: new Date(),
           likes: [],
           shares: [],
-          savedBy: [],
+          saves: [],
+          saved: false,
           liked: false,
           shared: false,
           systemPost: true
         },
         // הוסף פוסטים נוספים של המערכת כאן
       ];
-      this.posts = [...systemPosts, ...userPosts ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      this.posts = [...systemPosts, ...userPosts, ...sharedPosts].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
       console.log('Posts loaded:', this.posts);
     } catch (error) {
       console.error('Error loading feed:', error);
     }
   }
+
+  async loadSharedPosts(headers: HttpHeaders): Promise<Post[]> {
+    try {
+      const sharedPosts = await firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/share`, { headers }));
+      return sharedPosts.map(post => {
+        const shareDetails = post.shares.find(share => share.user === this.currentUser);
+        
+        return {
+          ...post,
+          sharedText: shareDetails ? shareDetails.text : '',
+          sharedAt: shareDetails ? new Date(shareDetails.createdAt) : undefined,
+          sharedBy: {
+            firstName: 'ssd',
+            lastName: 'this.currentUserLastName'
+          }
+        };
+      });
+    } catch (error) {
+      console.error('Error loading shared posts:', error);
+      return [];
+    }
+  }
+
   sanitizeImageUrl(url: string): SafeUrl {
+    console.log(this.sanitizer.bypassSecurityTrustUrl(url));
     return this.sanitizer.bypassSecurityTrustUrl(url);
   }
+
   setCurrentUser() {
     const token = this.authService.getToken();
     if (token) {
       const decodedToken: any = this.parseJwt(token);
       this.currentUser = decodedToken.username; 
       this.currentUserFirstName = decodedToken.firstName;
+      this.currentUserLastName = decodedToken.lastName;
     }
   }
 
@@ -99,7 +139,6 @@ export class HomeComponent implements OnInit {
       const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
       }).join(''));
-  
       return JSON.parse(jsonPayload);
     } catch (error) {
       console.error('Failed to parse JWT:', error);
@@ -107,13 +146,11 @@ export class HomeComponent implements OnInit {
     }
   }
 
-
   onFileChange(event: any): void {
     const file = event.target.files[0];
-    this.selectedFile = file; // שמירת הקובץ במשתנה
+    this.selectedFile = file;
     this.postForm.patchValue({image: file})
   }
-
 
   async onSubmit() {
     if (this.postForm.invalid) {
@@ -123,16 +160,16 @@ export class HomeComponent implements OnInit {
     const formData = new FormData();
     formData.append('description', this.postForm.get('description')?.value);
     if (this.selectedFile) {
-        formData.append('image', this.selectedFile); // הוספת הקובץ ל-FormData
-      }
+      formData.append('image', this.selectedFile);
+    }
 
     try {
       const token = this.authService.getToken();
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
       const response = await firstValueFrom(this.http.post(`${this.apiUrl}/posts`, formData, { headers }));
       console.log('Success:', response);
-      this.loadFeed(); // Reload feed after successful submission
-      this.resetForm(); // איפוס הטופס לאחר השליחה
+      this.loadFeed();
+      this.resetForm();
     } catch (error) {
       console.error('Error:', error);
     }
@@ -146,16 +183,11 @@ export class HomeComponent implements OnInit {
   onTextAreaInput(event: any): void {
     const text = event.target.value;
     const isHebrew = /[\u0590-\u05FF]/.test(text);
-    if (isHebrew) {
-      event.target.style.direction = 'rtl';
-    } else {
-      event.target.style.direction = 'ltr';
-    }
+    event.target.style.direction = isHebrew ? 'rtl' : 'ltr';
   }
 
   getTextDirection(text: string): string {
-    const isHebrew = /[\u0590-\u05FF]/.test(text);
-    return isHebrew ? 'rtl' : 'ltr';
+    return /[\u0590-\u05FF]/.test(text) ? 'rtl' : 'ltr';
   }
 
   async likePost(post: Post) {
@@ -164,99 +196,89 @@ export class HomeComponent implements OnInit {
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
       
       if (post.liked) {
-        // Unlike post
-        await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/unlike`, {}, { headers }));
         post.liked = false;
         post.likes = post.likes.filter(like => like !== this.currentUser);
       } else {
-        // Like post
-        await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/like`, {}, { headers }));
         post.liked = true;
         post.likes.push(this.currentUser);
       }
+      await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/like`, {}, { headers }));
+
     } catch (error) {
       console.error('Error liking/unliking post:', error);
     }
   }
 
-  
-async sharePost(post: Post) {
-  try {
-    const token = this.authService.getToken();
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  async sharePost(post: Post) {
+    try {
+      const token = this.authService.getToken();
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
         
-    if (post.shared) {
-      // Unshare post
-      await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/unshare`, {}, { headers }));
-      post.shared = false;
-      post.shares = post.shares.filter(share => share !== this.currentUser); // Remove the current user from the shares array
-    } else {
-      // Share post
       const sharedPost: Post = await firstValueFrom(this.http.post<Post>(`${this.apiUrl}/posts/${post._id}/share`, {}, { headers }));
-      post.shared = true;
-      post.shares.push('shared'); // Add the current user to the shares array
-      this.posts.push(sharedPost); // Add the new shared post to the list
+
+      this.posts.push(sharedPost); 
+      this.loadFeed();
+    } catch (error) {
+      console.error('Error sharing/unsharing post:', error);
     }
-    //await this.loadFeed(); // Reload feed after successful share/unshare
-  } catch (error) {
-    console.error('Error sharing/unsharing post:', error);
   }
-}
 
-
-  
   async savePost(post: Post) {
     try {
       const token = this.authService.getToken();
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-      await firstValueFrom(this.http.post<Post>(`${this.apiUrl}/posts/${post._id}/save`, {}, { headers }));
-      post.savedBy.push('saved'); // This assumes you have a savedBy array in your Post model
-      console.log('Post saved:', post);
+
+      if (!post.saves) {
+        post.saves = [];
+      }
+
+      if (post.saved) {
+        post.saved = false;
+        post.saves = post.saves.filter(save => save !== this.currentUser);
+      } else {
+        post.saved = true;
+        post.saves.push(this.currentUser);
+      }
+      await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/save`, {}, { headers }));
+
     } catch (error) {
-      console.error('Error saving post:', error);
+      console.error('Error save/unsave post:', error);
     }
   }
 
   editPost(post: Post) {
-    this.editingPost = { ...post };  // Clone post to avoid modifying original object
+    this.editingPost = { ...post };
   }
 
-  // Save edit function
   async saveEdit() {
-        if (!this.editingPost) return;
+    if (!this.editingPost) return;
 
-        // יצירת הפוסט מחדש עם הפרטים הערוכים
-        const formData = new FormData();
-        formData.append('description', this.editingPost.description);
-        formData.append('image', this.postForm.get('image')?.value);
+    const formData = new FormData();
+    formData.append('description', this.editingPost.description);
+    formData.append('image', this.postForm.get('image')?.value);
     
-        try {
-          const token = this.authService.getToken();
-          const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    try {
+      const token = this.authService.getToken();
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
         
-          // מחיקה של הפוסט הקודם
-          await firstValueFrom(this.http.delete(`${this.apiUrl}/posts/${this.editingPost._id}`, { headers }));
-
-          await firstValueFrom(this.http.post(`${this.apiUrl}/posts`, formData, { headers }));
-          this.editSuccess = true;
-          this.editingPost = null;
-          await this.loadFeed();
-        } catch (error) {
-          console.error('Error editing post:', error);
-        }
-    
+      await firstValueFrom(this.http.delete(`${this.apiUrl}/posts/${this.editingPost._id}`, { headers }));
+      await firstValueFrom(this.http.post(`${this.apiUrl}/posts`, formData, { headers }));
+      this.editSuccess = true;
+      this.editingPost = null;
+      await this.loadFeed();
+    } catch (error) {
+      console.error('Error editing post:', error);
+    }
   }
     
   removeImage() {
-    this.postForm.patchValue({ image: null });  // Clear the file input value
+    this.postForm.patchValue({ image: null });
   }
-  
-  // Cancel edit function
+
   cancelEdit() {
     this.editingPost = null;
   }
-  
-  // Close success dialog
+
   closeSuccessDialog() {
     this.editSuccess = false;
   }
@@ -266,7 +288,7 @@ async sharePost(post: Post) {
   }
 
   cancelDelete() {
-    this.postToDelete = null; 
+    this.postToDelete = null;
   }
 
   async deletePost(post: Post) {
@@ -280,13 +302,12 @@ async sharePost(post: Post) {
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
       await firstValueFrom(this.http.delete(`${this.apiUrl}/posts/${post._id}`, { headers }));
       console.log('Post deleted successfully');
-      this.posts = this.posts.filter(p => p._id !== post._id); // Remove the post from the list after deletion
+      this.posts = this.posts.filter(p => p._id !== post._id);
       this.postToDelete = null;
     } catch (error) {
       console.error('Error deleting post:', error);
     }
   }
-  
   
   logout() {
     this.authService.logout();
