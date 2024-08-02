@@ -27,9 +27,11 @@
   </div>
   
   
+
+
   <div class="content-section">
     <div class="post" *ngFor="let post of posts">
-      <div *ngIf="post.description.startsWith('Shared Post:'); else regularPost">
+      <div *ngIf="post.description.startsWith('Shared Post:'); else regularOrSystemPost">
         <div class="shared-info" *ngIf="post.sharedText && post.sharedBy">
           <p><strong>Shared by {{ post.sharedBy.firstName }} {{ post.sharedBy.lastName }}:</strong> {{ post.sharedText }}</p>
           <span class="shared-date">{{ post.sharedAt | date:'short' }}</span>
@@ -55,7 +57,7 @@
           <button class="info-button delete-button" *ngIf="post.author.username === currentUser" (click)="confirmDelete(post)">Delete</button>
         </div>
       </div>
-      <ng-template #regularPost>
+      <ng-template #regularOrSystemPost>
         <div class="post-header">
           <ng-container *ngIf="!post.systemPost; else systemPost">
             <a [routerLink]="[post.author.username === currentUser ? '/profile' : '/another', post.author.username]" class="user-link">
@@ -75,7 +77,7 @@
           {{ post.description }}
         </p>
         <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image">
-        <div class="info-group">
+        <div *ngIf="!post.systemPost" class="info-group">
           <!-- כפתורים עבור פוסטים רגילים -->
           <button class="info-button" (click)="likePost(post)">
             {{ post.liked ? 'Unlike' : 'Like' }} ({{ post.likes.length }})
@@ -92,8 +94,7 @@
       </ng-template>
     </div>
   </div>
-  
-  
+    
   <!-- Edit post modal -->
   <div *ngIf="editingPost" class="edit-dialog">
     <form (ngSubmit)="saveEdit()">
