@@ -219,39 +219,40 @@
   </div>
 
 
-  <!-- Saved Content Section -->
-  <div *ngIf="savedMode">
-    <div class="saved-content-section">
-      <h2>Saved Content</h2>
-      <!-- Sort Options -->
-      <div class="sort-options">
-        <label>
-          <input type="radio" name="sort" (change)="sortedContent = sortPosts(savedContent, 'date')"
-            [checked]="sortOption === 'date'">
-          Sort by Date
-        </label>
-        <label>
-          <input type="radio" name="sort" (change)="sortedContent = sortPosts(savedContent, 'likes')"
-            [checked]="sortOption === 'likes'">
-          Sort by Likes
-        </label>
-      </div>
+<!-- Saved Content Section -->
+<div *ngIf="savedMode">
+  <div class="saved-content-section">
+    <h2>Saved Content</h2>
+    <!-- Sort Options -->
+    <div class="sort-options">
+      <label>
+        <input type="radio" name="sort" (change)="sortedContent = sortPosts(savedContent, 'date')"
+          [checked]="sortOption === 'date'">
+        Sort by Date
+      </label>
+      <label>
+        <input type="radio" name="sort" (change)="sortedContent = sortPosts(savedContent, 'likes')"
+          [checked]="sortOption === 'likes'">
+        Sort by Likes
+      </label>
+    </div>
 
-      <div class="scrollable-content">
-        <div *ngFor="let post of sortedContent" class="post">
-          <p>{{ post.description }}</p>
-          <div *ngIf="post.image">
-            <img [src]="post.image" alt="Post Image">
-          </div>
-          <p>author : {{post.authorName}}</p>
-          <p>Likes: {{ post.likes.length }}</p>
-          <p>Shares: {{ post.shares.length }}</p>
-          <p>Created At: {{ post.createdAt | date:'medium' }}</p>
+    <div class="scrollable-content">
+      <div *ngFor="let post of sortedContent" class="post">
+        <p>{{ post.description }}</p>
+        <div *ngIf="post.image">
+          <img [src]="post.image" alt="Post Image">
         </div>
+        <p>author : {{post.authorName}}</p>
+        <p>Likes: {{ post.likes.length }}</p>
+        <p>Shares: {{ post.shares.length }}</p>
+        <p>Created At: {{ post.createdAt | date:'medium' }}</p>
+        <button type="button" (click)="unsavePost(post)" class="btn">Unsave</button>
       </div>
     </div>
-    <button type="button" (click)="cancelAction()" class="btn">Return</button>
   </div>
+  <button type="button" (click)="cancelAction()" class="btn">Return</button>
+</div>
 
   <!-- Statistics Section -->
   <div *ngIf="statsMode" class="statistics-section">
