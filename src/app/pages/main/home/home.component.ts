@@ -23,7 +23,11 @@ interface Post {
   sharedAt?: Date;
   sharedBy?: { firstName: string, lastName: string };
 }
-
+interface Share {
+  user: string;
+  text: string;
+  createdAt: Date;
+}
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -293,24 +297,31 @@ export class HomeComponent implements OnInit {
 
 
 
-    async confirmUnshare(post: Post) {
-    if (!post) {
-      return;
-    }
-
-    try {
-      console.log('Starting delete process for post:', post._id); 
-      const token = this.authService.getToken();
-      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-      await firstValueFrom(this.http.delete(`${this.apiUrl}/share/${post._id}`, { headers }));
-      console.log('Post deleted successfully');
-      this.posts = this.posts.filter(p => p._id !== post._id);
-      this.postToDelete = null;
-    } catch (error) {
-      console.error('Error deleting post:', error);
-    }
+// פונקציה להסרת שיתוף
+async confirmUnshare(post: Post, userId: string, createdAt: Date) {
+  if (!post || !userId || !createdAt) {
+    return;
   }
 
+  try {
+    console.log('Starting delete process for share:', userId, createdAt); 
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    await firstValueFrom(this.http.delete(`${this.apiUrl}/Unshare/${post._id}/${userId}/${createdAt}`, { headers }));
+    console.log('Share deleted successfully');
+    
+    // עדכון רשימת השיתופים בלוקלי
+    post.shares = post.shares.filter(s => s.user !== userId || new Date(s.createdAt).getTime() !== new Date(createdAt).getTime());
+    
+    this.postToDelete = null;
+  } catch (error) {
+    console.error('Error deleting share:', error);
+  }
+  this.loadFeed();
+
+}
+  
+  
   async deletePost(post: Post) {
     if (!post) {
       return;

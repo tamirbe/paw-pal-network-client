@@ -28,7 +28,6 @@
   
   
 
-
   <div class="content-section">
     <div class="post" *ngFor="let post of posts">
       <div *ngIf="post.description.startsWith('Shared Post:'); else regularOrSystemPost">
@@ -54,7 +53,14 @@
           <button class="info-button" (click)="likePost(post)">
             {{ post.liked ? 'Unlike' : 'Like' }} ({{ post.likes.length }})
           </button>
-          <button class="info-button delete-button" *ngIf="post.author.username === currentUser" (click)="confirmUnshare(post)">Unshare</button>
+          <div *ngIf="post.shares.length > 0">
+            <div *ngFor="let share of post.shares">
+              <div>{{ share.text }}</div>
+            </div>
+            <button class="info-button delete-button" 
+                    *ngIf="post.author.username === currentUser" 
+                    (click)="confirmUnshare(post, post.shares[0].user, post.shares[0].createdAt)">Unshare</button>
+          </div>
         </div>
       </div>
       <ng-template #regularOrSystemPost>
