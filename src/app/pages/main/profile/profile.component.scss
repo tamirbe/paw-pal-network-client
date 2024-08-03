@@ -5,313 +5,270 @@ $success-color: #28a745;
 $success-hover: #218838;
 $danger-color: #dc3545;
 $danger-hover: #c82333;
-$secondary-color: #6c757d;
+$secondary-color: #f74c4c;
 $secondary-hover: #5a6268;
 $background-color: #f9f9f9;
 $text-color: #333;
 $font-family: 'Roboto', sans-serif;
 
+// Gradient Colors
+$gradient-start: #ff7e5f;
+$gradient-end: #feb47b;
+
+body {
+  font-family: $font-family;
+  background-color: $background-color;
+  color: $text-color;
+  margin: 0;
+  padding: 0;
+}
+
 .personal-area {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    font-family: $font-family;
+  max-width: 1000px;
+  margin: 20px auto;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
 
-    h1,
-    h2 {
-        color: #0056b3;
-        text-align: center;
-        margin-bottom: 20px;
-    }
+  h1,
+  h2 {
+    color: $primary-color;
+    text-align: center;
+    margin-bottom: 20px;
+  }
 
-    .user-details {
-        margin-bottom: 30px;
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 132px;
 
-        p {
-            color: #0056b3;
-            margin: 10px 0;
-            font-size: 1.1rem;
-        }
-    }
-
-
-
-
-    .sidebar {
-        position: fixed;
-        left: 0;
-        top: 132px;
-
+    @media (max-width: 1400px) {
         @media (max-width: 1400px) {
-            @media (max-width: 1400px) {
-                top: 82px;
-            }
+            top: 82px;
         }
+    }
 
-        background-color: #efebdf;
-        transition: left 0.3s ease;
-        padding: 0px 20px;
+    background-color: #efebdf;
+    transition: left 0.3s ease;
+    padding: 0px 20px;
 
-        .close-btn {
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 24px;
-            cursor: pointer;
-        }
+    button {
+      display: block;
+      background: none;
+      border: none;
+      padding: 10px;
+      text-align: left;
+      cursor: pointer;
+      width: 100%;
+      color: $text-color;
+      font-size: 1rem;
+      transition: background 0.3s, color 0.3s;
 
-        button {
-            display: block;
-            background: none;
-            border: none;
-            padding: 10px;
-            text-align: left;
-            cursor: pointer;
-            width: 100%;
-
-            &:hover {
-                background: #ebebeb;
-            }
-
-
-        }
+      &:hover {
+        background: $primary-color;
+        color: #fff;
+      }
     }
 
     .icon {
-        cursor: pointer;
-        width: 20px;
-        height: 20px;
-        color: #0056b3;
+      cursor: pointer;
+      width: 24px;
+      height: 24px;
+      color: $primary-color;
+      margin-bottom: 10px;
     }
+  }
 
-    mat-form-field {
-        width: 240px;
+  .user-details {
+    margin-bottom: 30px;
+    background-color: $background-color;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    p {
+      color: $primary-color;
+      margin: 10px 0;
+      font-size: 1.1rem;
     }
+  }
 
+  .edit-form,
+  .password-form,
+  .delete-form,
+  .following-section,
+  .content-section,
+  .favorite-content-section,
+  .saved-content-section,
+  .statistics-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
+    .form-group,
+    div {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 15px;
 
+      label {
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
 
-    .edit-form,
-    .password-form,
-    .delete-form,
-    .following-section,
-    .content-section,
-    .favorite-content-section,
-    .saved-content-section {
-        margin-bottom: 30px;
-
-        .form-group,
-        div {
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 15px;
-        }
-
-        input[type="text"],
-        input[type="email"] {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            width: 100%;
-            max-width: 400px;
-        }
-
-        button[type="submit"],
-        button[type="button"] {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-
-            &:not([type="button"]) {
-                background-color: $success-color;
-                color: white;
-
-                &:hover {
-                    background-color: $success-hover;
-                }
-            }
-
-            &[type="button"] {
-                background-color: $secondary-color;
-                color: white;
-
-                &:hover {
-                    background-color: $secondary-hover;
-                }
-            }
-        }
-
-        .error {
-            color: red;
-            font-size: 0.9rem;
-            margin-top: -10px;
-        }
-    }
-
-    .following-section,
-    .content-section,
-    .favorite-content-section,
-    .saved-content-section {
-        max-height: 600px;
-        overflow-y: auto;
+      input[type="text"],
+      input[type="email"],
+      select {
+        padding: 10px;
         border: 1px solid #ccc;
-        margin: 20px 0;
-        background-color: #ffffff;
-        border-radius: 8px;
-        padding: 15px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        border-radius: 5px;
+        width: 100%;
+        max-width: 400px;
+        margin-bottom: 15px;
+      }
 
-        ul {
-            list-style-type: none;
-            padding: 0;
+      button[type="submit"],
+      button[type="button"] {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background-color 0.3s;
 
-            li {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 8px 0;
-                border-bottom: 1px solid #ddd;
+        &:not([type="button"]) {
+          background: linear-gradient(45deg, $gradient-start, $gradient-end);
+          color: white;
 
-                span {
-                    cursor: pointer;
-                    transition: color 0.3s;
-
-                    &:hover {
-                        color: $primary-color;
-                    }
-                }
-
-                button {
-                    padding: 5px 10px;
-                    background-color: $danger-color;
-                    color: white;
-                    border: none;
-                    border-radius: 5px;
-                    cursor: pointer;
-                    font-size: 0.9rem;
-
-                    &:hover {
-                        background-color: $danger-hover;
-                    }
-                }
-            }
-        }
-
-        input[type="text"] {
-            margin-bottom: 10px;
-        }
-
-    }
-
-    .statistics-section {
-        margin: 20px;
-      
-        h2 {
-          margin-bottom: 20px;
-        }
-      
-        div {
-          margin-bottom: 30px;
-        }
-      
-        canvas {
-          max-width: 100%;
-        }
-      
-        .btn {
-          display: inline-block;
-          padding: 10px 20px;
-          margin-top: 20px;
-          background-color: #007bff;
-          color: #fff;
-          border: none;
-          border-radius: 5px;
-          cursor: pointer;
-      
           &:hover {
-            background-color: #0056b3;
+            background: linear-gradient(45deg, $gradient-end, $gradient-start);
+          }
+        }
+
+        &[type="button"] {
+          background-color: $secondary-color;
+          color: white;
+
+          &:hover {
+            background-color: $secondary-hover;
           }
         }
       }
-      
-}
 
-.post {
-    background: #fff;
-    border: 1px solid #ddd;
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
-    /* Add top margin here */
+      .error {
+        color: red;
+        font-size: 0.9rem;
+        margin-top: -10px;
+      }
+    }
 
-}
+    .scrollable-content {
+      max-height: 400px;
+      overflow-y: auto;
+      padding-right: 10px;
+    }
 
-.post-image {
-    max-width: 100%;
-    height: auto;
-    border-radius: 5px;
-    margin-bottom: 15px;
-}
+    .post {
+      background: #fff;
+      border: 1px solid #ddd;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
-.post-description {
-    font-size: 16px;
-    margin-bottom: 10px;
-}
+      .post-image {
+        max-width: 100%;
+        height: auto;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
 
-.post-author {
-    font-size: 14px;
-    color: #555;
-    margin-bottom: 10px;
-}
+      .post-description {
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+        color: $text-color;
+      }
 
-.post-author a {
-    text-decoration: none;
-    color: #007bff;
-}
+      .post-author {
+        font-size: 0.9rem;
+        color: $secondary-color;
+        margin-bottom: 10px;
+      }
 
-.post:last-child {
-    margin-bottom: 0;
-}
+      .post-author a {
+        text-decoration: none;
+        color: $primary-color;
 
-.sort-options {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
+        &:hover {
+          text-decoration: underline;
+        }
+      }
 
-    label {
-        margin-right: 15px;
+      .sort-options {
         display: flex;
         align-items: center;
+        margin-bottom: 20px;
 
-        input {
+        label {
+          margin-right: 15px;
+          display: flex;
+          align-items: center;
+
+          input {
             margin-right: 5px;
+          }
         }
+      }
+
+      .btn,
+      .btnDelete {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        font-size: 0.9rem;
+
+        &.btn {
+          background: linear-gradient(45deg, $gradient-start, $gradient-end);
+          color: #fff;
+
+          &:hover {
+            background: linear-gradient(45deg, $gradient-end, $gradient-start);
+          }
+        }
+
+        &.btnDelete {
+          background-color: $danger-color;
+          color: #fff;
+
+          &:hover {
+            background-color: $danger-hover;
+          }
+        }
+      }
     }
-}
+  }
 
-.btnDelete {
-    background-color: #dc3545;
-    color: #fff;
-    right: 10px;
-    bottom: 10px;
-}
-
-.btnDelete:hover {
-    background-color: #b62b39;
+  .statistics-section {
+    canvas {
+      width: 100%;
+      height: 300px;
+      margin-bottom: 20px;
+    }
+  }
 }
 
 ::ng-deep {
-    .mat-mdc-text-field-wrapper {
-        background-color: transparent !important;
-    }
+  .mat-mdc-text-field-wrapper {
+    background-color: transparent !important;
+  }
 
-    .mat-mdc-form-field-error-wrapper {
-        padding: 0;
-    }
+  .mat-mdc-form-field-error-wrapper {
+    padding: 0;
+  }
 }
