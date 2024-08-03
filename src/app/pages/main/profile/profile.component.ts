@@ -411,4 +411,21 @@ export class ProfileComponent implements OnInit {
   }
 
   
+  async unsavePost(post: Post) {
+    if (!post) {
+      return;
+    }
+  
+    try {
+      console.log('Starting unsave process for post:', post._id);
+      const token = this.authService.getToken();
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+      await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/save`, {}, { headers }));
+      console.log('Post unsaved successfully');
+      this.savedContent = this.savedContent.filter(p => p._id !== post._id); // Remove the post from the saved list
+    } catch (error) {
+      console.error('Error unsaving post:', error);
+    }
+    this.loadSavedContent();
+  }
 }
