@@ -42,7 +42,7 @@ export class ProfileComponent implements OnInit {
   passwordForm!: FormGroup;
   hide = true;// Form for password change
 
-  private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
+  private apiUrl = 'https://paw-pal-network-server.onrender.com'; // Adjust this to your backend URL
 
   constructor(private sanitizer: DomSanitizer, private fb: FormBuilder, private userService: UserService, private authService: AuthService, private http: HttpClient) { }
 
@@ -410,7 +410,7 @@ export class ProfileComponent implements OnInit {
     this.loadUploadedContent();
   }
 
-
+  
   async unsavePost(post: Post) {
     if (!post) {
       return;
@@ -428,6 +428,4 @@ export class ProfileComponent implements OnInit {
     }
     this.loadSavedContent();
   }
-    
-
 }
