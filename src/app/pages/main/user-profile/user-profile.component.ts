@@ -36,7 +36,7 @@ export class UserProfileComponent implements OnInit {
   userPosts: Post[] = []; // משתנה לשמירת הפוסטים של המשתמש
   isCurrentUser: boolean = false; // משתנה לבדיקה אם זה המשתמש הנוכחי
   following: string[] = []; // משתנה לשמירת רשימת העוקבים
-  private apiUrl = 'https://paw-pal-network-server.onrender.com'; // Adjust this to your backend URL
+  private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
   uploadedContent: any[] = [];
   sortedContent: Post[] = [];
   sortOption: string = 'date';

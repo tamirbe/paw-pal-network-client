@@ -47,7 +47,7 @@ export class HomeComponent implements OnInit {
   selectedFile: File | null = null;
   
 
-  private apiUrl = 'https://paw-pal-network-server.onrender.com'; // Adjust this to your backend URL
+  private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
 
   constructor(
     private sanitizer: DomSanitizer,
