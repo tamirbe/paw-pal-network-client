@@ -257,17 +257,16 @@
   <div *ngIf="statsMode" class="statistics-section">
     <h2>Statistics</h2>
     <div>
-      <p>Likes per Post</p>
-      <canvas id="likesChart"></canvas>
+      <p>Following: {{following.length}}</p>
+      <button mat-button color="primary" (click)="showFollowing()">Following</button>
     </div>
     <div>
-      <p>Content Uploaded per Month</p>
-      <canvas id="uploadsChart"></canvas>
+      <p>Uploaded Posts: {{uploadedContent.length}}</p>
+      <button mat-button color="primary" (click)="cancelAction()">Uploaded</button>
     </div>
     <div>
-      <p>Content Liked per Month</p>
-      <canvas id="likedChart"></canvas>
+      <p>Liked Posts: {{favoriteContent.length}}</p>
+      <button mat-button color="primary" (click)="favoritePosts()">Favorite Content</button>
     </div>
     <button type="button" (click)="cancelAction()" class="btn">Return</button>
   </div>
-</div>
