@@ -42,7 +42,7 @@ export class ProfileComponent implements OnInit {
   passwordForm!: FormGroup;
   hide = true;// Form for password change
 
-  private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
+  private apiUrl = 'https://paw-pal-network-server.onrender.com'; // Adjust this to your backend URL
 
   constructor(private sanitizer: DomSanitizer, private fb: FormBuilder, private userService: UserService, private authService: AuthService, private http: HttpClient) { }
 
@@ -59,7 +59,6 @@ export class ProfileComponent implements OnInit {
   sanitizeImageUrl(url: string): SafeUrl {
     return this.sanitizer.bypassSecurityTrustUrl(url);
   }
-
 
 
   // Initialize the forms
@@ -176,11 +175,6 @@ export class ProfileComponent implements OnInit {
     }
   }
 
-  loadStatistics(): void {
-
-
-  }
-
   // Handle form submissions
   onSubmitUserDetails(): void {
     if (this.userForm.invalid) {
@@ -276,7 +270,6 @@ export class ProfileComponent implements OnInit {
     this.uploadMode = false;
     this.savedMode = false;
     this.followMode = false;
-    this.loadStatistics();
   }
 
   savedPosts(): void {
@@ -417,24 +410,5 @@ export class ProfileComponent implements OnInit {
     this.loadUploadedContent();
   }
 
-
-  async unsavePost(post: Post) {
-    if (!post) {
-      return;
-    }
   
-    try {
-      console.log('Starting unsave process for post:', post._id);
-      const token = this.authService.getToken();
-      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-      await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/save`, {}, { headers }));
-      console.log('Post unsaved successfully');
-      this.savedContent = this.savedContent.filter(p => p._id !== post._id); // Remove the post from the saved list
-    } catch (error) {
-      console.error('Error unsaving post:', error);
-    }
-    this.loadSavedContent();
-  }
-    
-
 }
