@@ -119,6 +119,7 @@ export class ProfileComponent implements OnInit {
 
     this.http.get<any[]>(`${this.apiUrl}/favorite-content`, { headers }).subscribe(
       data => {
+        console.log('Favorite Content:', data);
         this.favoriteContent = data;
         this.sortedContent = this.sortPosts(this.favoriteContent, this.sortOption);
 
@@ -326,5 +327,13 @@ export class ProfileComponent implements OnInit {
     this.savedMode = false;
     this.favoriteMode = false;
     this.uploadMode = true;
+  }
+
+  onImageLoad(url: string): void {
+    console.log('Image loaded successfully:', url);
+  }
+  
+  onImageError(url: string): void {
+    console.error('Image failed to load:', url);
   }
 }

@@ -39,6 +39,7 @@ h2 {
 .content-section {
   margin-bottom: 30px;
 }
+
 .post-header {
   display: flex;
   align-items: center; /* יישור אנכי של התמונה והטקסט */
@@ -66,7 +67,6 @@ h2 {
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-top: 20px; /* Add top margin here */
-
 }
 
 .post-image {
@@ -242,7 +242,6 @@ h2 {
   background-color: #b62b39; 
 }
 
-
 .form-container {
   background: linear-gradient(135deg, #fffbfb, #c3d6f3); /* Gradient background */
   padding: 20px; /* Padding around the form */
@@ -343,9 +342,6 @@ h2 {
   justify-content: flex-end; /* הזזת הכפתור ימינה */
   margin-top: -50px; /* העלאת הכפתור כלפי מעלה */
 }
-
-
-
 
 /* עיצוב הכפתור להעלאת קובץ */
 .file-upload-container {
