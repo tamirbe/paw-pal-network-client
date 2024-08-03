@@ -157,6 +157,7 @@ export class ProfileComponent implements OnInit {
         this.sortedContent = this.sortPosts(this.savedContent, this.sortOption);
 
       });
+
   }
 
   goToUserProfile(username: string) {
@@ -197,8 +198,10 @@ export class ProfileComponent implements OnInit {
         // Handle error
       }
     );
+    this.editMode = false;
     this.loadUserData();
-  }
+    this.uploadMode = true;
+}
 
   onSubmitPasswordChange(): void {
     if (this.passwordForm.valid) {
@@ -428,6 +431,6 @@ export class ProfileComponent implements OnInit {
     } catch (error) {
       console.error('Error unsaving post:', error);
     }
-    this.loadUserFollowing();
+    this.loadSavedContent();
   }
 }
