@@ -197,6 +197,7 @@ export class ProfileComponent implements OnInit {
         // Handle error
       }
     );
+    this.loadUserData();
   }
 
   onSubmitPasswordChange(): void {
@@ -338,6 +339,7 @@ export class ProfileComponent implements OnInit {
       this.filteredFollowing = [...data];
       console.log(`Unfollowed ${username}`);
     });
+    this.loadUserFollowing();
   }
 
   // Remove uploaded content
@@ -426,6 +428,6 @@ export class ProfileComponent implements OnInit {
     } catch (error) {
       console.error('Error unsaving post:', error);
     }
-    this.loadSavedContent();
+    this.loadUserFollowing();
   }
 }
