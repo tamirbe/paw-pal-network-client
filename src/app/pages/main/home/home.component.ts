@@ -73,12 +73,12 @@ export class HomeComponent implements OnInit {
     try {
       const token = this.authService.getToken();
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-  
+      
       const [userPosts, sharedPosts] = await Promise.all([
         firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/feed`, { headers })),
         this.loadSharedPosts(headers)
       ]);
-  
+      
       const systemPosts: Post[] = [
         {
           description: 'Welcome to our platform! Stay tuned for updates.',
@@ -94,14 +94,15 @@ export class HomeComponent implements OnInit {
         },
         // הוסף פוסטים נוספים של המערכת כאן
       ];
+      
       this.posts = [...systemPosts, ...userPosts, ...sharedPosts].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-
+      
       console.log('Posts loaded:', this.posts);
     } catch (error) {
       console.error('Error loading feed:', error);
     }
   }
-
+  
   async loadSharedPosts(headers: HttpHeaders): Promise<Post[]> {
     try {
       const sharedPosts = await firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/share`, { headers }));
