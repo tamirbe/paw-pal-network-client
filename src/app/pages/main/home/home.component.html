@@ -126,5 +126,18 @@
       <button class="info-button confirm-button" (click)="deletePost(postToDelete)">Confirm</button>
     </div>
   </div>
+
+    <!-- Dialog for confirming post save -->
+    <div *ngIf="saveSuccess" class="success-dialog">
+      <p>Your post was saved successfully</p>
+      <button class="info-button ok-button" (click)="closeSaveSuccessDialog()">OK</button>
+    </div>
+  
+    <!-- Dialog for confirming post unsave -->
+    <div *ngIf="unsaveSuccess" class="success-dialog">
+      <p>Your post has been removed from your saved list</p>
+      <button class="info-button ok-button" (click)="closeUnsaveSuccessDialog()">OK</button>
+    </div>
+    
 </div>
 

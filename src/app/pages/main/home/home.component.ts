@@ -44,6 +44,8 @@ export class HomeComponent implements OnInit {
   postToDelete: Post | null = null;
   editingPost: Post | null = null;
   editSuccess: boolean = false;
+  saveSuccess: boolean = false;
+  unsaveSuccess: boolean = false;
   selectedFile: File | null = null;
   
 
@@ -244,7 +246,13 @@ export class HomeComponent implements OnInit {
         post.saves.push(this.currentUser);
       }
       await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/save`, {}, { headers }));
-
+      if (post.saved){
+        this.unsaveSuccess = false;
+        this.saveSuccess = true; }
+      else {
+        this.saveSuccess = false; 
+        this.unsaveSuccess = true;
+      }
     } catch (error) {
       console.error('Error save/unsave post:', error);
     }
@@ -285,6 +293,16 @@ export class HomeComponent implements OnInit {
 
   closeSuccessDialog() {
     this.editSuccess = false;
+  }
+
+
+  closeSaveSuccessDialog() { // חדש: סגירת דיאלוג הצלחה של שמירת פוסט
+    this.saveSuccess = false;
+  }
+
+
+  closeUnsaveSuccessDialog() {
+    this.unsaveSuccess = false;
   }
 
   confirmDelete(post: Post) {
