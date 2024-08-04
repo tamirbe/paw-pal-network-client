@@ -23,6 +23,11 @@ interface Post {
   sharedAt?: Date;
   sharedBy?: { firstName: string, lastName: string };
 }
+interface Share {
+  user: string;
+  text: string;
+  createdAt: Date;
+}
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
