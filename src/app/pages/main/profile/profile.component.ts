@@ -68,7 +68,7 @@ export class ProfileComponent implements OnInit {
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      pet: ['', Validators.required]
+      pet: ['No Pets']
     });
 
     this.passwordForm = this.fb.group({
@@ -198,10 +198,8 @@ export class ProfileComponent implements OnInit {
         // Handle error
       }
     );
-    this.editMode = false;
-    this.loadUserData();
-    this.uploadMode = true;
-}
+    window.location.reload();
+  }
 
   onSubmitPasswordChange(): void {
     if (this.passwordForm.valid) {
