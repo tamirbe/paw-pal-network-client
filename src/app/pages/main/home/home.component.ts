@@ -47,7 +47,8 @@ export class HomeComponent implements OnInit {
   saveSuccess: boolean = false;
   unsaveSuccess: boolean = false;
   selectedFile: File | null = null;
-  
+  selectedFileName: string | null = null;
+
 
   private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
 
@@ -124,7 +125,6 @@ export class HomeComponent implements OnInit {
   }
 
   sanitizeImageUrl(url: string): SafeUrl {
-    console.log(this.sanitizer.bypassSecurityTrustUrl(url));
     return this.sanitizer.bypassSecurityTrustUrl(url);
   }
 
@@ -154,8 +154,15 @@ export class HomeComponent implements OnInit {
 
   onFileChange(event: any): void {
     const file = event.target.files[0];
-    this.selectedFile = file;
-    this.postForm.patchValue({image: file})
+    if (file) {
+      this.selectedFile = file;
+      this.selectedFileName = file.name;
+      this.postForm.patchValue({
+        image: file
+      });
+      // Mark the field as touched to trigger validation
+      this.postForm.get('image')?.markAsTouched();
+    }
   }
 
   async onSubmit() {
@@ -173,7 +180,6 @@ export class HomeComponent implements OnInit {
       const token = this.authService.getToken();
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
       const response = await firstValueFrom(this.http.post(`${this.apiUrl}/posts`, formData, { headers }));
-      console.log('Success:', response);
       this.loadFeed();
       this.resetForm();
     } catch (error) {
@@ -184,6 +190,7 @@ export class HomeComponent implements OnInit {
   resetForm() {
     this.postForm.reset();
     this.selectedFile = null;
+    this.selectedFileName = null;
   }
 
   onTextAreaInput(event: any): void {
@@ -322,7 +329,6 @@ async confirmUnshare(post: Post, userId: string, createdAt: Date) {
   }
 
   try {
-    console.log('Starting delete process for share:', userId, createdAt); 
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     await firstValueFrom(this.http.delete(`${this.apiUrl}/Unshare/${post._id}/${userId}/${createdAt}`, { headers }));

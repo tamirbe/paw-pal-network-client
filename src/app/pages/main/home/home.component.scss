@@ -353,6 +353,16 @@ h2 {
   align-items: center;
   justify-content: center;
   margin-top: 20px;
+
+}
+
+.file-name {
+  font-size: 14px;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px; /* Limit the width of the file name */
 }
 
 .custom-file-upload {
@@ -383,3 +393,4 @@ h2 {
 #file-upload {
   display: none;
 }
+
