@@ -13,18 +13,21 @@
     <h4>Share things with your friends</h4>
     <form [formGroup]="postForm" (ngSubmit)="onSubmit()">
       <div class="file-upload-container">
-        <input id="file-upload" type="file" formControlName="image" (change)="onFileChange($event)" />
+        <input id="file-upload" type="file" (change)="onFileChange($event)" />
       </div>
       
       <textarea formControlName="description" placeholder="Write something... {{currentUserFirstName}}" (input)="onTextAreaInput($event)"></textarea>
       <label for="file-upload" class="custom-file-upload">
         <img src="../../../../assets/icons/addimage.svg" alt="Upload Icon" class="upload-icon">
       </label>
+      <div *ngIf="selectedFileName" class="file-name">{{ selectedFileName }}</div>
+  
       <div class="button-container">
         <button type="submit">Upload</button>
       </div>
-      </form>
+    </form>
   </div>
+  
   
   
 
