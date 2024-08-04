@@ -42,8 +42,7 @@ export class ProfileComponent implements OnInit {
   passwordForm!: FormGroup;
   hide = true;// Form for password change
 
-  private apiUrl = 'https://paw-pal-network-server.onrender.com'; // Adjust this to your backend URL
-
+  private apiUrl = 'https://paw-pal-network-server.onrender.com'; // Adjust this
   constructor(private sanitizer: DomSanitizer, private fb: FormBuilder, private userService: UserService, private authService: AuthService, private http: HttpClient) { }
 
   ngOnInit(): void {
@@ -68,7 +67,7 @@ export class ProfileComponent implements OnInit {
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      pet: ['', Validators.required]
+      pet: ['No Pets']
     });
 
     this.passwordForm = this.fb.group({
@@ -198,10 +197,8 @@ export class ProfileComponent implements OnInit {
         // Handle error
       }
     );
-    this.editMode = false;
-    this.loadUserData();
-    this.uploadMode = true;
-}
+    window.location.reload();
+  }
 
   onSubmitPasswordChange(): void {
     if (this.passwordForm.valid) {
