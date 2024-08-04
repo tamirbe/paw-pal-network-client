@@ -228,6 +228,7 @@
         <div class="info-group">
           <p>Likes: {{ post.likes.length }}</p>
           <p>Shares: {{ post.shares.length }}</p>
+          <button type="button" (click)="UnlikePost(post)" class="btn">Unlike</button>
         </div>
       </div>
     </div>

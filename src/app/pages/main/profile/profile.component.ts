@@ -342,7 +342,9 @@ export class ProfileComponent implements OnInit {
       this.filteredFollowing = [...data];
       console.log(`Unfollowed ${username}`);
     });
-    this.loadUserFollowing();
+    this.showFollowing();
+    this.showFollowing();
+
   }
 
   // Remove uploaded content
@@ -432,5 +434,17 @@ export class ProfileComponent implements OnInit {
       console.error('Error unsaving post:', error);
     }
     this.loadSavedContent();
+  }
+
+  async UnlikePost(post: Post) {
+    try {
+      const token = this.authService.getToken();
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+      await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/like`, {}, { headers }));
+
+    } catch (error) {
+      console.error('Error liking/unliking post:', error);
+    }
+    this.favoritePosts();
   }
 }
