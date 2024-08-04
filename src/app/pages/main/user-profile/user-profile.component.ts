@@ -178,7 +178,7 @@ export class UserProfileComponent implements OnInit {
 
     return this.sanitizer.bypassSecurityTrustUrl(url);
   }
-
+  
   onTextAreaInput(event: any): void {
     const text = event.target.value;
     const isHebrew = /[\u0590-\u05FF]/.test(text);
