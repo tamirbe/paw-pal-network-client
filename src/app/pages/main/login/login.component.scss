@@ -17,7 +17,6 @@
     padding-right: 40px;
     flex-direction: row;
 
-
     @media (max-width: 1100px) {
         flex-direction: column;
         padding-top: 100px;
@@ -43,6 +42,18 @@
             text-align: center;
             width: 100%;
         }
+    
+        @media (max-width: 600px) {
+            margin-top: 80px;
+            font-size: 24px; // גודל המלל במסכים קטנים (ניידים)
+            line-height: 30px;
+            text-align: center;
+            width: 100%;
+            padding: 0 20px;
+            margin-bottom: 20px;
+            font-weight: bold; // הפיכת המלל לבולד (עבה) לניידים
+        }
+    
     }
 
     .login-box {
@@ -104,7 +115,6 @@
             }
         }
 
-
         .registerForm {
             text-align: center;
             display: flex;
@@ -114,7 +124,7 @@
             height: 385px;
             width: 700px;
             padding: 29px 28px;
-            border: 2px solid #c6cdd6;
+            border: 2px solid #b2b8c0;
             border-radius: 20px;
             margin-right: 150px;
             box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
@@ -129,7 +139,6 @@
                     margin-bottom: 20px;
                 }
             }
-
         }
 
         mat-form-field {
@@ -166,7 +175,6 @@
             color: green;
             margin-top: 20px;
         }
-
     }
 
     ::ng-deep {
@@ -176,6 +184,56 @@
 
         .mat-mdc-form-field-error-wrapper {
             padding: 0;
+        }
+    }
+}
+
+/* Mobile specific styles */
+@media (max-width: 600px) {
+    .background {
+        filter: brightness(1.2); /* Brighten the background image */
+    }
+
+    .login-container {
+        flex-direction: column;
+        align-items: center;
+        height: auto;
+        padding-top: 20px;
+
+        .sentence-wrapper {
+            font-size: 24px; /* Increase font size for better readability */
+            line-height: 30px;
+            text-align: center;
+            width: 100%;
+            padding: 0 20px;
+            margin-bottom: 20px;
+            font-weight: bold; /* Make text bold */
+        }
+
+        .login-box {
+            width: 100%;
+            padding: 0 20px;
+
+            .loginForm,
+            .registerForm {
+                width: 100%;
+                padding: 20px;
+                margin: 0;
+                height: auto;
+                box-shadow: none;
+                border: none;
+
+                mat-form-field {
+                    width: 100%;
+                    margin-bottom: 15px;
+                }
+
+                .submitBtn,
+                .toggleBtn {
+                    width: 100%;
+                    margin-top: 10px;
+                }
+            }
         }
     }
 }
