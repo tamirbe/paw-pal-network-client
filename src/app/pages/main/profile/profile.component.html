@@ -127,7 +127,7 @@
     <h2>Delete Account</h2>
     <form (ngSubmit)="confirmDeleteAccount()">
       <div class="form-group">
-        <input type="password" placeholder="Current Password" name="currentPassword" required class="password-input"/>
+        <input type="password" placeholder="Current Password" name="currentPassword" required class="password-input" />
       </div>
       <div class="button-group">
         <button type="submit" class="btn confirm-btn">Confirm</button>
@@ -135,7 +135,6 @@
       <button type="button" (click)="cancelAction()" class="btn cancel-btn">Cancel</button>
     </form>
   </div>
-  
   <!-- Following Section -->
   <div *ngIf="followMode" class="following-section">
     <h2>Following</h2>
@@ -148,12 +147,21 @@
         <p>{{ username }}</p>
       </a>
       <div class="info-group">
-      <button type="button" (click)="unfollowUser(username)" class="btn unfollow-btn">Unfollow</button>
+        <button type="button" (click)="confirmUnfollowUser(username)" class="btn unfollow-btn">Unfollow</button>
       </div>
     </div>
     <button type="button" (click)="cancelAction()" class="btn return-btn">Return</button>
   </div>
-  
+
+  <!-- Confirmation Popup -->
+  <div *ngIf="showConfirmUnfollowPopup" class="popup-overlay">
+    <div class="popup-content">
+      <p>Are you sure you want to unfollow {{ userToUnfollow }}?</p>
+      <button (click)="unfollowUser(userToUnfollow)">Yes</button>
+      <button (click)="cancelUnfollow()">No</button>
+    </div>
+  </div>
+
 
   <!-- Uploaded Content Section -->
   <div *ngIf="uploadMode" class="content-section">
@@ -177,7 +185,8 @@
       <div class="post" *ngFor="let post of sortedContent">
         <div class="post-header">
           <a [routerLink]="['/another', user?.username]" class="user-link">
-            <img [src]="'../../../../assets/icons/userprofile.svg'" alt="Profile Image" class="profile-image" width="35" height="35">
+            <img [src]="'../../../../assets/icons/userprofile.svg'" alt="Profile Image" class="profile-image" width="35"
+              height="35">
             <strong>{{ user?.firstName }} {{ user?.lastName }} ({{ user?.username }})</strong>
           </a>
           <span class="post-date">{{ post.createdAt | date:'short' }}</span>
@@ -185,7 +194,8 @@
         <p class="post-description" [ngStyle]="{'direction': getTextDirection(post.description)}">
           {{ post.description }}
         </p>
-        <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image" width="120" height="120">
+        <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image" width="120"
+          height="120">
         <div class="info-group">
           <p>Likes: {{ post.likes.length }}</p>
           <p>Shares: {{ post.shares.length }}</p>
@@ -216,7 +226,8 @@
       <div class="post" *ngFor="let post of sortedContent">
         <div class="post-header">
           <a [routerLink]="['/another', user?.username]" class="user-link">
-            <img [src]="'../../../../assets/icons/userprofile.svg'" alt="Profile Image" class="profile-image" width="35" height="35">
+            <img [src]="'../../../../assets/icons/userprofile.svg'" alt="Profile Image" class="profile-image" width="35"
+              height="35">
             <strong>{{ user?.firstName }} {{ user?.lastName }} ({{ user?.username }})</strong>
           </a>
           <span class="post-date">{{ post.createdAt | date:'short' }}</span>
@@ -224,7 +235,8 @@
         <p class="post-description" [ngStyle]="{'direction': getTextDirection(post.description)}">
           {{ post.description }}
         </p>
-        <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image" width="120" height="120">
+        <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image" width="120"
+          height="120">
         <div class="info-group">
           <p>Likes: {{ post.likes.length }}</p>
           <p>Shares: {{ post.shares.length }}</p>
@@ -256,7 +268,8 @@
       <div class="post" *ngFor="let post of sortedContent">
         <div class="post-header">
           <a [routerLink]="['/another', user?.username]" class="user-link">
-            <img [src]="'../../../../assets/icons/userprofile.svg'" alt="Profile Image" class="profile-image" width="35" height="35">
+            <img [src]="'../../../../assets/icons/userprofile.svg'" alt="Profile Image" class="profile-image" width="35"
+              height="35">
             <strong>{{ user?.firstName }} {{ user?.lastName }} ({{ user?.username }})</strong>
           </a>
           <span class="post-date">{{ post.createdAt | date:'short' }}</span>
@@ -264,7 +277,8 @@
         <p class="post-description" [ngStyle]="{'direction': getTextDirection(post.description)}">
           {{ post.description }}
         </p>
-        <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image" width="120" height="120">
+        <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image" width="120"
+          height="120">
         <div class="info-group">
           <p>Likes: {{ post.likes.length }}</p>
           <p>Shares: {{ post.shares.length }}</p>
