@@ -44,6 +44,8 @@ export class ProfileComponent implements OnInit {
 
   showConfirmUnfollowPopup: boolean = false; // משתנה לניהול חלון ה-Pop-up
   userToUnfollow: string = ''; // שם המשתמש למחיקה
+  deletePassword: string = ''; // משתנה לשמירת הסיסמה לאישור מחיקת חשבון
+  showConfirmDeletePopup: boolean = false; // משתנה לניהול חלון ה-Pop-up למחיקת החשבון
 
   private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
 
@@ -360,8 +362,13 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  // Confirm and cancel actions
+  // Confirm and cancel actions for account deletion
   confirmDeleteAccount(): void {
+    this.showConfirmDeletePopup = true;
+  }
+
+  // Confirm and cancel actions
+  deleteAccountConfirmed(): void {
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
@@ -372,8 +379,16 @@ export class ProfileComponent implements OnInit {
       })
     ).subscribe(() => {
       console.log('Account deleted successfully');
-      // Handle post-deletion logic
+      this.authService.logout(); // If you have a logout function in your auth service
+      window.location.href = '/login'; // Navigate to login page
     });
+    this.showConfirmDeletePopup = false;
+  }
+
+
+  cancelDeleteAccount(): void {
+    this.showConfirmDeletePopup = false;
+    this.cancelAction();
   }
 
   cancelAction(): void {
@@ -386,6 +401,7 @@ export class ProfileComponent implements OnInit {
     this.followMode = false;
     this.uploadMode = true;
   }
+
 
   cancelEdit(): void {
     this.loadUserData();

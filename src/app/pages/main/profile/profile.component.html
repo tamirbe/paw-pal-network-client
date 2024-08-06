@@ -127,7 +127,6 @@
     <h2>Delete Account</h2>
     <form (ngSubmit)="confirmDeleteAccount()">
       <div class="form-group">
-        <input type="password" placeholder="Current Password" name="currentPassword" required class="password-input" />
       </div>
       <div class="button-group">
         <button type="submit" class="btn confirm-btn">Confirm</button>
@@ -135,6 +134,25 @@
       <button type="button" (click)="cancelAction()" class="btn cancel-btn">Cancel</button>
     </form>
   </div>
+
+  <!-- Delete Account Confirmation Popup -->
+  <div *ngIf="showConfirmDeletePopup" class="popup-overlay">
+    <div class="popup-content">
+      <p>Are you sure you want to delete your account?</p>
+      <button (click)="deleteAccountConfirmed()">Yes</button>
+      <button (click)="cancelDeleteAccount()">No</button>
+    </div>
+  </div>
+
+  <!-- Delete Account Confirmation Popup -->
+  <div *ngIf="showConfirmDeletePopup" class="popup-overlay">
+    <div class="popup-content">
+      <p>Are you sure you want to delete your account?</p>
+      <button (click)="deleteAccountConfirmed()">Yes</button>
+      <button (click)="cancelDeleteAccount()">No</button>
+    </div>
+  </div>
+
   <!-- Following Section -->
   <div *ngIf="followMode" class="following-section">
     <h2>Following</h2>
