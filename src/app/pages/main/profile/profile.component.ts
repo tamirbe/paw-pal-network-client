@@ -173,7 +173,7 @@ export class ProfileComponent implements OnInit {
         username.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
-    console.log("Hello world222");
+    console.log("Hello check");
   }
 
   // Handle form submissions
