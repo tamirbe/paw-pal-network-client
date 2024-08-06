@@ -42,6 +42,9 @@ export class ProfileComponent implements OnInit {
   passwordForm!: FormGroup;
   hide = true;// Form for password change
 
+  showConfirmUnfollowPopup: boolean = false; // משתנה לניהול חלון ה-Pop-up
+  userToUnfollow: string = ''; // שם המשתמש למחיקה
+
   private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
 
   constructor(private sanitizer: DomSanitizer, private fb: FormBuilder, private userService: UserService, private authService: AuthService, private http: HttpClient) { }
@@ -59,7 +62,6 @@ export class ProfileComponent implements OnInit {
   sanitizeImageUrl(url: string): SafeUrl {
     return this.sanitizer.bypassSecurityTrustUrl(url);
   }
-
 
   // Initialize the forms
   private initForms(): void {
@@ -170,7 +172,7 @@ export class ProfileComponent implements OnInit {
     if (!searchTerm) {
       this.filteredFollowing = this.following;
     } else {
-      this.filteredFollowing = this.following.filter(username => 
+      this.filteredFollowing = this.following.filter(username =>
         username.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
@@ -206,21 +208,7 @@ export class ProfileComponent implements OnInit {
       const { currentPassword, newPassword } = this.passwordForm.value;
       const token = this.authService.getToken();
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
-      this.http.post(`${this.apiUrl}/change-password`, { currentPassword, newPassword }, { headers }).pipe(
-        catchError(error => {
-          console.error('Error changing password:', error);
-          return [];
-        })
-      ).subscribe(() => {
-        console.log('Password changed successfully');
-      });
-      this.passwordMode = false;
-      this.loadUserData();
-      this.uploadMode = true;
-      this.passwordForm.reset();
-    } else {
-      console.error('Password form is invalid');
+      // Add your password change logic here
     }
   }
 
@@ -298,7 +286,7 @@ export class ProfileComponent implements OnInit {
     this.loadFavoriteContent();
   }
 
-  showFollowing(): void{
+  showFollowing(): void {
     this.favoriteMode = false;
     this.savedMode = false;
     this.statsMode = false;
@@ -325,6 +313,11 @@ export class ProfileComponent implements OnInit {
   }
 
   // Unfollow user
+  confirmUnfollowUser(username: string): void {
+    this.showConfirmUnfollowPopup = true;
+    this.userToUnfollow = username;
+  }
+
   unfollowUser(username: string): void {
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
@@ -340,9 +333,14 @@ export class ProfileComponent implements OnInit {
       this.filteredFollowing = [...data];
       console.log(`Unfollowed ${username}`);
     });
+    this.showConfirmUnfollowPopup = false;
     this.showFollowing();
     this.showFollowing();
+  }
 
+  cancelUnfollow(): void {
+    this.showConfirmUnfollowPopup = false;
+    this.userToUnfollow = '';
   }
 
   // Remove uploaded content
@@ -394,8 +392,6 @@ export class ProfileComponent implements OnInit {
     this.cancelAction();
   }
 
-
-
   async deletePost(post: Post) {
     if (!post) {
       return;
@@ -415,12 +411,11 @@ export class ProfileComponent implements OnInit {
     this.loadUploadedContent();
   }
 
-  
   async unsavePost(post: Post) {
     if (!post) {
       return;
     }
-  
+
     try {
       console.log('Starting unsave process for post:', post._id);
       const token = this.authService.getToken();
