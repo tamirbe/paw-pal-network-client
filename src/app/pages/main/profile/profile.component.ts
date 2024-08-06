@@ -61,7 +61,6 @@ export class ProfileComponent implements OnInit {
   }
 
 
-
   // Initialize the forms
   private initForms(): void {
     this.userForm = this.fb.group({
@@ -170,14 +169,10 @@ export class ProfileComponent implements OnInit {
     if (!searchTerm) {
       this.filteredFollowing = this.following;
     } else {
-      this.filteredFollowing = this.following.filter(username => 
+      this.filteredFollowing = this.following.filter(username =>
         username.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
-  }
-
-  loadStatistics(): void {
-
 
   }
 
@@ -228,6 +223,22 @@ export class ProfileComponent implements OnInit {
     }
   }
 
+  // Confirm and cancel actions
+  confirmDeleteAccount(): void {
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    this.http.delete(`${this.apiUrl}/delete-account`, { headers }).pipe(
+      catchError(error => {
+        console.error('Error deleting account:', error);
+        return [];
+      })
+    ).subscribe(() => {
+      console.log('Account deleted successfully');
+      // Handle post-deletion logic
+    });
+  }
+
   // Menu toggle
   toggleMenu() {
     this.showMenu = !this.showMenu;
@@ -276,7 +287,6 @@ export class ProfileComponent implements OnInit {
     this.uploadMode = false;
     this.savedMode = false;
     this.followMode = false;
-    this.loadStatistics();
   }
 
   savedPosts(): void {
@@ -303,7 +313,7 @@ export class ProfileComponent implements OnInit {
     this.loadFavoriteContent();
   }
 
-  showFollowing(): void{
+  showFollowing(): void {
     this.favoriteMode = false;
     this.savedMode = false;
     this.statsMode = false;
@@ -364,21 +374,6 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  // Confirm and cancel actions
-  confirmDeleteAccount(): void {
-    const token = this.authService.getToken();
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
-    this.http.delete(`${this.apiUrl}/delete-account`, { headers }).pipe(
-      catchError(error => {
-        console.error('Error deleting account:', error);
-        return [];
-      })
-    ).subscribe(() => {
-      console.log('Account deleted successfully');
-      // Handle post-deletion logic
-    });
-  }
 
   cancelAction(): void {
     this.editMode = false;
