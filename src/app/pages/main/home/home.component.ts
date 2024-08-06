@@ -209,19 +209,31 @@ export class HomeComponent implements OnInit {
       const token = this.authService.getToken();
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
       
+      
       if (post.liked) {
         post.liked = false;
-        post.likes = post.likes.filter(like => like !== this.currentUser);
-      } else {
+        post.likes = post.likes.filter(like => like !== this.currentUser); // מסיר את המשתמש מרשימת הלייקים
+        } 
+        else {
         post.liked = true;
         post.likes.push(this.currentUser);
       }
       await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/like`, {}, { headers }));
+      this.updateLikes(post);
 
     } catch (error) {
       console.error('Error liking/unliking post:', error);
     }
   }
+
+  updateLikes(post: Post) {
+    const updatedPostIndex = this.posts.findIndex(p => p._id === post._id);
+    if (updatedPostIndex !== -1) {
+      this.posts[updatedPostIndex] = { ...post };
+    }
+  }
+
+  
 
   async sharePost(post: Post) {
     try {

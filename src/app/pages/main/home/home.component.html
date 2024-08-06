@@ -32,8 +32,8 @@
   
 
   <div class="content-section">
-    <div class="post" *ngFor="let post of posts">
-      <div *ngIf="post.description.startsWith('Shared Post:'); else regularOrSystemPost">
+    <div class="post" *ngFor="let post of posts; let i = index" [style.--post-index]="i">
+        <div *ngIf="post.description.startsWith('Shared Post:'); else regularOrSystemPost">
         <div class="shared-info" *ngIf="post.sharedText && post.sharedBy">
           <p><strong>Shared by {{ post.sharedBy.firstName }} {{ post.sharedBy.lastName }}:</strong> {{ post.sharedText }}</p>
           <span class="shared-date">{{ post.sharedAt | date:'short' }}</span>
