@@ -390,14 +390,6 @@ export class ProfileComponent implements OnInit {
     this.uploadMode = true;
   }
 
-<<<<<<< HEAD
-  onImageLoad(url: string): void {
-    console.log('Image loaded successfully:', url);
-  }
-  
-  onImageError(url: string): void {
-    console.error('Image failed to load:', url);
-=======
   cancelEdit(): void {
     this.loadUserData();
     this.cancelAction();
@@ -453,6 +445,5 @@ export class ProfileComponent implements OnInit {
       console.error('Error liking/unliking post:', error);
     }
     this.favoritePosts();
->>>>>>> b518b4dc76a3cad3f031858ee9c16c7c9c4569ff
   }
 }
