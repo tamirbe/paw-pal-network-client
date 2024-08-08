@@ -450,3 +450,24 @@ h2 {
     transform: translateY(0);
   }
 }
+
+
+
+
+.post-type {
+  color: #0054b4; /* Or any color you prefer */
+  margin-bottom: 10px;
+  display: block;
+  font-size: 12px;
+}
+
+/* rest of your existing CSS */
+.content-section {
+  margin-bottom: 30px;
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+}
+

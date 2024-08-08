@@ -1,16 +1,28 @@
 <div class="about-container">
-  <h2>About Us</h2>
-  <div *ngIf="aboutContent$ | async as content">
-    <p>{{ content.description }}</p>
+  <div class="about-section">
+    <h2>About Us</h2>
+    <p>We are a group of dedicated software engineering students working on an exciting project to connect pet lovers through a social network. Our members include Roei, Tamir, Aviram, Nir, Elad, Neria, and Idan. Stay tuned for more updates!</p>
+  </div>
 
-    <h3>Project</h3>
-    <p>{{ content.project }}</p>
+  <div class="project-section">
+    <h2>Project</h2>
+    <p>Our project, PawPal Network, is a social network designed to help pet lovers connect, share experiences, and celebrate the joys of pet ownership.</p>
+  </div>
 
-    <h3>Members</h3>
+  <div class="members-section">
+    <h2>Members</h2>
     <ul>
-      <li *ngFor="let member of content.members">{{ member }}</li>
+      <li>Roei</li>
+      <li>Tamir</li>
+      <li>Aviram</li>
+      <li>Nir</li>
+      <li>Elad</li>
+      <li>Neria</li>
+      <li>Idan</li>
     </ul>
   </div>
+
+
 
 
   <section class="contact">
