@@ -7,29 +7,34 @@
     </form>
   </div>
 
+
+
   <div class="form-container">
     <h4>Share things with your friends</h4>
     <form [formGroup]="postForm" (ngSubmit)="onSubmit()">
       <div class="file-upload-container">
-        <input id="file-upload" type="file" formControlName="image" (change)="onFileChange($event)" />
+        <input id="file-upload" type="file" (change)="onFileChange($event)" />
       </div>
       
       <textarea formControlName="description" placeholder="Write something... {{currentUserFirstName}}" (input)="onTextAreaInput($event)"></textarea>
       <label for="file-upload" class="custom-file-upload">
         <img src="../../../../assets/icons/addimage.svg" alt="Upload Icon" class="upload-icon">
       </label>
+      <div *ngIf="selectedFileName" class="file-name">{{ selectedFileName }}</div>
+  
       <div class="button-container">
         <button type="submit">Upload</button>
       </div>
-      </form>
+    </form>
   </div>
+  
   
   
 
 
   <div class="content-section">
-    <div class="post" *ngFor="let post of posts">
-      <div *ngIf="post.description.startsWith('Shared Post:'); else regularOrSystemPost">
+    <div class="post" *ngFor="let post of posts; let i = index" [style.--post-index]="i">
+        <div *ngIf="post.description.startsWith('Shared Post:'); else regularOrSystemPost">
         <div class="shared-info" *ngIf="post.sharedText && post.sharedBy">
           <p><strong>Shared by {{ post.sharedBy.firstName }} {{ post.sharedBy.lastName }}:</strong> {{ post.sharedText }}</p>
           <span class="shared-date">{{ post.sharedAt | date:'short' }}</span>
@@ -52,7 +57,14 @@
           <button class="info-button" (click)="likePost(post)">
             {{ post.liked ? 'Unlike' : 'Like' }} ({{ post.likes.length }})
           </button>
-          <button class="info-button delete-button" *ngIf="post.author.username === currentUser" (click)="confirmUnshare(post)">Unshare</button>
+          <div *ngIf="post.shares.length > 0">
+            <div *ngFor="let share of post.shares">
+              <div>{{ share.text }}</div>
+            </div>
+            <button class="info-button delete-button" 
+                    *ngIf="post.author.username === currentUser" 
+                    (click)="confirmUnshare(post, post.shares[0].user, post.shares[0].createdAt)">Unshare</button>
+          </div>
         </div>
       </div>
       <ng-template #regularOrSystemPost>
@@ -118,4 +130,17 @@
       <button class="info-button confirm-button" (click)="deletePost(postToDelete)">Confirm</button>
     </div>
   </div>
+
+    <!-- Dialog for confirming post save -->
+    <div *ngIf="saveSuccess" class="success-dialog">
+      <p>Your post was saved successfully</p>
+      <button class="info-button ok-button" (click)="closeSaveSuccessDialog()">OK</button>
+    </div>
+  
+    <!-- Dialog for confirming post unsave -->
+    <div *ngIf="unsaveSuccess" class="success-dialog">
+      <p>Your post has been removed from your saved list</p>
+      <button class="info-button ok-button" (click)="closeUnsaveSuccessDialog()">OK</button>
+    </div>
+    
 </div>

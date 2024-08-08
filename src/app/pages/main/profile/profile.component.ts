@@ -8,6 +8,7 @@ import { switchMap, catchError } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../../../auth.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
@@ -18,8 +19,10 @@ export class ProfileComponent implements OnInit {
 
   user?: User | null;
   post?: Post | null;
+  postToDelete: Post | null = null; // משתנה לשמירת הפוסט למחיקה
   following: string[] = [];
   filteredFollowing: string[] = [];
+  searchTerm: string = '';
   uploadedContent: any[] = [];
   favoriteContent: any[] = [];
   savedContent: any[] = [];
@@ -33,8 +36,11 @@ export class ProfileComponent implements OnInit {
   uploadMode: boolean = true;
   savedMode: boolean = false;
   favoriteMode: boolean = false;
+  followMode: boolean = false;
+  petOptions: string[] = ['Dog', 'Cat', 'Bird', 'Fish', 'Hamster', 'Rabbit', 'Guniea Pig', 'Turtle', 'Snake', 'Lizard', 'No Pets'];
   userForm!: FormGroup; // Form for personal details
-  passwordForm!: FormGroup; // Form for password change
+  passwordForm!: FormGroup;
+  hide = true;// Form for password change
 
   private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
 
@@ -62,14 +68,18 @@ export class ProfileComponent implements OnInit {
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      pet: ['', Validators.required]
+      pet: ['No Pets']
     });
 
     this.passwordForm = this.fb.group({
       currentPassword: ['', Validators.required],
-      newPassword: ['', [Validators.required, Validators.minLength(6)]],
+      newPassword: ['', [
+        Validators.required,
+        Validators.minLength(8), Validators.maxLength(20),
+        Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*])[A-Za-z\\d!@#$%^&*].{8,}$')
+      ]],
       confirmPassword: ['', Validators.required]
-    }, { validators: ProfileComponent.passwordMatchValidator });
+    });
   }
 
   // Validator to ensure new and confirm passwords match
@@ -77,6 +87,10 @@ export class ProfileComponent implements OnInit {
     const newPassword = form.get('newPassword')?.value;
     const confirmPassword = form.get('confirmPassword')?.value;
     return newPassword === confirmPassword ? null : { passwordMismatch: true };
+  }
+
+  togglePasswordVisibility(): void {
+    this.hide = !this.hide;
   }
 
   // Load user profile and related data
@@ -97,9 +111,15 @@ export class ProfileComponent implements OnInit {
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    this.http.get<any[]>(`${this.apiUrl}/following`, { headers }).subscribe(data => {
-      this.following = data;
-    });
+    this.http.get<{ following: string[] }>(`${this.apiUrl}/current-user-following`, { headers }).subscribe(
+      data => {
+        this.following = data.following;
+        this.filteredFollowing = data.following;
+      },
+      error => {
+        console.error('Error loading following users:', error);
+      }
+    );
   }
 
   private loadUploadedContent(): void {
@@ -121,6 +141,7 @@ export class ProfileComponent implements OnInit {
       data => {
         console.log('Favorite Content:', data);
         this.favoriteContent = data;
+        console.log(data);
         this.sortedContent = this.sortPosts(this.favoriteContent, this.sortOption);
 
       });
@@ -130,7 +151,14 @@ export class ProfileComponent implements OnInit {
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    this.http.get<any[]>(`${this.apiUrl}/saved-content`, { headers }).subscribe(data => this.savedContent = data);
+    this.http.get<any[]>(`${this.apiUrl}/saved-content`, { headers }).subscribe(
+      data => {
+        this.savedContent = data;
+        console.log(data);
+        this.sortedContent = this.sortPosts(this.savedContent, this.sortOption);
+
+      });
+
   }
 
   goToUserProfile(username: string) {
@@ -139,33 +167,39 @@ export class ProfileComponent implements OnInit {
   }
 
   // Search functionality for following users
-  searchFollowing(event: Event) {
-    const query = (event.target as HTMLInputElement).value;
-    this.filteredFollowing = this.following.filter(user =>
-      user.toLowerCase().includes(query.toLowerCase())
-    );
+  filterFollowing(searchTerm: string): void {
+    if (!searchTerm) {
+      this.filteredFollowing = this.following;
+    } else {
+      this.filteredFollowing = this.following.filter(username => 
+        username.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
   }
 
   // Handle form submissions
   onSubmitUserDetails(): void {
-    if (this.userForm.valid) {
-      const token = this.authService.getToken();
-      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
-      this.http.put(`${this.apiUrl}/profile`, this.userForm.value, { headers }).pipe(
-        switchMap(() => this.http.get<User>(`${this.apiUrl}/profile`, { headers })),
-        catchError(error => {
-          console.error('Error updating user profile:', error);
-          return [];
-        })
-      ).subscribe(data => {
-        this.user = data;
-        console.log('User profile updated successfully');
-        this.editMode = false;
-      });
-    } else {
-      console.error('User details form is invalid');
+    if (this.userForm.invalid) {
+      return;
     }
+
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    this.http.put(`${this.apiUrl}/user-details`, this.userForm.value, { headers }).subscribe(
+      response => {
+        console.log('User details updated successfully');
+        // Handle success
+        this.editMode = false;
+        this.loadUserData();
+        this.uploadMode = true;
+      },
+      error => {
+        console.error('Error updating user details', error);
+        // Handle error
+      }
+    );
+    window.location.reload();
   }
 
   onSubmitPasswordChange(): void {
@@ -181,9 +215,11 @@ export class ProfileComponent implements OnInit {
         })
       ).subscribe(() => {
         console.log('Password changed successfully');
-        this.passwordForm.reset();
-        this.passwordMode = false;
       });
+      this.passwordMode = false;
+      this.loadUserData();
+      this.uploadMode = true;
+      this.passwordForm.reset();
     } else {
       console.error('Password form is invalid');
     }
@@ -203,6 +239,7 @@ export class ProfileComponent implements OnInit {
     this.statsMode = false;
     this.deleteMode = false;
     this.passwordMode = false;
+    this.followMode = false;
   }
 
   changePassword(): void {
@@ -213,6 +250,7 @@ export class ProfileComponent implements OnInit {
     this.savedMode = false;
     this.statsMode = false;
     this.deleteMode = false;
+    this.followMode = false;
   }
 
   deleteAccount(): void {
@@ -223,6 +261,7 @@ export class ProfileComponent implements OnInit {
     this.uploadMode = false;
     this.savedMode = false;
     this.statsMode = false;
+    this.followMode = false;
   }
 
   viewStatistics(): void {
@@ -233,6 +272,7 @@ export class ProfileComponent implements OnInit {
     this.favoriteMode = false;
     this.uploadMode = false;
     this.savedMode = false;
+    this.followMode = false;
   }
 
   savedPosts(): void {
@@ -243,6 +283,7 @@ export class ProfileComponent implements OnInit {
     this.editMode = false;
     this.favoriteMode = false;
     this.uploadMode = false;
+    this.followMode = false;
     this.loadSavedContent();
   }
 
@@ -254,17 +295,33 @@ export class ProfileComponent implements OnInit {
     this.passwordMode = false;
     this.editMode = false;
     this.uploadMode = false;
+    this.followMode = false;
     this.loadFavoriteContent();
   }
 
+  showFollowing(): void{
+    this.favoriteMode = false;
+    this.savedMode = false;
+    this.statsMode = false;
+    this.deleteMode = false;
+    this.passwordMode = false;
+    this.editMode = false;
+    this.uploadMode = false;
+    this.followMode = true;
+    this.loadUserFollowing();
+  }
+
   sortPosts(contentArray: any[], option: string): any[] {
+    console.log(contentArray);
     this.sortOption = option;
     let sortedArray = [];
     if (option === 'likes') {
       sortedArray = [...contentArray].sort((a, b) => b.likes.length - a.likes.length);
+      console.log(sortedArray)
     } else {
       sortedArray = [...contentArray].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     }
+    console.log(sortedArray)
     return sortedArray;
   }
 
@@ -274,16 +331,19 @@ export class ProfileComponent implements OnInit {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     this.http.post(`${this.apiUrl}/unfollow`, { username }, { headers }).pipe(
-      switchMap(() => this.http.get<string[]>(`${this.apiUrl}/following`, { headers })),
+      switchMap(() => this.http.get<string[]>(`${this.apiUrl}/current-user-following`, { headers })),
       catchError(error => {
         console.error('Error unfollowing user:', error);
-        return [];
+        return ([]);
       })
     ).subscribe(data => {
       this.following = data;
       this.filteredFollowing = [...data];
       console.log(`Unfollowed ${username}`);
     });
+    this.showFollowing();
+    this.showFollowing();
+
   }
 
   // Remove uploaded content
@@ -326,14 +386,73 @@ export class ProfileComponent implements OnInit {
     this.statsMode = false;
     this.savedMode = false;
     this.favoriteMode = false;
+    this.followMode = false;
     this.uploadMode = true;
   }
 
+<<<<<<< HEAD
   onImageLoad(url: string): void {
     console.log('Image loaded successfully:', url);
   }
   
   onImageError(url: string): void {
     console.error('Image failed to load:', url);
+=======
+  cancelEdit(): void {
+    this.loadUserData();
+    this.cancelAction();
+  }
+
+
+
+  async deletePost(post: Post) {
+    if (!post) {
+      return;
+    }
+
+    try {
+      console.log('Starting delete process for post:', post._id);
+      const token = this.authService.getToken();
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+      await firstValueFrom(this.http.delete(`${this.apiUrl}/posts/${post._id}`, { headers }));
+      console.log('Post deleted successfully');
+      this.uploadedContent = this.uploadedContent.filter(p => p._id !== post._id); // Remove the post from the list after deletion
+      this.postToDelete = null;
+    } catch (error) {
+      console.error('Error deleting post:', error);
+    }
+    this.loadUploadedContent();
+  }
+
+  
+  async unsavePost(post: Post) {
+    if (!post) {
+      return;
+    }
+  
+    try {
+      console.log('Starting unsave process for post:', post._id);
+      const token = this.authService.getToken();
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+      await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/save`, {}, { headers }));
+      console.log('Post unsaved successfully');
+      this.savedContent = this.savedContent.filter(p => p._id !== post._id); // Remove the post from the saved list
+    } catch (error) {
+      console.error('Error unsaving post:', error);
+    }
+    this.loadSavedContent();
+  }
+
+  async UnlikePost(post: Post) {
+    try {
+      const token = this.authService.getToken();
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+      await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/like`, {}, { headers }));
+
+    } catch (error) {
+      console.error('Error liking/unliking post:', error);
+    }
+    this.favoritePosts();
+>>>>>>> b518b4dc76a3cad3f031858ee9c16c7c9c4569ff
   }
 }

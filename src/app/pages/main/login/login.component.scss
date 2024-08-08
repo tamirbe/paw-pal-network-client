@@ -15,14 +15,21 @@
     align-items: center;
     height: 90vh;
     padding-right: 40px;
+    flex-direction: row;
+
+    @media (max-width: 1100px) {
+        flex-direction: column;
+        padding-top: 100px;
+        justify-content: flex-start;
+    }
 
     .sentence-wrapper {
         padding: 30px;
-        font-size: 48px;
+        font-size: 36px;
         line-height: 90px;
         font-family: 'Lato', sans-serif;
         color: #00458b;
-        margin-left: 40px;
+        width: 470px;
 
         @media (max-width: 1400px) {
             font-size: 26px;
@@ -30,6 +37,23 @@
             padding: 15px;
             margin-left: 0px;
         }
+
+        @media (max-width: 1100px) {
+            text-align: center;
+            width: 100%;
+        }
+    
+        @media (max-width: 600px) {
+            margin-top: 80px;
+            font-size: 24px; // גודל המלל במסכים קטנים (ניידים)
+            line-height: 30px;
+            text-align: center;
+            width: 100%;
+            padding: 0 20px;
+            margin-bottom: 20px;
+            font-weight: bold; // הפיכת המלל לבולד (עבה) לניידים
+        }
+    
     }
 
     .login-box {
@@ -58,7 +82,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 335px;
+            height: 385px;
             width: 700px;
             padding: 29px 28px;
             border: 2px solid #c6cdd6;
@@ -66,22 +90,30 @@
             border-radius: 20px;
             box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 
+            @media (max-width: 1600px) {
+                margin-right: 100px;
+            }
+
             @media (max-width: 1400px) {
                 height: 300px;
                 width: 578px;
                 margin-right: 0px;
+                margin-right: 50px;
             }
 
             mat-form-field {
                 width: 220px;
-                margin-bottom: 10px;
+                margin-bottom: 20px;
             }
 
             .title {
                 margin-bottom: 10px;
             }
-        }
 
+            .showSuccessMsg {
+                color: green;
+            }
+        }
 
         .registerForm {
             text-align: center;
@@ -89,29 +121,28 @@
             align-items: center;
             flex-wrap: wrap;
             justify-content: space-between;
-            height: 335px;
+            height: 385px;
             width: 700px;
             padding: 29px 28px;
-            border: 2px solid #c6cdd6;
+            border: 2px solid #b2b8c0;
             border-radius: 20px;
             margin-right: 150px;
             box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 
             @media (max-width: 1400px) {
-                height: 300px;
+                height: 390px;
                 width: 578px;
                 margin-right: 0px;
 
                 mat-form-field {
                     width: 180px;
+                    margin-bottom: 20px;
                 }
             }
         }
 
-        .mat-form-field {
-            width: 100%;
-            margin-bottom: 1rem;
-
+        mat-form-field {
+            margin-bottom: 20px;
         }
 
         .submitBtn {
@@ -137,14 +168,72 @@
 
         .error-message {
             color: red;
-            margin-top: 1rem;
+            margin-top: 20px;
         }
 
+        .showSuccessMsg {
+            color: green;
+            margin-top: 20px;
+        }
     }
 
     ::ng-deep {
         .mat-mdc-text-field-wrapper {
             background-color: transparent !important;
+        }
+
+        .mat-mdc-form-field-error-wrapper {
+            padding: 0;
+        }
+    }
+}
+
+/* Mobile specific styles */
+@media (max-width: 600px) {
+    .background {
+        filter: brightness(1.2); /* Brighten the background image */
+    }
+
+    .login-container {
+        flex-direction: column;
+        align-items: center;
+        height: auto;
+        padding-top: 20px;
+
+        .sentence-wrapper {
+            font-size: 24px; /* Increase font size for better readability */
+            line-height: 30px;
+            text-align: center;
+            width: 100%;
+            padding: 0 20px;
+            margin-bottom: 20px;
+            font-weight: bold; /* Make text bold */
+        }
+
+        .login-box {
+            width: 100%;
+            padding: 0 20px;
+
+            .loginForm,
+            .registerForm {
+                width: 100%;
+                padding: 20px;
+                margin: 0;
+                height: auto;
+                box-shadow: none;
+                border: none;
+
+                mat-form-field {
+                    width: 100%;
+                    margin-bottom: 15px;
+                }
+
+                .submitBtn,
+                .toggleBtn {
+                    width: 100%;
+                    margin-top: 10px;
+                }
+            }
         }
     }
 }

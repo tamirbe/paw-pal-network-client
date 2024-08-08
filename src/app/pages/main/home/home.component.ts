@@ -23,7 +23,11 @@ interface Post {
   sharedAt?: Date;
   sharedBy?: { firstName: string, lastName: string };
 }
-
+interface Share {
+  user: string;
+  text: string;
+  createdAt: Date;
+}
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -40,10 +44,12 @@ export class HomeComponent implements OnInit {
   postToDelete: Post | null = null;
   editingPost: Post | null = null;
   editSuccess: boolean = false;
+  saveSuccess: boolean = false;
+  unsaveSuccess: boolean = false;
   selectedFile: File | null = null;
-  
+  selectedFileName: string | null = null;
 
-  private apiUrl = 'http://localhost:3000';
+  private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -66,12 +72,12 @@ export class HomeComponent implements OnInit {
     try {
       const token = this.authService.getToken();
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-  
+      
       const [userPosts, sharedPosts] = await Promise.all([
         firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/feed`, { headers })),
         this.loadSharedPosts(headers)
       ]);
-  
+      
       const systemPosts: Post[] = [
         {
           description: 'Welcome to our platform! Stay tuned for updates.',
@@ -87,13 +93,36 @@ export class HomeComponent implements OnInit {
         },
         // הוסף פוסטים נוספים של המערכת כאן
       ];
+      
       this.posts = [...systemPosts, ...userPosts, ...sharedPosts].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-
+      
       console.log('Posts loaded:', this.posts);
     } catch (error) {
       console.error('Error loading feed:', error);
     }
   }
+  
+  /*async loadSharedPosts(headers: HttpHeaders): Promise<Post[]> {
+    try {
+      const sharedPosts = await firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/share`, { headers }));
+      return sharedPosts.map(post => {
+        const shareDetails = post.shares.find(share => share.user === this.currentUser);
+        
+        return {
+          ...post,
+          sharedText: shareDetails ? shareDetails.text : '',
+          sharedAt: shareDetails ? new Date(shareDetails.createdAt) : undefined,
+          sharedBy: {
+            firstName: 'ssd',
+            lastName: 'this.currentUserLastName'
+          }
+        };
+      });
+    } catch (error) {
+      console.error('Error loading shared posts:', error);
+      return [];
+    }
+  }*/
 
   async loadSharedPosts(headers: HttpHeaders): Promise<Post[]> {
     try {
@@ -148,8 +177,15 @@ export class HomeComponent implements OnInit {
 
   onFileChange(event: any): void {
     const file = event.target.files[0];
-    this.selectedFile = file;
-    this.postForm.patchValue({image: file})
+    if (file) {
+      this.selectedFile = file;
+      this.selectedFileName = file.name;
+      this.postForm.patchValue({
+        image: file
+      });
+      // Mark the field as touched to trigger validation
+      this.postForm.get('image')?.markAsTouched();
+    }
   }
 
   async onSubmit() {
@@ -167,7 +203,6 @@ export class HomeComponent implements OnInit {
       const token = this.authService.getToken();
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
       const response = await firstValueFrom(this.http.post(`${this.apiUrl}/posts`, formData, { headers }));
-      console.log('Success:', response);
       this.loadFeed();
       this.resetForm();
     } catch (error) {
@@ -178,6 +213,7 @@ export class HomeComponent implements OnInit {
   resetForm() {
     this.postForm.reset();
     this.selectedFile = null;
+    this.selectedFileName = null;
   }
 
   onTextAreaInput(event: any): void {
@@ -195,19 +231,31 @@ export class HomeComponent implements OnInit {
       const token = this.authService.getToken();
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
       
+      
       if (post.liked) {
         post.liked = false;
-        post.likes = post.likes.filter(like => like !== this.currentUser);
-      } else {
+        post.likes = post.likes.filter(like => like !== this.currentUser); // מסיר את המשתמש מרשימת הלייקים
+        } 
+        else {
         post.liked = true;
         post.likes.push(this.currentUser);
       }
       await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/like`, {}, { headers }));
+      this.updateLikes(post);
 
     } catch (error) {
       console.error('Error liking/unliking post:', error);
     }
   }
+
+  updateLikes(post: Post) {
+    const updatedPostIndex = this.posts.findIndex(p => p._id === post._id);
+    if (updatedPostIndex !== -1) {
+      this.posts[updatedPostIndex] = { ...post };
+    }
+  }
+
+  
 
   async sharePost(post: Post) {
     try {
@@ -240,7 +288,13 @@ export class HomeComponent implements OnInit {
         post.saves.push(this.currentUser);
       }
       await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/save`, {}, { headers }));
-
+      if (post.saved){
+        this.unsaveSuccess = false;
+        this.saveSuccess = true; }
+      else {
+        this.saveSuccess = false; 
+        this.unsaveSuccess = true;
+      }
     } catch (error) {
       console.error('Error save/unsave post:', error);
     }
@@ -283,6 +337,16 @@ export class HomeComponent implements OnInit {
     this.editSuccess = false;
   }
 
+
+  closeSaveSuccessDialog() { // חדש: סגירת דיאלוג הצלחה של שמירת פוסט
+    this.saveSuccess = false;
+  }
+
+
+  closeUnsaveSuccessDialog() {
+    this.unsaveSuccess = false;
+  }
+
   confirmDelete(post: Post) {
     this.postToDelete = post;
   }
@@ -293,24 +357,30 @@ export class HomeComponent implements OnInit {
 
 
 
-    async confirmUnshare(post: Post) {
-    if (!post) {
-      return;
-    }
-
-    try {
-      console.log('Starting delete process for post:', post._id); 
-      const token = this.authService.getToken();
-      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-      await firstValueFrom(this.http.delete(`${this.apiUrl}/share/${post._id}`, { headers }));
-      console.log('Post deleted successfully');
-      this.posts = this.posts.filter(p => p._id !== post._id);
-      this.postToDelete = null;
-    } catch (error) {
-      console.error('Error deleting post:', error);
-    }
+// פונקציה להסרת שיתוף
+async confirmUnshare(post: Post, userId: string, createdAt: Date) {
+  if (!post || !userId || !createdAt) {
+    return;
   }
 
+  try {
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    await firstValueFrom(this.http.delete(`${this.apiUrl}/Unshare/${post._id}/${userId}/${createdAt}`, { headers }));
+    console.log('Share deleted successfully');
+    
+    // עדכון רשימת השיתופים בלוקלי
+    post.shares = post.shares.filter(s => s.user !== userId || new Date(s.createdAt).getTime() !== new Date(createdAt).getTime());
+    
+    this.postToDelete = null;
+  } catch (error) {
+    console.error('Error deleting share:', error);
+  }
+  this.loadFeed();
+
+}
+  
+  
   async deletePost(post: Post) {
     if (!post) {
       return;

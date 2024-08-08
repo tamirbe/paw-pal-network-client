@@ -38,6 +38,25 @@ h2 {
 
 .content-section {
   margin-bottom: 30px;
+  
+}
+.post-header {
+  display: flex;
+  align-items: center; /* יישור אנכי של התמונה והטקסט */
+}
+
+.user-link {
+  display: flex;
+  align-items: center; /* יישור אנכי של התמונה והטקסט */
+}
+
+.profile-image {
+  border-radius: 50%;
+  margin-right: 10px; /* מרווח מימין לתמונה */
+}
+
+.post-date {
+  margin-left: auto; /* דחיפה של תאריך לפריסה מלאה */
 }
 
 .post-header {
@@ -343,12 +362,25 @@ h2 {
   margin-top: -50px; /* העלאת הכפתור כלפי מעלה */
 }
 
+
+
+
 /* עיצוב הכפתור להעלאת קובץ */
 .file-upload-container {
   display: flex;
   align-items: center;
   justify-content: center;
   margin-top: 20px;
+
+}
+
+.file-name {
+  font-size: 14px;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px; /* Limit the width of the file name */
 }
 
 .custom-file-upload {
@@ -378,4 +410,60 @@ h2 {
 
 #file-upload {
   display: none;
+}
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.home-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  animation: fadeIn 1s ease-out; /* הוספת אנימציה */
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  animation: fadeIn 1.2s ease-out; /* הוספת אנימציה */
+}
+
+.search-container {
+  text-align: center;
+  margin-bottom: 20px;
+  animation: fadeIn 1.4s ease-out; /* הוספת אנימציה */
+}
+
+.form-container {
+  background: linear-gradient(135deg, #fffbfb, #c3d6f3); /* Gradient background */
+  padding: 20px; /* Padding around the form */
+  border: 1px solid #acacac;
+  border-radius: 15px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Slight shadow for depth */
+  max-width: 700px; /* Maximum width of the form */
+  margin: 40px auto; /* Center the form with some top margin */
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  animation: fadeIn 1.6s ease-out; /* הוספת אנימציה */
+}
+
+/* אנימציה עבור הפוסטים */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

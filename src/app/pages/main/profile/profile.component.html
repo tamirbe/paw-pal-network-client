@@ -9,6 +9,7 @@
       <button mat-button color="primary" (click)="viewStatistics()">View Statistics</button>
       <button mat-button color="primary" (click)="savedPosts()">Saved Content</button>
       <button mat-button color="primary" (click)="favoritePosts()">Favorite Content</button>
+      <button mat-button color="primary" (click)="showFollowing()">Following</button>
       <button mat-button color="primary" (click)="deleteAccount()">Delete Account</button>
     </div>
   </div>
@@ -47,31 +48,76 @@
       </div>
       <div class="form-group">
         <label for="pet">Owned Pet</label>
-        <input id="pet" formControlName="pet" type="text" />
+        <select id="pet" formControlName="pet">
+          <option *ngFor="let pet of petOptions" [value]="pet">{{ pet }}</option>
+        </select>
       </div>
       <button type="submit" [disabled]="userForm.invalid" class="btn">Save</button>
-      <button type="button" (click)="cancelAction()" class="btn">Cancel</button>
+      <button type="button" (click)="cancelEdit()" class="btn">Cancel</button>
     </form>
   </div>
 
   <!-- Change Password Form -->
   <div *ngIf="passwordMode" class="password-form">
     <h2>Change Password</h2>
-    <form [formGroup]="passwordForm" (ngSubmit)="onSubmitPasswordChange()">
-      <div class="form-group">
-        <label for="currentPassword">Current Password</label>
-        <input id="currentPassword" formControlName="currentPassword" type="password" />
-      </div>
-      <div class="form-group">
-        <label for="newPassword">New Password</label>
-        <input id="newPassword" formControlName="newPassword" type="password" />
-      </div>
-      <div class="form-group">
-        <label for="confirmPassword">Confirm New Password</label>
-        <input id="confirmPassword" formControlName="confirmPassword" type="password" />
-      </div>
+    <form style="display: flex; flex-direction: column; gap: 30px; margin-top: 30px;" [formGroup]="passwordForm"
+      (ngSubmit)="onSubmitPasswordChange()">
+      <mat-form-field appearance="fill">
+        <mat-label>Current Password</mat-label>
+        <input matInput [type]="hide ? 'password' : 'text'" formControlName="currentPassword" required />
+        <button mat-icon-button matSuffix (click)="togglePasswordVisibility()" type="button"
+          [attr.aria-label]="'Toggle password visibility'" [attr.aria-pressed]="!hide">
+          <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        <mat-error *ngIf="passwordForm.get('currentPassword')?.hasError('required')">
+          Password is required
+        </mat-error>
+        <mat-error *ngIf="
+        passwordForm.get('currentPassword')?.hasError('minlength') ||
+        passwordForm.get('currentPassword')?.hasError('maxlength') ||
+        passwordForm.get('currentPassword')?.hasError('pattern')
+          ">
+          Password is not suitable
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>New Password</mat-label>
+        <input matInput [type]="hide ? 'password' : 'text'" formControlName="newPassword" required />
+        <button mat-icon-button matSuffix (click)="togglePasswordVisibility()" type="button"
+          [attr.aria-label]="'Toggle password visibility'" [attr.aria-pressed]="!hide">
+          <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        <mat-error *ngIf="passwordForm.get('newPassword')?.hasError('required')">
+          Password is required
+        </mat-error>
+        <mat-error *ngIf="
+        passwordForm.get('newPassword')?.hasError('minlength') ||
+        passwordForm.get('newPassword')?.hasError('maxlength') ||
+        passwordForm.get('newPassword')?.hasError('pattern')
+          ">
+          Password is not suitable
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Repeat Password</mat-label>
+        <input matInput [type]="hide ? 'password' : 'text'" formControlName="confirmPassword" required />
+        <button mat-icon-button matSuffix (click)="togglePasswordVisibility()" type="button"
+          [attr.aria-label]="'Toggle password visibility'" [attr.aria-pressed]="!hide">
+          <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        <mat-error *ngIf="passwordForm.get('confirmPassword')?.hasError('required')">
+          Password is required
+        </mat-error>
+        <mat-error *ngIf="
+        passwordForm.get('confirmPassword')?.hasError('minlength') ||
+        passwordForm.get('confirmPassword')?.hasError('maxlength') ||
+        passwordForm.get('confirmPassword')?.hasError('pattern')
+          ">
+          Password is not suitable
+        </mat-error>
+      </mat-form-field>
       <button type="submit" [disabled]="passwordForm.invalid" class="btn">Change Password</button>
-      <button type="button" (click)="cancelAction()" class="btn">Cancel</button>
+      <button type="button" (click)="cancelEdit()" class="btn">Cancel</button>
       <div *ngIf="passwordForm.errors?.['passwordMismatch']" class="error">
         Passwords do not match.
       </div>
@@ -83,30 +129,38 @@
     <h2>Delete Account</h2>
     <form (ngSubmit)="confirmDeleteAccount()">
       <div class="form-group">
-        <input type="password" placeholder="Current Password" name="currentPassword" required />
+        <input type="password" placeholder="Current Password" name="currentPassword" required class="password-input"/>
       </div>
-      <button type="submit" class="btn">Confirm</button>
-      <button type="button" (click)="cancelAction()" class="btn">Cancel</button>
+      <div class="button-group">
+        <button type="submit" class="btn confirm-btn">Confirm</button>
+      </div>
+      <button type="button" (click)="cancelAction()" class="btn cancel-btn">Cancel</button>
     </form>
   </div>
-
+  
   <!-- Following Section -->
-  <div *ngIf="uploadMode" class="following-section">
+  <div *ngIf="followMode" class="following-section">
     <h2>Following</h2>
-    <input type="text" placeholder="Search..." (input)="searchFollowing($event)" />
-    <ul>
-      <li *ngFor="let user of filteredFollowing">
-        <span (click)="goToUserProfile(user)">{{ user }}</span>
-        <button (click)="unfollowUser(user)" class="btn">Unfollow</button>
-      </li>
-    </ul>
+    <input type="text" placeholder="Search..." [(ngModel)]="searchTerm" class="search-input" />
+    <div class="search-container">
+    </div>
+    <button type="button" (click)="filterFollowing(searchTerm)" class="btn search-btn">Search</button>
+    <div *ngFor="let username of filteredFollowing" class="user">
+      <a [routerLink]="[username === user?.username ? '/profile' : '/another', username]" class="user-link">
+        <p>{{ username }}</p>
+      </a>
+      <div class="info-group">
+      <button type="button" (click)="unfollowUser(username)" class="btn unfollow-btn">Unfollow</button>
+      </div>
+    </div>
+    <button type="button" (click)="cancelAction()" class="btn return-btn">Return</button>
   </div>
+  
 
   <!-- Uploaded Content Section -->
   <div *ngIf="uploadMode" class="content-section">
     <h2>Uploaded Content</h2>
 
-    <!-- Sort Options -->
     <!-- Sort Options -->
     <div class="sort-options">
       <label>
@@ -121,21 +175,53 @@
       </label>
     </div>
 
+<<<<<<< HEAD
     <div *ngFor="let post of sortedContent" class="post">
       <p>{{ post.description }}</p>
       <div *ngIf="post.image">
         <img [src]="post.image" alt="Post Image" (load)="onImageLoad(post.image)" (error)="onImageError(post.image)">
+=======
+    <div class="content-section">
+      <div class="post" *ngFor="let post of sortedContent">
+        <div class="post-header">
+          <a [routerLink]="['/another', user?.username]" class="user-link">
+            <img [src]="'../../../../assets/icons/userprofile.svg'" alt="Profile Image" class="profile-image" width="35" height="35">
+            <strong>{{ user?.firstName }} {{ user?.lastName }} ({{ user?.username }})</strong>
+          </a>
+          <span class="post-date">{{ post.createdAt | date:'short' }}</span>
+        </div>
+        <p class="post-description" [ngStyle]="{'direction': getTextDirection(post.description)}">
+          {{ post.description }}
+        </p>
+        <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image" width="120" height="120">
+        <div class="info-group">
+          <p>Likes: {{ post.likes.length }}</p>
+          <p>Shares: {{ post.shares.length }}</p>
+          <button type="button" (click)="deletePost(post)" class="btnDelete">Delete Content</button>
+        </div>
+>>>>>>> b518b4dc76a3cad3f031858ee9c16c7c9c4569ff
       </div>
-      <p>author : {{user?.username}}</p>
-      <p>Likes: {{ post.likes.length }}</p>
-      <p>Shares: {{ post.shares.length }}</p>
-      <p>Created At: {{ post.createdAt | date:'medium' }}</p>
     </div>
   </div>
 
   <!-- Favorite Content Section -->
-  <!-- favorite-content.component.html -->
+  <div *ngIf="favoriteMode" class="favorite-content-section">
+    <h2>Favorite Content</h2>
+    <!-- Sort Options -->
+    <div class="sort-options">
+      <label>
+        <input type="radio" name="sort" (change)="sortedContent = sortPosts(favoriteContent, 'date')"
+          [checked]="sortOption === 'date'">
+        Sort by Date
+      </label>
+      <label>
+        <input type="radio" name="sort" (change)="sortedContent = sortPosts(favoriteContent, 'likes')"
+          [checked]="sortOption === 'likes'">
+        Sort by Likes
+      </label>
+    </div>
 
+<<<<<<< HEAD
   <div *ngIf="favoriteMode">
     <div class="favorite-content-section">
       <h2>Favorite Content</h2>
@@ -160,19 +246,33 @@
             <img [src]="post.image" alt="Post Image" (load)="onImageLoad(post.image)" (error)="onImageError(post.image)">
           </div>
           <p>author : {{post.authorName}}</p>
+=======
+    <div class="content-section">
+      <div class="post" *ngFor="let post of sortedContent">
+        <div class="post-header">
+          <a [routerLink]="['/another', user?.username]" class="user-link">
+            <img [src]="'../../../../assets/icons/userprofile.svg'" alt="Profile Image" class="profile-image" width="35" height="35">
+            <strong>{{ user?.firstName }} {{ user?.lastName }} ({{ user?.username }})</strong>
+          </a>
+          <span class="post-date">{{ post.createdAt | date:'short' }}</span>
+        </div>
+        <p class="post-description" [ngStyle]="{'direction': getTextDirection(post.description)}">
+          {{ post.description }}
+        </p>
+        <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image" width="120" height="120">
+        <div class="info-group">
+>>>>>>> b518b4dc76a3cad3f031858ee9c16c7c9c4569ff
           <p>Likes: {{ post.likes.length }}</p>
           <p>Shares: {{ post.shares.length }}</p>
-          <p>Created At: {{ post.createdAt | date:'medium' }}</p>
+          <button type="button" (click)="UnlikePost(post)" class="btn">Unlike</button>
         </div>
       </div>
     </div>
     <button type="button" (click)="cancelAction()" class="btn">Return</button>
   </div>
 
-
-
-
   <!-- Saved Content Section -->
+<<<<<<< HEAD
   <div *ngIf="savedMode">
     <div class="saved-content-section">
       <h2>Saved Content</h2>
@@ -183,9 +283,41 @@
             <img [src]="post.image" alt="Post Image" (load)="onImageLoad(post.image)" (error)="onImageError(post.image)">
           </div>
           <p>author : {{post.authorName}}</p>
+=======
+  <div *ngIf="savedMode" class="saved-content-section">
+    <h2>Saved Content</h2>
+    <!-- Sort Options -->
+    <div class="sort-options">
+      <label>
+        <input type="radio" name="sort" (change)="sortedContent = sortPosts(savedContent, 'date')"
+          [checked]="sortOption === 'date'">
+        Sort by Date
+      </label>
+      <label>
+        <input type="radio" name="sort" (change)="sortedContent = sortPosts(savedContent, 'likes')"
+          [checked]="sortOption === 'likes'">
+        Sort by Likes
+      </label>
+    </div>
+
+    <div class="content-section">
+      <div class="post" *ngFor="let post of sortedContent">
+        <div class="post-header">
+          <a [routerLink]="['/another', user?.username]" class="user-link">
+            <img [src]="'../../../../assets/icons/userprofile.svg'" alt="Profile Image" class="profile-image" width="35" height="35">
+            <strong>{{ user?.firstName }} {{ user?.lastName }} ({{ user?.username }})</strong>
+          </a>
+          <span class="post-date">{{ post.createdAt | date:'short' }}</span>
+        </div>
+        <p class="post-description" [ngStyle]="{'direction': getTextDirection(post.description)}">
+          {{ post.description }}
+        </p>
+        <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image" width="120" height="120">
+        <div class="info-group">
+>>>>>>> b518b4dc76a3cad3f031858ee9c16c7c9c4569ff
           <p>Likes: {{ post.likes.length }}</p>
           <p>Shares: {{ post.shares.length }}</p>
-          <p>Created At: {{ post.createdAt | date:'medium' }}</p>
+          <button type="button" (click)="unsavePost(post)" class="btn">Unsave</button>
         </div>
       </div>
     </div>
@@ -196,18 +328,21 @@
   <div *ngIf="statsMode" class="statistics-section">
     <h2>Statistics</h2>
     <div>
-      <p>Likes per Post</p>
-      <canvas id="likesChart"></canvas>
+      <p>Following: {{following.length}}</p>
+      <button mat-button color="primary" (click)="showFollowing()">Following</button>
     </div>
     <div>
-      <p>Content Uploaded per Month</p>
-      <canvas id="uploadsChart"></canvas>
+      <p>Uploaded Posts: {{uploadedContent.length}}</p>
+      <button mat-button color="primary" (click)="cancelAction()">Uploaded</button>
     </div>
     <div>
-      <p>Content Liked per Month</p>
-      <canvas id="likedChart"></canvas>
+      <p>Liked Posts: {{favoriteContent.length}}</p>
+      <button mat-button color="primary" (click)="favoritePosts()">Favorite Content</button>
     </div>
     <button type="button" (click)="cancelAction()" class="btn">Return</button>
   </div>
 </div>
+<<<<<<< HEAD
 
+=======
+>>>>>>> b518b4dc76a3cad3f031858ee9c16c7c9c4569ff
