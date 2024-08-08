@@ -175,16 +175,9 @@ export class UserProfileComponent implements OnInit {
   }
 
   sanitizeImageUrl(url: string): SafeUrl {
-<<<<<<< HEAD
-
-    return this.sanitizer.bypassSecurityTrustUrl(url);
-  }
-
-=======
     return this.sanitizer.bypassSecurityTrustUrl(url);
   }
   
->>>>>>> b518b4dc76a3cad3f031858ee9c16c7c9c4569ff
   onTextAreaInput(event: any): void {
     const text = event.target.value;
     const isHebrew = /[\u0590-\u05FF]/.test(text);
