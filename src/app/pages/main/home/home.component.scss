@@ -471,3 +471,56 @@ h2 {
   align-items: center;
 }
 
+
+
+
+.outer-frame {
+  padding: 10px;
+  border: 2px solid #ddd; 
+  border-radius: 10px; 
+  box-shadow: 0 4px 8px rgba(24, 130, 201, 0.144); /* מוסיף צל עדין למסגרת החיצונית ליצירת עומק. אפשר לשנות את מיקום הצל, גודלו וצבעו. */
+  background-color: #f9f9f9;
+  margin-bottom: 0px; 
+  margin-top: 60px; 
+  position: relative; 
+
+}
+
+.user-wrapper {
+  position: absolute;
+  top: -60px;
+  left: -10px;
+  padding: 5px 10px; 
+  border-radius: 10px; 
+}
+
+
+.post-header {
+  display: flex; 
+  align-items: center; 
+  margin-bottom: 20px;
+}
+
+.post-header .user-link {
+  margin-right: auto;
+}
+
+.post-description {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.info-group {
+  display: flex; 
+  gap: 10px; 
+  margin-top: 10px; 
+}
+
+.info-button {
+  padding: 10px 15px;
+  border: none; 
+  background-color: #007bff; 
+  color: white; 
+  border-radius: 5px; 
+  cursor: pointer;
+}

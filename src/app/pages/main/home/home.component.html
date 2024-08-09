@@ -34,34 +34,41 @@
   <div class="content-section">
     <div class="post" *ngFor="let post of posts; let i = index" [style.--post-index]="i">
       <div *ngIf="post.description.startsWith('Shared Post:'); else regularOrSystemPost">
-        <div class="post-header shared-post-header">
-          <small class="post-type">Shared posts</small>
-          <div class="shared-info" *ngIf="post.sharedText && post.sharedBy">
-            <p><strong>Shared by {{ post.sharedBy.firstName }} {{ post.sharedBy.lastName }}:</strong> {{ post.sharedText }}</p>
-            <span class="shared-date">{{ post.sharedAt | date:'short' }}</span>
-          </div>
-        </div>
-        <div class="shared-post">
-          <div class="post-header">
-            <a [routerLink]="['/another', post.author.username]" class="user-link">
+        
+
+        <small class="post-type">Shared posts</small>
+
+        <div class="outer-frame">
+          <div class="user-wrapper">
+            <a [routerLink]="[post.author.username === currentUser ? '/profile' : '/another', post.author.username]" class="user-link">
               <img [src]="'../../../../assets/icons/userprofile.svg'" alt="Profile Image" class="profile-image lower-image" width="35" height="35">
-              <strong>{{ post.author.firstName }} {{ post.author.lastName }} ({{ post.author.username }})</strong>
+              <strong>{{ currentUser }}</strong>
             </a>
-            <span class="post-date">{{ post.createdAt | date:'short' }}</span>
           </div>
-          <p class="post-description" [ngStyle]="{'direction': getTextDirection(post.description)}">
-            {{ post.description }}
-          </p>
-          <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image">
+        
+            <div class="post-header">
+              <a [routerLink]="['/another', post.author.username]" class="user-link">
+                <img [src]="'../../../../assets/icons/userprofile.svg'" alt="Profile Image" class="profile-image lower-image" width="35" height="35">
+                <strong>{{ post.author.username }}</strong>
+              </a>
+              <span class="post-date">{{ post.createdAt | date:'short' }}</span>
+            </div>
+            <p class="post-description" [ngStyle]="{'direction': getTextDirection(post.description)}">
+              {{ post.description | removeSharedPrefix }}
+            </p>
+            
+            <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image">
+        
+          <div class="info-group">
+            <button class="info-button" (click)="likePost(post)">
+              {{ post.liked ? 'Unlike' : 'Like' }} ({{ post.likes.length }})
+            </button>
+            <button class="info-button delete-button" 
+                    *ngIf="post.author.username === currentUser" 
+                    (click)="confirmUnshare(post, post.shares[0].user, post.shares[0].createdAt)">Unshare</button>
+          </div>
         </div>
-        <div class="info-group">
-          <button class="info-button" (click)="likePost(post)">
-            {{ post.liked ? 'Unlike' : 'Like' }} ({{ post.likes.length }})
-          </button>
-          <button class="info-button delete-button" 
-                  *ngIf="post.author.username === currentUser" 
-                  (click)="confirmUnshare(post, post.shares[0].user, post.shares[0].createdAt)">Unshare</button>
-        </div>
+        
       </div>
   
       <!-- פוסטים רגילים או פוסטים של המערכת -->
@@ -76,7 +83,7 @@
           <div class="post-header">
             <a [routerLink]="[post.author.username === currentUser ? '/profile' : '/another', post.author.username]" class="user-link">
               <img [src]="'../../../../assets/icons/userprofile.svg'" alt="Profile Image" class="profile-image lower-image" width="35" height="35">
-              <strong>{{ post.author.firstName }} {{ post.author.lastName }} ({{ post.author.username }})</strong>
+              <strong>{{ post.author.username }}</strong>
             </a>
             <span class="post-date">{{ post.createdAt | date:'short' }}</span>
           </div>
