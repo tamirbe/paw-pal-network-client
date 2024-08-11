@@ -25,6 +25,7 @@ import { RouterModule } from '@angular/router'; // add
 import { SearchResultsComponent } from './search-results/search-results.component'; // add
 import { MatIconModule } from '@angular/material/icon';
 import { UserProfileComponent } from './user-profile/user-profile.component'; // עדכן את הנתיב בהתאם למיקום של UserProfileComponent
+import { InterestsComponent } from './interests/interests.component';
 
 
 
@@ -39,6 +40,7 @@ import { UserProfileComponent } from './user-profile/user-profile.component'; //
         HeaderComponent,
         SearchResultsComponent, // add
         UserProfileComponent, // add
+        InterestsComponent
     ],
     imports: [
         MainRoutingModule,
