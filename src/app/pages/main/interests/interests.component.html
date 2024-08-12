@@ -1,1 +1,38 @@
-<p>interests works!</p>
+<div class="interests-container">
+    <div class="your-interests">
+      <h2>Your Interests</h2>
+      <ul>
+        <li *ngFor="let interest of followingInterests">
+          {{ interest.name }}
+          <button (click)="unfollowInterest(interest)">Unfollow</button>
+        </li>
+      </ul>
+    </div>
+  
+    <div class="search-bar">
+      <input type="text" placeholder="Search Interests..." [(ngModel)]="searchQuery" (input)="onSearch()" />
+    </div>
+  
+    <div class="all-interests">
+      <h2>All Interests</h2>
+      <ul>
+        <li *ngFor="let interest of filteredInterests">
+          {{ interest.name }} ({{ interest.category }})
+          <button *ngIf="!isInterestFollowed(interest)" (click)="followInterest(interest)">Follow</button>
+          <button *ngIf="isInterestFollowed(interest)" (click)="unfollowInterest(interest)">Unfollow</button>
+        </li>
+      </ul>
+    </div>
+  
+    <div class="popular-interests">
+      <h2>Popular Interests</h2>
+      <ul>
+        <li *ngFor="let interest of popularInterests">
+          {{ interest.name }} ({{ interest.category }})
+          <button *ngIf="!isInterestFollowed(interest)" (click)="followInterest(interest)">Follow</button>
+          <button *ngIf="isInterestFollowed(interest)" (click)="unfollowInterest(interest)">Unfollow</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+  
