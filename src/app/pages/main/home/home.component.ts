@@ -90,10 +90,12 @@ export class HomeComponent implements OnInit {
       const token = this.authService.getToken();
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
       
-      const [userPosts, sharedPosts, interestPosts] = await Promise.all([
-        firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/feed`, { headers })),
+      // קודם נטען את userPosts ולאחר מכן נשתמש בו ב-loadInterestPosts
+      const userPosts = await firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/feed`, { headers }));
+      
+      const [sharedPosts, interestPosts] = await Promise.all([
         this.loadSharedPosts(headers),
-        this.loadInterestPosts(headers) // משיכת פוסטים מתחומי עניין
+        this.loadInterestPosts(headers, userPosts) // מעביר את userPosts לפונקציה
       ]);
       
       const systemPosts: Post[] = [
@@ -120,10 +122,13 @@ export class HomeComponent implements OnInit {
       console.error('Error loading feed:', error);
     }
   }
-  async loadInterestPosts(headers: HttpHeaders): Promise<Post[]> {
+
+  async loadInterestPosts(headers: HttpHeaders, userPosts: Post[]): Promise<Post[]> {
     try {
       const interestPosts = await firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/interests-posts`, { headers }));
-      return interestPosts.map(post => {
+      return interestPosts
+        .filter(post => !userPosts.some(userPost => userPost._id === post._id)) // סינון פוסטים שכבר קיימים ב-userPosts
+        .map(post => {
         const interestName = Array.isArray(post.interests) && post.interests.length > 0 && typeof post.interests[0] === 'object' && 'name' in post.interests[0]
           ? (post.interests[0] as any).name
           : 'General';
