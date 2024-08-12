@@ -38,6 +38,7 @@ h2 {
 
 .content-section {
   margin-bottom: 30px;
+  
 }
 .post-header {
   display: flex;
@@ -394,3 +395,132 @@ h2 {
   display: none;
 }
 
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.home-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  animation: fadeIn 1s ease-out; /* הוספת אנימציה */
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  animation: fadeIn 1.2s ease-out; /* הוספת אנימציה */
+}
+
+.search-container {
+  text-align: center;
+  margin-bottom: 20px;
+  animation: fadeIn 1.4s ease-out; /* הוספת אנימציה */
+}
+
+.form-container {
+  background: linear-gradient(135deg, #fffbfb, #c3d6f3); /* Gradient background */
+  padding: 20px; /* Padding around the form */
+  border: 1px solid #acacac;
+  border-radius: 15px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Slight shadow for depth */
+  max-width: 700px; /* Maximum width of the form */
+  margin: 40px auto; /* Center the form with some top margin */
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  animation: fadeIn 1.6s ease-out; /* הוספת אנימציה */
+}
+
+/* אנימציה עבור הפוסטים */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+
+.post-type {
+  color: #0054b4; /* Or any color you prefer */
+  margin-bottom: 10px;
+  display: block;
+  font-size: 12px;
+}
+
+/* rest of your existing CSS */
+.content-section {
+  margin-bottom: 30px;
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+}
+
+
+
+
+.outer-frame {
+  padding: 10px;
+  border: 2px solid #ddd; 
+  border-radius: 10px; 
+  box-shadow: 0 4px 8px rgba(24, 130, 201, 0.144); /* מוסיף צל עדין למסגרת החיצונית ליצירת עומק. אפשר לשנות את מיקום הצל, גודלו וצבעו. */
+  background-color: #f9f9f9;
+  margin-bottom: 0px; 
+  margin-top: 60px; 
+  position: relative; 
+
+}
+
+.user-wrapper {
+  position: absolute;
+  top: -60px;
+  left: -10px;
+  padding: 5px 10px; 
+  border-radius: 10px; 
+}
+
+
+.post-header {
+  display: flex; 
+  align-items: center; 
+  margin-bottom: 20px;
+}
+
+.post-header .user-link {
+  margin-right: auto;
+}
+
+.post-description {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.info-group {
+  display: flex; 
+  gap: 10px; 
+  margin-top: 10px; 
+}
+
+.info-button {
+  padding: 10px 15px;
+  border: none; 
+  background-color: #007bff; 
+  color: white; 
+  border-radius: 5px; 
+  cursor: pointer;
+}
