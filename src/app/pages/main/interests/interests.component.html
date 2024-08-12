@@ -1,1 +1,63 @@
-<p>interests works!</p>
+<div class="interests-container">
+  <div class="sidebar">
+      <button (click)="showSection('allInterests')">All Interests</button>
+      <button (click)="showSection('userInterests')">My Interests</button>
+      <button (click)="showSection('popularInterests')">Popular Interests</button>
+      <button (click)="showSection('categories')">Categories</button>
+  </div>
+
+  <div class="content">
+      <!-- All Interests -->
+      <div *ngIf="currentSection === 'allInterests'">
+          <h2>All Interests</h2>
+          <div class="search-bar">
+              <input type="text" placeholder="Search Interests..." [(ngModel)]="searchQuery" (input)="onSearch()" />
+          </div>
+          <ul>
+              <li *ngFor="let interest of filteredInterests">
+                  {{ interest.name }} ({{ interest.category }})
+                  <button *ngIf="!isInterestFollowed(interest)" (click)="followInterest(interest)">+</button>
+                  <button *ngIf="isInterestFollowed(interest)" (click)="unfollowInterest(interest)">-</button>
+              </li>
+          </ul>
+      </div>
+
+      <!-- My Interests -->
+      <div *ngIf="currentSection === 'userInterests'">
+          <h2>Your Interests</h2>
+          <ul>
+              <li *ngFor="let interest of followingInterests">
+                  {{ interest.name }}
+                  <button (click)="unfollowInterest(interest)">-</button>
+              </li>
+          </ul>
+      </div>
+
+      <!-- Popular Interests -->
+      <div *ngIf="currentSection === 'popularInterests'">
+          <h2>Popular Interests</h2>
+          <ul>
+              <li *ngFor="let interest of popularInterests">
+                  {{ interest.name }} ({{ interest.category }})
+                  <button *ngIf="!isInterestFollowed(interest)" (click)="followInterest(interest)">+</button>
+                  <button *ngIf="isInterestFollowed(interest)" (click)="unfollowInterest(interest)">-</button>
+              </li>
+          </ul>
+      </div>
+
+      <!-- Interest Categories -->
+      <div *ngIf="currentSection === 'categories'">
+          <h2>Interest Categories</h2>
+          <div *ngFor="let category of categories">
+              <h3>{{ category.name }}</h3>
+              <ul>
+                  <li *ngFor="let interest of category.interests">
+                      {{ interest.name }}
+                      <button *ngIf="!isInterestFollowed(interest)" (click)="followInterest(interest)">+</button>
+                      <button *ngIf="isInterestFollowed(interest)" (click)="unfollowInterest(interest)">-</button>
+                  </li>
+              </ul>
+          </div>
+      </div>
+  </div>
+</div>
