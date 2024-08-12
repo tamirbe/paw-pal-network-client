@@ -1,8 +1,15 @@
 .home-container {
+  
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
   font-family: Arial, sans-serif;
+  background-color: #fcfcfc;
+
+  @media screen {
+    background-color: #fcfcfc;
+
+  }
 }
 
 h2 {
@@ -38,7 +45,6 @@ h2 {
 
 .content-section {
   margin-bottom: 30px;
-  
 }
 
 
@@ -151,6 +157,8 @@ h2 {
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   z-index: 1000;
+  background-color: #ECF0F1;
+
 }
 
 .edit-dialog textarea {
@@ -341,8 +349,6 @@ h2 {
   justify-content: flex-end; /* הזזת הכפתור ימינה */
   margin-top: -50px; /* העלאת הכפתור כלפי מעלה */
 }
-
-
 
 
 /* עיצוב הכפתור להעלאת קובץ */
