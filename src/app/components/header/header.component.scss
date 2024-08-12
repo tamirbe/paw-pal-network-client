@@ -6,4 +6,13 @@
     justify-content: center;
     gap: 10%;
     position: fixed;
+
+    @media (max-width: 768px) {
+        flex-direction:row-reverse;
+        gap: 1%;
+        display: flex;
+        padding-top: 10px;
+        padding-bottom: 2px;
+        font-size: 2px; /* גודל כתב קטן יותר עבור מסכים קטנים */
+    }
 }

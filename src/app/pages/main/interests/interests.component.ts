@@ -2,11 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../../../auth.service';
 import { firstValueFrom } from 'rxjs';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 interface Interest {
   _id: string;
   name: string;
   category: string;
+}
+
+interface Category {
+  name: string;
+  interests: Interest[];
 }
 
 @Component({
@@ -18,17 +24,27 @@ export class InterestsComponent implements OnInit {
   interests: Interest[] = [];
   popularInterests: Interest[] = [];
   filteredInterests: Interest[] = [];
-  searchQuery: string = '';
   followingInterests: Interest[] = [];
+  categories: Category[] = [];
+  searchQuery: string = '';
+  loading: boolean = false;
+  currentSection: string = 'allInterests';
 
   private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
 
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  constructor(private http: HttpClient, private authService: AuthService, private sanitizer: DomSanitizer) {}
 
   async ngOnInit(): Promise<void> {
+    this.loading = true; // Start loading indicator
+    this.loadUserFollowingInterests();
     this.loadInterests();
     this.loadPopularInterests();
-    this.loadUserFollowingInterests();
+    this.loadCategories();
+    this.loading = false; // Stop loading indicator
+  }
+
+  showSection(section: string): void {
+    this.currentSection = section;
   }
 
   async loadInterests() {
@@ -62,6 +78,16 @@ export class InterestsComponent implements OnInit {
     }
   }
 
+  async loadCategories() {
+    try {
+      const token = this.authService.getToken();
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+      this.categories = await firstValueFrom(this.http.get<Category[]>(`${this.apiUrl}/interest-categories`, { headers }));
+    } catch (error) {
+      console.error('Error loading categories:', error);
+    }
+  }
+
   onSearch() {
     this.filteredInterests = this.interests.filter(interest =>
       interest.name.toLowerCase().includes(this.searchQuery.toLowerCase())
@@ -92,5 +118,9 @@ export class InterestsComponent implements OnInit {
     } catch (error) {
       console.error('Error unfollowing interest:', error);
     }
+  }
+
+  sanitizeImageUrl(url: string): SafeUrl {
+    return this.sanitizer.bypassSecurityTrustUrl(url);
   }
 }
