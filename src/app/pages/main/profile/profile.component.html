@@ -280,88 +280,93 @@
       <button (click)="cancelDeletePost()">No</button>
     </div>
   </div>
-  <!-- Favorite Content Section -->
-  <div *ngIf="favoriteMode" class="favorite-content-section" style="max-height: 400px; overflow-y: auto;">
-    <h2>Favorite Content</h2>
-    <!-- Sort Options -->
-    <div class="sort-options">
-      <label>
-        <input type="radio" name="sort" (change)="sortedContent = sortPosts(favoriteContent, 'date')"
-          [checked]="sortOption === 'date'">
-        Sort by Date
-      </label>
-      <label>
-        <input type="radio" name="sort" (change)="sortedContent = sortPosts(favoriteContent, 'likes')"
-          [checked]="sortOption === 'likes'">
-        Sort by Likes
-      </label>
-    </div>
 
-    <div class="content-section">
-      <div class="post" *ngFor="let post of sortedContent">
-        <div class="post-header">
-          <a [routerLink]="['/another', user?.username]" class="user-link">
-            <img [src]="'../../../../assets/icons/userprofile.svg'" alt="Profile Image" class="profile-image" width="35"
-              height="35">
-            <strong>{{ user?.firstName }} {{ user?.lastName }} ({{ user?.username }})</strong>
-          </a>
-          <span class="post-date">{{ post.createdAt | date:'short' }}</span>
-        </div>
-        <p class="post-description" [ngStyle]="{'direction': getTextDirection(post.description)}">
-          {{ post.description }}
-        </p>
-        <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image" width="120"
-          height="120">
-        <div class="info-group">
-          <p>Likes: {{ post.likes.length }}</p>
-          <p>Shares: {{ post.shares.length }}</p>
-          <button type="button" (click)="UnlikePost(post)" class="btnDelete">Unlike</button>
+  <div>
+    <!-- Favorite Content Section -->
+    <div *ngIf="favoriteMode" class="favorite-content-section" style="max-height: 400px; overflow-y: auto;">
+      <h2>Favorite Content</h2>
+      <!-- Sort Options -->
+      <div class="sort-options">
+        <label>
+          <input type="radio" name="sort" (change)="sortedContent = sortPosts(favoriteContent, 'date')"
+            [checked]="sortOption === 'date'">
+          Sort by Date
+        </label>
+        <label>
+          <input type="radio" name="sort" (change)="sortedContent = sortPosts(favoriteContent, 'likes')"
+            [checked]="sortOption === 'likes'">
+          Sort by Likes
+        </label>
+      </div>
+
+      <div class="content-section">
+        <div class="post" *ngFor="let post of sortedContent">
+          <div class="post-header">
+            <a [routerLink]="['/another', user?.username]" class="user-link">
+              <img [src]="'../../../../assets/icons/userprofile.svg'" alt="Profile Image" class="profile-image"
+                width="35" height="35">
+              <strong>{{ user?.firstName }} {{ user?.lastName }} ({{ user?.username }})</strong>
+            </a>
+            <span class="post-date">{{ post.createdAt | date:'short' }}</span>
+          </div>
+          <p class="post-description" [ngStyle]="{'direction': getTextDirection(post.description)}">
+            {{ post.description }}
+          </p>
+          <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image" width="120"
+            height="120">
+          <div class="info-group">
+            <p>Likes: {{ post.likes.length }}</p>
+            <p>Shares: {{ post.shares.length }}</p>
+            <button type="button" (click)="UnlikePost(post)" class="btnDelete">Unlike</button>
+          </div>
         </div>
       </div>
+      <button type="button" (click)="cancelAction()" class="btn return-btn">Return</button>
     </div>
   </div>
 
   <!-- Saved Content Section -->
-  <div *ngIf="savedMode" class="saved-content-section" style="max-height: 400px; overflow-y: auto;">
-    <h2>Saved Content</h2>
-    <!-- Sort Options -->
-    <div class="sort-options">
-      <label>
-        <input type="radio" name="sort" (change)="sortedContent = sortPosts(savedContent, 'date')"
-          [checked]="sortOption === 'date'">
-        Sort by Date
-      </label>
-      <label>
-        <input type="radio" name="sort" (change)="sortedContent = sortPosts(savedContent, 'likes')"
-          [checked]="sortOption === 'likes'">
-        Sort by Likes
-      </label>
-    </div>
-
-    <div class="content-section">
-      <div class="post" *ngFor="let post of sortedContent">
-        <div class="post-header">
-          <a [routerLink]="['/another', user?.username]" class="user-link">
-            <img [src]="'../../../../assets/icons/userprofile.svg'" alt="Profile Image" class="profile-image" width="35"
-              height="35">
-            <strong>{{ user?.firstName }} {{ user?.lastName }} ({{ user?.username }})</strong>
-          </a>
-          <span class="post-date">{{ post.createdAt | date:'short' }}</span>
-        </div>
-        <p class="post-description" [ngStyle]="{'direction': getTextDirection(post.description)}">
-          {{ post.description }}
-        </p>
-        <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image" width="120"
-          height="120">
-        <div class="info-group">
-          <p>Likes: {{ post.likes.length }}</p>
-          <p>Shares: {{ post.shares.length }}</p>
-          <button type="button" (click)="unsavePost(post)" class="btnDelete">Unsave</button>
+  <div>
+    <div *ngIf="savedMode" class="saved-content-section" style="max-height: 400px; overflow-y: auto;">
+      <h2>Saved Content</h2>
+      <!-- Sort Options -->
+      <div class="sort-options">
+        <label>
+          <input type="radio" name="sort" (change)="sortedContent = sortPosts(savedContent, 'date')"
+            [checked]="sortOption === 'date'">
+          Sort by Date
+        </label>
+        <label>
+          <input type="radio" name="sort" (change)="sortedContent = sortPosts(savedContent, 'likes')"
+            [checked]="sortOption === 'likes'">
+          Sort by Likes
+        </label>
+      </div>
+      <div class="content-section">
+        <div class="post" *ngFor="let post of sortedContent">
+          <div class="post-header">
+            <a [routerLink]="['/another', user?.username]" class="user-link">
+              <img [src]="'../../../../assets/icons/userprofile.svg'" alt="Profile Image" class="profile-image"
+                width="35" height="35">
+              <strong>{{ user?.firstName }} {{ user?.lastName }} ({{ user?.username }})</strong>
+            </a>
+            <span class="post-date">{{ post.createdAt | date:'short' }}</span>
+          </div>
+          <p class="post-description" [ngStyle]="{'direction': getTextDirection(post.description)}">
+            {{ post.description }}
+          </p>
+          <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image" width="120"
+            height="120">
+          <div class="info-group">
+            <p>Likes: {{ post.likes.length }}</p>
+            <p>Shares: {{ post.shares.length }}</p>
+            <button type="button" (click)="unsavePost(post)" class="btnDelete">Unsave</button>
+          </div>
         </div>
       </div>
+      <button type="button" (click)="cancelAction()" class="btn return-btn">Return</button>
     </div>
   </div>
-
 
   <!-- Statistics Section -->
   <div *ngIf="statsMode" class="statistics-section">
