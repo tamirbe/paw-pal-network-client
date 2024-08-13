@@ -42,7 +42,6 @@ export class ProfileComponent implements OnInit {
   passwordForm!: FormGroup;
   hide = true;// Form for password change
 
-
   showConfirmUnfollowPopup: boolean = false; // משתנה לניהול חלון ה-Pop-up
   userToUnfollow: string = ''; // שם המשתמש למחיקה
   deletePassword: string = ''; // משתנה לשמירת הסיסמה לאישור מחיקת חשבון
@@ -66,7 +65,6 @@ export class ProfileComponent implements OnInit {
     return this.sanitizer.bypassSecurityTrustUrl(url);
   }
 
-
   // Initialize the forms
   private initForms(): void {
     this.userForm = this.fb.group({
@@ -74,7 +72,7 @@ export class ProfileComponent implements OnInit {
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      pet: ['', Validators.required]
+      pet: ['No Pets']
     });
 
     this.passwordForm = this.fb.group({
@@ -163,6 +161,7 @@ export class ProfileComponent implements OnInit {
         this.sortedContent = this.sortPosts(this.savedContent, this.sortOption);
 
       });
+
   }
 
   goToUserProfile(username: string) {
@@ -179,7 +178,6 @@ export class ProfileComponent implements OnInit {
         username.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
-    console.log("Hello check45");
   }
 
   // Handle form submissions
@@ -204,6 +202,7 @@ export class ProfileComponent implements OnInit {
         // Handle error
       }
     );
+    window.location.reload();
   }
 
   onSubmitPasswordChange(): void {
@@ -211,38 +210,8 @@ export class ProfileComponent implements OnInit {
       const { currentPassword, newPassword } = this.passwordForm.value;
       const token = this.authService.getToken();
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
-      this.http.post(`${this.apiUrl}/change-password`, { currentPassword, newPassword }, { headers }).pipe(
-        catchError(error => {
-          console.error('Error changing password:', error);
-          return [];
-        })
-      ).subscribe(() => {
-        console.log('Password changed successfully');
-      });
-      this.passwordMode = false;
-      this.loadUserData();
-      this.uploadMode = true;
-      this.passwordForm.reset();
-    } else {
-      console.error('Password form is invalid');
+      // Add your password change logic here
     }
-  }
-
-  // Confirm and cancel actions
-  confirmDeleteAccount(): void {
-    const token = this.authService.getToken();
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
-    this.http.delete(`${this.apiUrl}/delete-account`, { headers }).pipe(
-      catchError(error => {
-        console.error('Error deleting account:', error);
-        return [];
-      })
-    ).subscribe(() => {
-      console.log('Account deleted successfully');
-      // Handle post-deletion logic
-    });
   }
 
   // Menu toggle
@@ -346,6 +315,11 @@ export class ProfileComponent implements OnInit {
   }
 
   // Unfollow user
+  confirmUnfollowUser(username: string): void {
+    this.showConfirmUnfollowPopup = true;
+    this.userToUnfollow = username;
+  }
+
   unfollowUser(username: string): void {
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
@@ -361,6 +335,14 @@ export class ProfileComponent implements OnInit {
       this.filteredFollowing = [...data];
       console.log(`Unfollowed ${username}`);
     });
+    this.showConfirmUnfollowPopup = false;
+    this.showFollowing();
+    this.showFollowing();
+  }
+
+  cancelUnfollow(): void {
+    this.showConfirmUnfollowPopup = false;
+    this.userToUnfollow = '';
   }
 
   // Remove uploaded content
@@ -379,13 +361,10 @@ export class ProfileComponent implements OnInit {
       console.log(`Removed content with ID ${contentId}`);
     });
   }
+
   // Confirm and cancel actions for account deletion
   confirmDeleteAccount(): void {
     this.showConfirmDeletePopup = true;
-  }
-
-  logout() {
-    this.authService.logout();
   }
 
   // Confirm and cancel actions
@@ -393,22 +372,17 @@ export class ProfileComponent implements OnInit {
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    const currentPassword = (document.querySelector('.password-input') as HTMLInputElement).value;
-    console.log(currentPassword);
-
-    // שליחת בקשת מחיקה עם הסיסמה
-    this.http.delete(`${this.apiUrl}/delete-account`, {
-      headers,
-      body: currentPassword // העברת הסיסמה ב-body
-    }).pipe(
+    this.http.delete(`${this.apiUrl}/delete-account`, { headers }).pipe(
       catchError(error => {
         console.error('Error deleting account:', error);
         return [];
       })
     ).subscribe(() => {
-      this.router.navigate(['login']);
-      this.showConfirmDeletePopup = false;
+      console.log('Account deleted successfully');
+      this.authService.logout(); // If you have a logout function in your auth service
+      window.location.href = '/login'; // Navigate to login page
     });
+    this.showConfirmDeletePopup = false;
   }
 
 
@@ -428,12 +402,11 @@ export class ProfileComponent implements OnInit {
     this.uploadMode = true;
   }
 
+
   cancelEdit(): void {
     this.loadUserData();
     this.cancelAction();
   }
-
-
 
   async deletePost(post: Post) {
     if (!post) {
@@ -452,5 +425,35 @@ export class ProfileComponent implements OnInit {
       console.error('Error deleting post:', error);
     }
     this.loadUploadedContent();
+  }
+
+  async unsavePost(post: Post) {
+    if (!post) {
+      return;
+    }
+
+    try {
+      console.log('Starting unsave process for post:', post._id);
+      const token = this.authService.getToken();
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+      await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/save`, {}, { headers }));
+      console.log('Post unsaved successfully');
+      this.savedContent = this.savedContent.filter(p => p._id !== post._id); // Remove the post from the saved list
+    } catch (error) {
+      console.error('Error unsaving post:', error);
+    }
+    this.loadSavedContent();
+  }
+
+  async UnlikePost(post: Post) {
+    try {
+      const token = this.authService.getToken();
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+      await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/like`, {}, { headers }));
+
+    } catch (error) {
+      console.error('Error liking/unliking post:', error);
+    }
+    this.favoritePosts();
   }
 }

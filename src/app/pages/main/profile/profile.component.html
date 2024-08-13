@@ -61,7 +61,7 @@
     <form style="display: flex; flex-direction: column; gap: 30px; margin-top: 30px;" [formGroup]="passwordForm"
       (ngSubmit)="onSubmitPasswordChange()">
       <mat-form-field appearance="fill">
-        <mat-label>curent password</mat-label>
+        <mat-label>Current Password</mat-label>
         <input matInput [type]="hide ? 'password' : 'text'" formControlName="currentPassword" required />
         <button mat-icon-button matSuffix (click)="togglePasswordVisibility()" type="button"
           [attr.aria-label]="'Toggle password visibility'" [attr.aria-pressed]="!hide">
@@ -79,7 +79,7 @@
         </mat-error>
       </mat-form-field>
       <mat-form-field appearance="fill">
-        <mat-label>new password</mat-label>
+        <mat-label>New Password</mat-label>
         <input matInput [type]="hide ? 'password' : 'text'" formControlName="newPassword" required />
         <button mat-icon-button matSuffix (click)="togglePasswordVisibility()" type="button"
           [attr.aria-label]="'Toggle password visibility'" [attr.aria-pressed]="!hide">
@@ -97,7 +97,7 @@
         </mat-error>
       </mat-form-field>
       <mat-form-field appearance="fill">
-        <mat-label>reapet assword</mat-label>
+        <mat-label>Repeat Password</mat-label>
         <input matInput [type]="hide ? 'password' : 'text'" formControlName="confirmPassword" required />
         <button mat-icon-button matSuffix (click)="togglePasswordVisibility()" type="button"
           [attr.aria-label]="'Toggle password visibility'" [attr.aria-pressed]="!hide">
@@ -114,8 +114,7 @@
           Password is not suitable
         </mat-error>
       </mat-form-field>
-      <button type="submit" [disabled]="passwordForm.invalid" class="btn">Change
-        Password</button>
+      <button type="submit" [disabled]="passwordForm.invalid" class="btn">Change Password</button>
       <button type="button" (click)="cancelEdit()" class="btn">Cancel</button>
       <div *ngIf="passwordForm.errors?.['passwordMismatch']" class="error">
         Passwords do not match.
@@ -128,7 +127,6 @@
     <h2>Delete Account</h2>
     <form (ngSubmit)="confirmDeleteAccount()">
       <div class="form-group">
-        <input type="password" placeholder="Current Password" name="currentPassword" required class="password-input" />
       </div>
       <div class="button-group">
         <button type="submit" class="btn confirm-btn">Confirm</button>
@@ -137,7 +135,7 @@
     </form>
   </div>
 
-  <!--Delete Account Confirmation Popup-->
+  <!-- Delete Account Confirmation Popup -->
   <div *ngIf="showConfirmDeletePopup" class="popup-overlay">
     <div class="popup-content">
       <p>Are you sure you want to delete your account?</p>
@@ -224,71 +222,85 @@
       </div>
     </div>
   </div>
+
   <!-- Favorite Content Section -->
-  <!-- favorite-content.component.html -->
+  <div *ngIf="favoriteMode" class="favorite-content-section">
+    <h2>Favorite Content</h2>
+    <!-- Sort Options -->
+    <div class="sort-options">
+      <label>
+        <input type="radio" name="sort" (change)="sortedContent = sortPosts(favoriteContent, 'date')"
+          [checked]="sortOption === 'date'">
+        Sort by Date
+      </label>
+      <label>
+        <input type="radio" name="sort" (change)="sortedContent = sortPosts(favoriteContent, 'likes')"
+          [checked]="sortOption === 'likes'">
+        Sort by Likes
+      </label>
+    </div>
 
-  <div *ngIf="favoriteMode">
-    <div class="favorite-content-section">
-      <h2>Favorite Content</h2>
-      <!-- Sort Options -->
-      <div class="sort-options">
-        <label>
-          <input type="radio" name="sort" (change)="sortedContent = sortPosts(favoriteContent, 'date')"
-            [checked]="sortOption === 'date'">
-          Sort by Date
-        </label>
-        <label>
-          <input type="radio" name="sort" (change)="sortedContent = sortPosts(favoriteContent, 'likes')"
-            [checked]="sortOption === 'likes'">
-          Sort by Likes
-        </label>
-      </div>
-
-      <div class="scrollable-content">
-        <div *ngFor="let post of sortedContent" class="post">
-          <p>{{ post.description }}</p>
-          <div *ngIf="post.image">
-            <img [src]="post.image" alt="Post Image">
-          </div>
-          <p>author : {{post.authorName}}</p>
+    <div class="content-section">
+      <div class="post" *ngFor="let post of sortedContent">
+        <div class="post-header">
+          <a [routerLink]="['/another', user?.username]" class="user-link">
+            <img [src]="'../../../../assets/icons/userprofile.svg'" alt="Profile Image" class="profile-image" width="35"
+              height="35">
+            <strong>{{ user?.firstName }} {{ user?.lastName }} ({{ user?.username }})</strong>
+          </a>
+          <span class="post-date">{{ post.createdAt | date:'short' }}</span>
+        </div>
+        <p class="post-description" [ngStyle]="{'direction': getTextDirection(post.description)}">
+          {{ post.description }}
+        </p>
+        <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image" width="120"
+          height="120">
+        <div class="info-group">
           <p>Likes: {{ post.likes.length }}</p>
           <p>Shares: {{ post.shares.length }}</p>
-          <p>Created At: {{ post.createdAt | date:'medium' }}</p>
+          <button type="button" (click)="UnlikePost(post)" class="btn">Unlike</button>
         </div>
       </div>
     </div>
     <button type="button" (click)="cancelAction()" class="btn">Return</button>
   </div>
 
-
   <!-- Saved Content Section -->
-  <div *ngIf="savedMode">
-    <div class="saved-content-section">
-      <h2>Saved Content</h2>
-      <!-- Sort Options -->
-      <div class="sort-options">
-        <label>
-          <input type="radio" name="sort" (change)="sortedContent = sortPosts(savedContent, 'date')"
-            [checked]="sortOption === 'date'">
-          Sort by Date
-        </label>
-        <label>
-          <input type="radio" name="sort" (change)="sortedContent = sortPosts(savedContent, 'likes')"
-            [checked]="sortOption === 'likes'">
-          Sort by Likes
-        </label>
-      </div>
+  <div *ngIf="savedMode" class="saved-content-section">
+    <h2>Saved Content</h2>
+    <!-- Sort Options -->
+    <div class="sort-options">
+      <label>
+        <input type="radio" name="sort" (change)="sortedContent = sortPosts(savedContent, 'date')"
+          [checked]="sortOption === 'date'">
+        Sort by Date
+      </label>
+      <label>
+        <input type="radio" name="sort" (change)="sortedContent = sortPosts(savedContent, 'likes')"
+          [checked]="sortOption === 'likes'">
+        Sort by Likes
+      </label>
+    </div>
 
-      <div class="scrollable-content">
-        <div *ngFor="let post of sortedContent" class="post">
-          <p>{{ post.description }}</p>
-          <div *ngIf="post.image">
-            <img [src]="post.image" alt="Post Image">
-          </div>
-          <p>author : {{post.authorName}}</p>
+    <div class="content-section">
+      <div class="post" *ngFor="let post of sortedContent">
+        <div class="post-header">
+          <a [routerLink]="['/another', user?.username]" class="user-link">
+            <img [src]="'../../../../assets/icons/userprofile.svg'" alt="Profile Image" class="profile-image" width="35"
+              height="35">
+            <strong>{{ user?.firstName }} {{ user?.lastName }} ({{ user?.username }})</strong>
+          </a>
+          <span class="post-date">{{ post.createdAt | date:'short' }}</span>
+        </div>
+        <p class="post-description" [ngStyle]="{'direction': getTextDirection(post.description)}">
+          {{ post.description }}
+        </p>
+        <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image" width="120"
+          height="120">
+        <div class="info-group">
           <p>Likes: {{ post.likes.length }}</p>
           <p>Shares: {{ post.shares.length }}</p>
-          <p>Created At: {{ post.createdAt | date:'medium' }}</p>
+          <button type="button" (click)="unsavePost(post)" class="btn">Unsave</button>
         </div>
       </div>
     </div>
@@ -312,3 +324,4 @@
     </div>
     <button type="button" (click)="cancelAction()" class="btn">Return</button>
   </div>
+</div>
