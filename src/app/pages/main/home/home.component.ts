@@ -15,6 +15,7 @@ interface Post {
   likes: string[];
   shares: { user: string, text: string, createdAt: Date }[];
   saves: string[];
+  interests: string[];
   saved: boolean;
   liked: boolean;
   shared: boolean;
@@ -22,7 +23,18 @@ interface Post {
   sharedText?: string;
   sharedAt?: Date;
   sharedBy?: { firstName: string, lastName: string };
+  interestId?: string;
+  postType?: string; // הוסף את postType
+  interestName?: string; // הוסף את interestName
+
 }
+
+
+interface Interest {
+  _id: string;
+  name: string;
+}
+
 interface Share {
   user: string;
   text: string;
@@ -48,6 +60,7 @@ export class HomeComponent implements OnInit {
   unsaveSuccess: boolean = false;
   selectedFile: File | null = null;
   selectedFileName: string | null = null;
+  followingInterests: Interest[] = [];
 
 
   private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
@@ -62,23 +75,29 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.postForm = this.fb.group({
-      description: ['', Validators.required],
-      image: [null]
+      description: ['', Validators.required], // מלל הוא חובה
+      image: [null], // תמונה היא אופציונלית
+      interestId: [''] // תחום עניין הוא אופציונלי
     });
+  
     this.loadFeed();
     this.setCurrentUser(); 
+    this.loadUserInterests(); // לטעינת תחומי העניין שהמשתמש עוקב אחריהם
   }
 
   async loadFeed() {
     try {
       const token = this.authService.getToken();
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-  
-      const [userPosts, sharedPosts] = await Promise.all([
-        firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/feed`, { headers })),
-        this.loadSharedPosts(headers)
+      
+      // קודם נטען את userPosts ולאחר מכן נשתמש בו ב-loadInterestPosts
+      const userPosts = await firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/feed`, { headers }));
+      
+      const [sharedPosts, interestPosts] = await Promise.all([
+        this.loadSharedPosts(headers),
+        this.loadInterestPosts(headers, userPosts) // מעביר את userPosts לפונקציה
       ]);
-  
+      
       const systemPosts: Post[] = [
         {
           description: 'Welcome to our platform! Stay tuned for updates.',
@@ -90,18 +109,43 @@ export class HomeComponent implements OnInit {
           saved: false,
           liked: false,
           shared: false,
-          systemPost: true
+          systemPost: true,
+          interests: [],
         },
         // הוסף פוסטים נוספים של המערכת כאן
       ];
-      this.posts = [...systemPosts, ...userPosts, ...sharedPosts].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-
+      
+      this.posts = [...systemPosts, ...userPosts, ...sharedPosts, ...interestPosts].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      
       console.log('Posts loaded:', this.posts);
     } catch (error) {
       console.error('Error loading feed:', error);
     }
   }
 
+  async loadInterestPosts(headers: HttpHeaders, userPosts: Post[]): Promise<Post[]> {
+    try {
+      const interestPosts = await firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/interests-posts`, { headers }));
+      return interestPosts
+        .filter(post => !userPosts.some(userPost => userPost._id === post._id)) // סינון פוסטים שכבר קיימים ב-userPosts
+        .map(post => {
+        const interestName = Array.isArray(post.interests) && post.interests.length > 0 && typeof post.interests[0] === 'object' && 'name' in post.interests[0]
+          ? (post.interests[0] as any).name
+          : 'General';
+  
+        return {
+          ...post,
+          postType: 'Interest', // מוסיף שדה שמציין שזה פוסט מתחום עניין
+          interestName
+        };
+      });
+    } catch (error) {
+      console.error('Error loading interest posts:', error);
+      return [];
+    }
+  }
+  
+      
   async loadSharedPosts(headers: HttpHeaders): Promise<Post[]> {
     try {
       const sharedPosts = await firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/share`, { headers }));
@@ -164,29 +208,42 @@ export class HomeComponent implements OnInit {
       this.postForm.get('image')?.markAsTouched();
     }
   }
+  async loadUserInterests() {
+    try {
+      const token = this.authService.getToken();
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+      this.followingInterests = await firstValueFrom(this.http.get<Interest[]>(`${this.apiUrl}/user-interests`, { headers }));
+    } catch (error) {
+      console.error('Error loading user interests:', error);
+    }
+  }
 
   async onSubmit() {
     if (this.postForm.invalid) {
       return;
     }
-
+  
     const formData = new FormData();
     formData.append('description', this.postForm.get('description')?.value);
+    const interestId = this.postForm.get('interestId')?.value;
+    if (interestId) {
+      formData.append('interestId', interestId);
+    }
     if (this.selectedFile) {
       formData.append('image', this.selectedFile);
     }
-
+  
     try {
       const token = this.authService.getToken();
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-      const response = await firstValueFrom(this.http.post(`${this.apiUrl}/posts`, formData, { headers }));
+      await firstValueFrom(this.http.post(`${this.apiUrl}/posts`, formData, { headers }));
       this.loadFeed();
       this.resetForm();
     } catch (error) {
       console.error('Error:', error);
     }
   }
-
+  
   resetForm() {
     this.postForm.reset();
     this.selectedFile = null;
@@ -208,19 +265,31 @@ export class HomeComponent implements OnInit {
       const token = this.authService.getToken();
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
       
+      
       if (post.liked) {
         post.liked = false;
-        post.likes = post.likes.filter(like => like !== this.currentUser);
-      } else {
+        post.likes = post.likes.filter(like => like !== this.currentUser); // מסיר את המשתמש מרשימת הלייקים
+        } 
+        else {
         post.liked = true;
         post.likes.push(this.currentUser);
       }
       await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/like`, {}, { headers }));
+      this.updateLikes(post);
 
     } catch (error) {
       console.error('Error liking/unliking post:', error);
     }
   }
+
+  updateLikes(post: Post) {
+    const updatedPostIndex = this.posts.findIndex(p => p._id === post._id);
+    if (updatedPostIndex !== -1) {
+      this.posts[updatedPostIndex] = { ...post };
+    }
+  }
+
+  
 
   async sharePost(post: Post) {
     try {

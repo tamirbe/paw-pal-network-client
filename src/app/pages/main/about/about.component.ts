@@ -26,20 +26,10 @@ export class AboutComponent implements OnInit {
   constructor(private http: HttpClient, private fb: FormBuilder, private authService: AuthService) { }
 
   ngOnInit(): void {
-    this.aboutContent$ = this.getAboutContent();
     this.initForm();
     this.loadUserDetails(); // קריאה לפונקציה לטעינת פרטי המשתמש
   }
 
-  getAboutContent(): Observable<AboutContent> {
-    const url = `${this.apiUrl}/about`;
-    return this.http.get<AboutContent>(url).pipe(
-      catchError(error => {
-        console.error('Failed to fetch about content', error);
-        return of({ description: '', members: [], project: '' });
-      })
-    );
-  }
 
   initForm() {
     this.messageForm = this.fb.group({

@@ -1,3 +1,4 @@
+
 <div class="home-container">
   <h2>Welcome {{ currentUserFirstName }}</h2>
   <div class="search-container">
@@ -15,13 +16,29 @@
       <div class="file-upload-container">
         <input id="file-upload" type="file" (change)="onFileChange($event)" />
       </div>
+  
+
+      <div class="container">
+        <span class="select-wrapper">
+          <div class="form-group">
+            <label for="interest" class="interest-label">Select Interest:</label>
+            <div class="custom-select-container">
+              <select id="interest" formControlName="interestId" class="custom-select">
+                <option value="">Without interest</option>
+                <option *ngFor="let interest of followingInterests" [value]="interest._id">{{ interest.name }}</option>
+              </select>
+            </div>
+          </div>
+        </span>
+      </div>
       
       <textarea formControlName="description" placeholder="Write something... {{currentUserFirstName}}" (input)="onTextAreaInput($event)"></textarea>
       <label for="file-upload" class="custom-file-upload">
         <img src="../../../../assets/icons/addimage.svg" alt="Upload Icon" class="upload-icon">
       </label>
       <div *ngIf="selectedFileName" class="file-name">{{ selectedFileName }}</div>
-  
+
+        
       <div class="button-container">
         <button type="submit">Upload</button>
       </div>
@@ -30,64 +47,85 @@
   
   
   
+  
 
   <div class="content-section">
-    <div class="post" *ngFor="let post of posts">
+    <div class="post" *ngFor="let post of posts; let i = index" [style.--post-index]="i">
       <div *ngIf="post.description.startsWith('Shared Post:'); else regularOrSystemPost">
-        <div class="shared-info" *ngIf="post.sharedText && post.sharedBy">
-          <p><strong>Shared by {{ post.sharedBy.firstName }} {{ post.sharedBy.lastName }}:</strong> {{ post.sharedText }}</p>
-          <span class="shared-date">{{ post.sharedAt | date:'short' }}</span>
-        </div>
-        <div class="shared-post">
+        <small class="post-type">Shared posts</small>
+  
+        <div class="outer-frame">
+          <div class="user-wrapper">
+            <a [routerLink]="[post.author.username === currentUser ? '/profile' : '/another', post.author.username]" class="user-link">
+              <img [src]="'../../../../assets/icons/userprofile.svg'" alt="Profile Image" class="profile-image lower-image" width="35" height="35">
+              <strong>{{ currentUser }}</strong>
+            </a>
+          </div>
+        
           <div class="post-header">
             <a [routerLink]="['/another', post.author.username]" class="user-link">
               <img [src]="'../../../../assets/icons/userprofile.svg'" alt="Profile Image" class="profile-image lower-image" width="35" height="35">
-              <strong>{{ post.author.firstName }} {{ post.author.lastName }} ({{ post.author.username }})</strong>
+              <strong>{{ post.author.username }}</strong>
             </a>
             <span class="post-date">{{ post.createdAt | date:'short' }}</span>
           </div>
           <p class="post-description" [ngStyle]="{'direction': getTextDirection(post.description)}">
-            {{ post.description }}
+            {{ post.description | removeSharedPrefix }}
           </p>
+          
           <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image">
-        </div>
-        <div class="info-group">
-          <!-- כפתורים עבור פוסטים משותפים -->
-          <button class="info-button" (click)="likePost(post)">
-            {{ post.liked ? 'Unlike' : 'Like' }} ({{ post.likes.length }})
-          </button>
-          <div *ngIf="post.shares.length > 0">
-            <div *ngFor="let share of post.shares">
-              <div>{{ share.text }}</div>
-            </div>
+        
+          <div class="info-group">
+            <button class="info-button" (click)="likePost(post)">
+              {{ post.liked ? 'Unlike' : 'Like' }} ({{ post.likes.length }})
+            </button>
             <button class="info-button delete-button" 
                     *ngIf="post.author.username === currentUser" 
                     (click)="confirmUnshare(post, post.shares[0].user, post.shares[0].createdAt)">Unshare</button>
           </div>
         </div>
       </div>
+  
+      <!-- פוסטים רגילים, של מערכת או מתחומי עניין -->
       <ng-template #regularOrSystemPost>
-        <div class="post-header">
-          <ng-container *ngIf="!post.systemPost; else systemPost">
+        <ng-container *ngIf="!post.systemPost; else systemPost">
+          <ng-container *ngIf="post.postType === 'Interest'; else regularPost">
+            <small class="post-type">Interest Post - {{ post.interestName }}</small>
+          </ng-container>
+          <ng-template #regularPost>
+            <ng-container *ngIf="post.author.username === currentUser; else friendsPost">
+              <small class="post-type">My posts</small>
+            </ng-container>
+            <ng-template #friendsPost>
+              <small class="post-type">Created by my friends</small>
+            </ng-template>
+          </ng-template>
+          <div class="post-header">
             <a [routerLink]="[post.author.username === currentUser ? '/profile' : '/another', post.author.username]" class="user-link">
               <img [src]="'../../../../assets/icons/userprofile.svg'" alt="Profile Image" class="profile-image lower-image" width="35" height="35">
-              <strong>{{ post.author.firstName }} {{ post.author.lastName }} ({{ post.author.username }})</strong>
+              <strong>{{ post.author.username }}</strong>
             </a>
-          </ng-container>
-          <ng-template #systemPost>
+            <span class="post-date">{{ post.createdAt | date:'short' }}</span>
+          </div>
+        </ng-container>
+        <ng-template #systemPost>
+          <div class="post-header">
             <div class="user-link">
               <img [src]="'../../../../assets/icons/system.svg'" alt="Profile Image" class="profile-image lower-image" width="35" height="35">
               <strong>{{ post.author.firstName }} {{ post.author.lastName }}</strong>
             </div>
-          </ng-template>
-          <span class="post-date">{{ post.createdAt | date:'short' }}</span>
+            <span class="post-date">{{ post.createdAt | date:'short' }}</span>
+          </div>
+        </ng-template>
+  
+        <div class="post-content">
+          <p class="post-description" [ngStyle]="{'direction': getTextDirection(post.description)}">
+            {{ post.description }}
+          </p>
+          <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image">
         </div>
-        <p class="post-description" [ngStyle]="{'direction': getTextDirection(post.description)}">
-          {{ post.description }}
-        </p>
-        <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image">
+  
         <div *ngIf="!post.systemPost" class="info-group">
-          <!-- כפתורים עבור פוסטים רגילים -->
           <button class="info-button" (click)="likePost(post)">
             {{ post.liked ? 'Unlike' : 'Like' }} ({{ post.likes.length }})
           </button>
@@ -103,7 +141,8 @@
       </ng-template>
     </div>
   </div>
-    
+  
+          
   <!-- Edit post modal -->
   <div *ngIf="editingPost" class="edit-dialog">
     <form (ngSubmit)="saveEdit()">

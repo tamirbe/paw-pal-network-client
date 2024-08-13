@@ -281,7 +281,6 @@ export class ProfileComponent implements OnInit {
       // Add your password change logic here
     }
   }
-
   // Menu toggle
   toggleMenu() {
     this.showMenu = !this.showMenu;

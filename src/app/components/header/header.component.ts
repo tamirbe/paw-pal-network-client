@@ -22,4 +22,7 @@ export class HeaderComponent {
   home() {
     this.router.navigate(['home-page']);
   }
+  toInterests() {
+    this.router.navigate(['interests']);
+  }
 }

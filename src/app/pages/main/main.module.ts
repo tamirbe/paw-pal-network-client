@@ -25,7 +25,8 @@ import { RouterModule } from '@angular/router'; // add
 import { SearchResultsComponent } from './search-results/search-results.component'; // add
 import { MatIconModule } from '@angular/material/icon';
 import { UserProfileComponent } from './user-profile/user-profile.component'; // עדכן את הנתיב בהתאם למיקום של UserProfileComponent
-
+import { RemoveSharedPrefixPipe } from './home/remove-shared-prefix.pipe'; // עדכן את הנתיב לפי מיקום ה-Pipe
+import { InterestsComponent } from './interests/interests.component';
 
 
 @NgModule({
@@ -39,6 +40,8 @@ import { UserProfileComponent } from './user-profile/user-profile.component'; //
         HeaderComponent,
         SearchResultsComponent, // add
         UserProfileComponent, // add
+        RemoveSharedPrefixPipe,
+        InterestsComponent // add
     ],
     imports: [
         MainRoutingModule,
