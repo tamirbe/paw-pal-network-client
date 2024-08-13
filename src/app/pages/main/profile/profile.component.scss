@@ -524,12 +524,16 @@ body {
 
 /* Cancel Button Specific Styles */
 .cancel-btn {
-  background-color: #acacac; /* Red background color */
-  color: #000000; /* White text color */
-  border: 1px solid #cfcfcf; /* Slightly darker red border */
+  background-color: #acacac;
+  /* Red background color */
+  color: #000000;
+  /* White text color */
+  border: 1px solid #cfcfcf;
+  /* Slightly darker red border */
 
   &:hover {
-    background-color: #7e7e7e; /* Darker red on hover */
+    background-color: #7e7e7e;
+    /* Darker red on hover */
   }
 }
 
@@ -544,23 +548,35 @@ input {
 
 /* Search Input Specific Styles */
 .search-input {
-  width: 100%; /* Full width */
-  max-width: 300px; /* Max width for the input */
-  padding: 10px 15px; /* Padding inside the input */
-  border: 2px solid #007bff; /* Blue border color */
-  border-radius: 25px; /* Rounded corners */
-  font-size: 1rem; /* Font size */
-  transition: border-color 0.3s, box-shadow 0.3s; /* Smooth transitions for border and shadow */
+  width: 100%;
+  /* Full width */
+  max-width: 300px;
+  /* Max width for the input */
+  padding: 10px 15px;
+  /* Padding inside the input */
+  border: 2px solid #007bff;
+  /* Blue border color */
+  border-radius: 25px;
+  /* Rounded corners */
+  font-size: 1rem;
+  /* Font size */
+  transition: border-color 0.3s, box-shadow 0.3s;
+  /* Smooth transitions for border and shadow */
 
   &:focus {
-    border-color: #0056b3; /* Darker blue border on focus */
-    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5); /* Blue glow on focus */
-    outline: none; /* Remove default outline */
+    border-color: #0056b3;
+    /* Darker blue border on focus */
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+    /* Blue glow on focus */
+    outline: none;
+    /* Remove default outline */
   }
 
   &::placeholder {
-    color: #888; /* Placeholder text color */
-    font-style: italic; /* Placeholder text style */
+    color: #888;
+    /* Placeholder text color */
+    font-style: italic;
+    /* Placeholder text style */
   }
 }
 
@@ -577,20 +593,50 @@ button {
 
 /* Search Button Specific Styles */
 .search-btn {
-  background-color: #aec8e4; /* Blue background color */
-  color: #fff; /* White text color */
-  border-radius: 25px; /* Rounded corners */
-  padding: 10px 20px; /* Padding inside the button */
-  font-size: 1rem; /* Font size */
-  transition: background-color 0.3s, transform 0.3s; /* Smooth transitions for background and transform */
+  background-color: #aec8e4;
+  /* Blue background color */
+  color: #fff;
+  /* White text color */
+  border-radius: 25px;
+  /* Rounded corners */
+  padding: 10px 20px;
+  /* Padding inside the button */
+  font-size: 1rem;
+  /* Font size */
+  transition: background-color 0.3s, transform 0.3s;
+  /* Smooth transitions for background and transform */
 
   &:hover {
-    background-color: #577492; /* Darker blue background on hover */
-    transform: scale(1.05); /* Slightly enlarge the button on hover */
+    background-color: #577492;
+    /* Darker blue background on hover */
+    transform: scale(1.05);
+    /* Slightly enlarge the button on hover */
   }
 
   &:active {
-    background-color: #86a5c9; /* Even darker blue background on click */
-    transform: scale(1); /* Reset the size on click */
+    background-color: #86a5c9;
+    /* Even darker blue background on click */
+    transform: scale(1);
+    /* Reset the size on click */
   }
+}
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
 }
