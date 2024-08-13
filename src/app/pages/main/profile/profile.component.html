@@ -266,12 +266,20 @@
         <div class="info-group">
           <p>Likes: {{ post.likes.length }}</p>
           <p>Shares: {{ post.shares.length }}</p>
-          <button type="button" (click)="deletePost(post)" class="btnDelete">Delete Content</button>
+          <button type="button" (click)="confirmDeletePost(post._id)" class="btnDelete">Delete Content</button>
+
         </div>
       </div>
     </div>
   </div>
-
+  <!-- Confirmation Popup for Post Deletion -->
+  <div *ngIf="showConfirmDeletePostPopup" class="popup-overlay">
+    <div class="popup-content">
+      <p>Are you sure you want to delete this post?</p>
+      <button (click)="deletePostConfirmed()">Yes</button>
+      <button (click)="cancelDeletePost()">No</button>
+    </div>
+  </div>
   <!-- Favorite Content Section -->
   <div *ngIf="favoriteMode" class="favorite-content-section" style="max-height: 400px; overflow-y: auto;">
     <h2>Favorite Content</h2>

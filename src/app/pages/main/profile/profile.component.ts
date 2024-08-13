@@ -49,6 +49,9 @@ export class ProfileComponent implements OnInit {
   showConfirmDeletePopup: boolean = false; // משתנה לניהול חלון ה-Pop-up למחיקת החשבון
   showPasswordMismatchPopup: boolean = false;
 
+  showConfirmDeletePostPopup: boolean = false; // משתנה לניהול חלון ה-Pop-up למחיקת פוסט
+  postToDeleteId: string | null = null; // משתנה לשמירת מזהה הפוסט למחיקה
+
   usernameExists: boolean = false;
   emailExists: boolean = false;
 
@@ -416,15 +419,44 @@ export class ProfileComponent implements OnInit {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     this.http.delete(`${this.apiUrl}/uploaded-content/${contentId}`, { headers }).pipe(
-      switchMap(() => this.http.get<any[]>(`${this.apiUrl}/uploaded-content`, { headers })),
+      switchMap(() => {
+        console.log(`Post with ID ${contentId} deleted from server.`);
+        return this.http.get<any[]>(`${this.apiUrl}/uploaded-content`, { headers });
+      }),
       catchError(error => {
         console.error('Error removing content:', error);
+        console.log(contentId);
         return [];
       })
     ).subscribe(data => {
       this.uploadedContent = data;
-      console.log(`Removed content with ID ${contentId}`);
+      console.log('Updated uploaded content:', this.uploadedContent);
     });
+  }
+
+  // פונקציה להצגת ה-Pop-up למחיקת פוסט
+  confirmDeletePost(postId: string): void {
+    this.postToDeleteId = postId;
+    this.showConfirmDeletePostPopup = true;
+  }
+
+  // פונקציה לביצוע מחיקת הפוסט לאחר אישור
+  deletePostConfirmed(): void {
+    if (!this.postToDeleteId) {
+      console.error('Post ID is missing, cannot delete the post.');
+      return;
+    }
+    console.log(`Deleting post with ID: ${this.postToDeleteId}`);
+    this.removeUploadedContent(this.postToDeleteId);
+    this.showConfirmDeletePostPopup = false;
+    this.postToDeleteId = null;
+    this.loadUploadedContent();
+  }
+
+  // פונקציה לביטול המחיקה אם המשתמש בחר "No"
+  cancelDeletePost(): void {
+    this.postToDeleteId = null;
+    this.showConfirmDeletePostPopup = false;
   }
 
   logout() {
