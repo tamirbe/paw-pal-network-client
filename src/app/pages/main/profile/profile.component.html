@@ -232,9 +232,8 @@
 
 
   <!-- Uploaded Content Section -->
-  <div *ngIf="uploadMode" class="content-section">
+  <div *ngIf="uploadMode" class="content-section" style="max-height: 400px; overflow-y: auto;">
     <h2>Uploaded Content</h2>
-
     <!-- Sort Options -->
     <div class="sort-options">
       <label>
@@ -274,7 +273,7 @@
   </div>
 
   <!-- Favorite Content Section -->
-  <div *ngIf="favoriteMode" class="favorite-content-section">
+  <div *ngIf="favoriteMode" class="favorite-content-section" style="max-height: 400px; overflow-y: auto;">
     <h2>Favorite Content</h2>
     <!-- Sort Options -->
     <div class="sort-options">
@@ -308,15 +307,14 @@
         <div class="info-group">
           <p>Likes: {{ post.likes.length }}</p>
           <p>Shares: {{ post.shares.length }}</p>
-          <button type="button" (click)="UnlikePost(post)" class="btn">Unlike</button>
+          <button type="button" (click)="UnlikePost(post)" class="btnDelete">Unlike</button>
         </div>
       </div>
     </div>
-    <button type="button" (click)="cancelAction()" class="btn">Return</button>
   </div>
 
   <!-- Saved Content Section -->
-  <div *ngIf="savedMode" class="saved-content-section">
+  <div *ngIf="savedMode" class="saved-content-section" style="max-height: 400px; overflow-y: auto;">
     <h2>Saved Content</h2>
     <!-- Sort Options -->
     <div class="sort-options">
@@ -350,12 +348,12 @@
         <div class="info-group">
           <p>Likes: {{ post.likes.length }}</p>
           <p>Shares: {{ post.shares.length }}</p>
-          <button type="button" (click)="unsavePost(post)" class="btn">Unsave</button>
+          <button type="button" (click)="unsavePost(post)" class="btnDelete">Unsave</button>
         </div>
       </div>
     </div>
-    <button type="button" (click)="cancelAction()" class="btn">Return</button>
   </div>
+
 
   <!-- Statistics Section -->
   <div *ngIf="statsMode" class="statistics-section">
