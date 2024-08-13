@@ -28,32 +28,73 @@
   <div *ngIf="editMode" class="edit-form">
     <h2>Edit Personal Details</h2>
     <form [formGroup]="userForm" (ngSubmit)="onSubmitUserDetails()">
+
       <div class="form-group">
         <label for="username">Username</label>
         <input id="username" formControlName="username" type="text" />
+        <div *ngIf="userForm.get('username')?.invalid && userForm.get('username')?.touched">
+          <small *ngIf="userForm.get('username')?.hasError('required')">Username is required.</small>
+          <small *ngIf="userForm.get('username')?.hasError('minlength')">Username must be at least 2 characters
+            long.</small>
+          <small *ngIf="userForm.get('username')?.hasError('maxlength')">Username cannot exceed 20 characters.</small>
+        </div>
+        <!-- הודעת שגיאה במקרה שהשם משתמש כבר קיים במערכת -->
+        <div *ngIf="usernameExists">
+          <small class="error-message">Username already exists in the system.</small>
+        </div>
       </div>
+
       <div class="form-group">
         <label for="firstName">First Name</label>
         <input id="firstName" formControlName="firstName" type="text" />
+        <div *ngIf="userForm.get('firstName')?.invalid && userForm.get('firstName')?.touched">
+          <small *ngIf="userForm.get('firstName')?.hasError('required')">First Name is required.</small>
+          <small *ngIf="userForm.get('firstName')?.hasError('minlength')">First Name must be at least 2 characters
+            long.</small>
+          <small *ngIf="userForm.get('firstName')?.hasError('maxlength')">First Name cannot exceed 20
+            characters.</small>
+          <small *ngIf="userForm.get('firstName')?.hasError('pattern')">First Name can only contain letters.</small>
+        </div>
       </div>
+
       <div class="form-group">
         <label for="lastName">Last Name</label>
         <input id="lastName" formControlName="lastName" type="text" />
+        <div *ngIf="userForm.get('lastName')?.invalid && userForm.get('lastName')?.touched">
+          <small *ngIf="userForm.get('lastName')?.hasError('required')">Last Name is required.</small>
+          <small *ngIf="userForm.get('lastName')?.hasError('minlength')">Last Name must be at least 2 characters
+            long.</small>
+          <small *ngIf="userForm.get('lastName')?.hasError('maxlength')">Last Name cannot exceed 20 characters.</small>
+          <small *ngIf="userForm.get('lastName')?.hasError('pattern')">Last Name can only contain letters.</small>
+        </div>
       </div>
+
       <div class="form-group">
         <label for="email">Email</label>
         <input id="email" formControlName="email" type="email" />
+        <div *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched">
+          <small *ngIf="userForm.get('email')?.hasError('required')">Email is required.</small>
+          <small *ngIf="userForm.get('email')?.hasError('email')">Please enter a valid email address.</small>
+        </div>
+        <!-- הודעת שגיאה במקרה שהאימייל כבר קיים במערכת -->
+        <div *ngIf="emailExists">
+          <small class="error-message">Email already exists in the system.</small>
+        </div>
       </div>
+
       <div class="form-group">
         <label for="pet">Owned Pet</label>
         <select id="pet" formControlName="pet">
           <option *ngFor="let pet of petOptions" [value]="pet">{{ pet }}</option>
         </select>
       </div>
+
       <button type="submit" [disabled]="userForm.invalid" class="btn">Save</button>
       <button type="button" (click)="cancelEdit()" class="btn">Cancel</button>
     </form>
   </div>
+
+
 
   <!-- Change Password Form -->
   <div *ngIf="passwordMode" class="password-form">
@@ -127,7 +168,7 @@
     <h2>Delete Account</h2>
     <form (ngSubmit)="confirmDeleteAccount()">
       <div class="form-group">
-        <input type="password" placeholder="Current Password" name="currentPassword" required class="password-input"/>
+        <input type="password" placeholder="Current Password" name="currentPassword" required class="password-input" />
       </div>
       <div class="button-group">
         <button type="submit" class="btn confirm-btn">Confirm</button>
@@ -135,7 +176,33 @@
       <button type="button" (click)="cancelAction()" class="btn cancel-btn">Cancel</button>
     </form>
   </div>
-  
+
+  <!--Delete Account Confirmation Popup-->
+  <div *ngIf="showConfirmDeletePopup" class="popup-overlay">
+    <div class="popup-content">
+      <p>Are you sure you want to delete your account?</p>
+      <button (click)="deleteAccountConfirmed()">Yes</button>
+      <button (click)="cancelDeleteAccount()">No</button>
+    </div>
+  </div>
+
+  <!-- Delete Account Confirmation Popup -->
+  <div *ngIf="showConfirmDeletePopup" class="popup-overlay">
+    <div class="popup-content">
+      <p>Are you sure you want to delete your account?</p>
+      <button (click)="deleteAccountConfirmed()">Yes</button>
+      <button (click)="cancelDeleteAccount()">No</button>
+    </div>
+  </div>
+
+  <!-- Password Mismatch Popup -->
+  <div *ngIf="showPasswordMismatchPopup" class="popup-overlay">
+    <div class="popup-content">
+      <p>The password you entered is incorrect. Please try again.</p>
+      <button (click)="closePasswordMismatchPopup()">OK</button>
+    </div>
+  </div>
+
   <!-- Following Section -->
   <div *ngIf="followMode" class="following-section">
     <h2>Following</h2>
@@ -148,17 +215,25 @@
         <p>{{ username }}</p>
       </a>
       <div class="info-group">
-      <button type="button" (click)="unfollowUser(username)" class="btn unfollow-btn">Unfollow</button>
+        <button type="button" (click)="confirmUnfollowUser(username)" class="btn unfollow-btn">Unfollow</button>
       </div>
     </div>
     <button type="button" (click)="cancelAction()" class="btn return-btn">Return</button>
   </div>
-  
+
+  <!-- Confirmation Popup -->
+  <div *ngIf="showConfirmUnfollowPopup" class="popup-overlay">
+    <div class="popup-content">
+      <p>Are you sure you want to unfollow {{ userToUnfollow }}?</p>
+      <button (click)="unfollowUser(userToUnfollow)">Yes</button>
+      <button (click)="cancelUnfollow()">No</button>
+    </div>
+  </div>
+
 
   <!-- Uploaded Content Section -->
-  <div *ngIf="uploadMode" class="content-section">
+  <div *ngIf="uploadMode" class="content-section" style="max-height: 400px; overflow-y: auto;">
     <h2>Uploaded Content</h2>
-
     <!-- Sort Options -->
     <div class="sort-options">
       <label>
@@ -177,7 +252,8 @@
       <div class="post" *ngFor="let post of sortedContent">
         <div class="post-header">
           <a [routerLink]="['/another', user?.username]" class="user-link">
-            <img [src]="'../../../../assets/icons/userprofile.svg'" alt="Profile Image" class="profile-image" width="35" height="35">
+            <img [src]="'../../../../assets/icons/userprofile.svg'" alt="Profile Image" class="profile-image" width="35"
+              height="35">
             <strong>{{ user?.firstName }} {{ user?.lastName }} ({{ user?.username }})</strong>
           </a>
           <span class="post-date">{{ post.createdAt | date:'short' }}</span>
@@ -185,94 +261,111 @@
         <p class="post-description" [ngStyle]="{'direction': getTextDirection(post.description)}">
           {{ post.description }}
         </p>
-        <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image" width="120" height="120">
+        <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image" width="120"
+          height="120">
         <div class="info-group">
           <p>Likes: {{ post.likes.length }}</p>
           <p>Shares: {{ post.shares.length }}</p>
-          <button type="button" (click)="deletePost(post)" class="btnDelete">Delete Content</button>
+          <button type="button" (click)="confirmDeletePost(post._id)" class="btnDelete">Delete Content</button>
+
         </div>
       </div>
     </div>
   </div>
-
-  <!-- Favorite Content Section -->
-  <div *ngIf="favoriteMode" class="favorite-content-section">
-    <h2>Favorite Content</h2>
-    <!-- Sort Options -->
-    <div class="sort-options">
-      <label>
-        <input type="radio" name="sort" (change)="sortedContent = sortPosts(favoriteContent, 'date')"
-          [checked]="sortOption === 'date'">
-        Sort by Date
-      </label>
-      <label>
-        <input type="radio" name="sort" (change)="sortedContent = sortPosts(favoriteContent, 'likes')"
-          [checked]="sortOption === 'likes'">
-        Sort by Likes
-      </label>
+  <!-- Confirmation Popup for Post Deletion -->
+  <div *ngIf="showConfirmDeletePostPopup" class="popup-overlay">
+    <div class="popup-content">
+      <p>Are you sure you want to delete this post?</p>
+      <button (click)="deletePostConfirmed()">Yes</button>
+      <button (click)="cancelDeletePost()">No</button>
     </div>
+  </div>
 
-    <div class="content-section">
-      <div class="post" *ngFor="let post of sortedContent">
-        <div class="post-header">
-          <a [routerLink]="['/another', user?.username]" class="user-link">
-            <img [src]="'../../../../assets/icons/userprofile.svg'" alt="Profile Image" class="profile-image" width="35" height="35">
-            <strong>{{ user?.firstName }} {{ user?.lastName }} ({{ user?.username }})</strong>
-          </a>
-          <span class="post-date">{{ post.createdAt | date:'short' }}</span>
-        </div>
-        <p class="post-description" [ngStyle]="{'direction': getTextDirection(post.description)}">
-          {{ post.description }}
-        </p>
-        <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image" width="120" height="120">
-        <div class="info-group">
-          <p>Likes: {{ post.likes.length }}</p>
-          <p>Shares: {{ post.shares.length }}</p>
-          <button type="button" (click)="UnlikePost(post)" class="btn">Unlike</button>
+  <div>
+    <!-- Favorite Content Section -->
+    <div *ngIf="favoriteMode" class="favorite-content-section" style="max-height: 400px; overflow-y: auto;">
+      <h2>Favorite Content</h2>
+      <!-- Sort Options -->
+      <div class="sort-options">
+        <label>
+          <input type="radio" name="sort" (change)="sortedContent = sortPosts(favoriteContent, 'date')"
+            [checked]="sortOption === 'date'">
+          Sort by Date
+        </label>
+        <label>
+          <input type="radio" name="sort" (change)="sortedContent = sortPosts(favoriteContent, 'likes')"
+            [checked]="sortOption === 'likes'">
+          Sort by Likes
+        </label>
+      </div>
+
+      <div class="content-section">
+        <div class="post" *ngFor="let post of sortedContent">
+          <div class="post-header">
+            <a [routerLink]="['/another', user?.username]" class="user-link">
+              <img [src]="'../../../../assets/icons/userprofile.svg'" alt="Profile Image" class="profile-image"
+                width="35" height="35">
+              <strong>{{ user?.firstName }} {{ user?.lastName }} ({{ user?.username }})</strong>
+            </a>
+            <span class="post-date">{{ post.createdAt | date:'short' }}</span>
+          </div>
+          <p class="post-description" [ngStyle]="{'direction': getTextDirection(post.description)}">
+            {{ post.description }}
+          </p>
+          <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image" width="120"
+            height="120">
+          <div class="info-group">
+            <p>Likes: {{ post.likes.length }}</p>
+            <p>Shares: {{ post.shares.length }}</p>
+            <button type="button" (click)="UnlikePost(post)" class="btnDelete">Unlike</button>
+          </div>
         </div>
       </div>
+      <button type="button" (click)="cancelAction()" class="btn return-btn">Return</button>
     </div>
-    <button type="button" (click)="cancelAction()" class="btn">Return</button>
   </div>
 
   <!-- Saved Content Section -->
-  <div *ngIf="savedMode" class="saved-content-section">
-    <h2>Saved Content</h2>
-    <!-- Sort Options -->
-    <div class="sort-options">
-      <label>
-        <input type="radio" name="sort" (change)="sortedContent = sortPosts(savedContent, 'date')"
-          [checked]="sortOption === 'date'">
-        Sort by Date
-      </label>
-      <label>
-        <input type="radio" name="sort" (change)="sortedContent = sortPosts(savedContent, 'likes')"
-          [checked]="sortOption === 'likes'">
-        Sort by Likes
-      </label>
-    </div>
-
-    <div class="content-section">
-      <div class="post" *ngFor="let post of sortedContent">
-        <div class="post-header">
-          <a [routerLink]="['/another', user?.username]" class="user-link">
-            <img [src]="'../../../../assets/icons/userprofile.svg'" alt="Profile Image" class="profile-image" width="35" height="35">
-            <strong>{{ user?.firstName }} {{ user?.lastName }} ({{ user?.username }})</strong>
-          </a>
-          <span class="post-date">{{ post.createdAt | date:'short' }}</span>
-        </div>
-        <p class="post-description" [ngStyle]="{'direction': getTextDirection(post.description)}">
-          {{ post.description }}
-        </p>
-        <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image" width="120" height="120">
-        <div class="info-group">
-          <p>Likes: {{ post.likes.length }}</p>
-          <p>Shares: {{ post.shares.length }}</p>
-          <button type="button" (click)="unsavePost(post)" class="btn">Unsave</button>
+  <div>
+    <div *ngIf="savedMode" class="saved-content-section" style="max-height: 400px; overflow-y: auto;">
+      <h2>Saved Content</h2>
+      <!-- Sort Options -->
+      <div class="sort-options">
+        <label>
+          <input type="radio" name="sort" (change)="sortedContent = sortPosts(savedContent, 'date')"
+            [checked]="sortOption === 'date'">
+          Sort by Date
+        </label>
+        <label>
+          <input type="radio" name="sort" (change)="sortedContent = sortPosts(savedContent, 'likes')"
+            [checked]="sortOption === 'likes'">
+          Sort by Likes
+        </label>
+      </div>
+      <div class="content-section">
+        <div class="post" *ngFor="let post of sortedContent">
+          <div class="post-header">
+            <a [routerLink]="['/another', user?.username]" class="user-link">
+              <img [src]="'../../../../assets/icons/userprofile.svg'" alt="Profile Image" class="profile-image"
+                width="35" height="35">
+              <strong>{{ user?.firstName }} {{ user?.lastName }} ({{ user?.username }})</strong>
+            </a>
+            <span class="post-date">{{ post.createdAt | date:'short' }}</span>
+          </div>
+          <p class="post-description" [ngStyle]="{'direction': getTextDirection(post.description)}">
+            {{ post.description }}
+          </p>
+          <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image" width="120"
+            height="120">
+          <div class="info-group">
+            <p>Likes: {{ post.likes.length }}</p>
+            <p>Shares: {{ post.shares.length }}</p>
+            <button type="button" (click)="unsavePost(post)" class="btnDelete">Unsave</button>
+          </div>
         </div>
       </div>
+      <button type="button" (click)="cancelAction()" class="btn return-btn">Return</button>
     </div>
-    <button type="button" (click)="cancelAction()" class="btn">Return</button>
   </div>
 
   <!-- Statistics Section -->
