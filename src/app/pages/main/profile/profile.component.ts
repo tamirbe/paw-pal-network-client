@@ -9,6 +9,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../../../auth.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { firstValueFrom } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -49,7 +50,7 @@ export class ProfileComponent implements OnInit {
 
   private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
 
-  constructor(private sanitizer: DomSanitizer, private fb: FormBuilder, private userService: UserService, private authService: AuthService, private http: HttpClient) { }
+  constructor(private sanitizer: DomSanitizer, private fb: FormBuilder, private userService: UserService, private authService: AuthService, private http: HttpClient, private router: Router) { }
 
   ngOnInit(): void {
     this.initForms();
@@ -367,22 +368,31 @@ export class ProfileComponent implements OnInit {
     this.showConfirmDeletePopup = true;
   }
 
+  logout() {
+    this.authService.logout();
+  }
+
   // Confirm and cancel actions
   deleteAccountConfirmed(): void {
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    this.http.delete(`${this.apiUrl}/delete-account`, { headers }).pipe(
+    const currentPassword = (document.querySelector('.password-input') as HTMLInputElement).value;
+    console.log(currentPassword);
+
+    // שליחת בקשת מחיקה עם הסיסמה
+    this.http.delete(`${this.apiUrl}/delete-account`, {
+      headers,
+      body: currentPassword // העברת הסיסמה ב-body
+    }).pipe(
       catchError(error => {
         console.error('Error deleting account:', error);
         return [];
       })
     ).subscribe(() => {
-      console.log('Account deleted successfully');
-      this.authService.logout(); // If you have a logout function in your auth service
-      window.location.href = '/login'; // Navigate to login page
+      this.router.navigate(['login']);
+      this.showConfirmDeletePopup = false;
     });
-    this.showConfirmDeletePopup = false;
   }
 
 
