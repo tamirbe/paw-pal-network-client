@@ -128,25 +128,58 @@
     <h2>Delete Account</h2>
     <form (ngSubmit)="confirmDeleteAccount()">
       <div class="form-group">
-        <input type="password" placeholder="Current Password" name="currentPassword" required />
+        <input type="password" placeholder="Current Password" name="currentPassword" required class="password-input" />
       </div>
-      <button type="submit" class="btn">Confirm</button>
-      <button type="button" (click)="cancelAction()" class="btn">Cancel</button>
+      <div class="button-group">
+        <button type="submit" class="btn confirm-btn">Confirm</button>
+      </div>
+      <button type="button" (click)="cancelAction()" class="btn cancel-btn">Cancel</button>
     </form>
+  </div>
+
+  <!--Delete Account Confirmation Popup-->
+  <div *ngIf="showConfirmDeletePopup" class="popup-overlay">
+    <div class="popup-content">
+      <p>Are you sure you want to delete your account?</p>
+      <button (click)="deleteAccountConfirmed()">Yes</button>
+      <button (click)="cancelDeleteAccount()">No</button>
+    </div>
+  </div>
+
+  <!-- Delete Account Confirmation Popup -->
+  <div *ngIf="showConfirmDeletePopup" class="popup-overlay">
+    <div class="popup-content">
+      <p>Are you sure you want to delete your account?</p>
+      <button (click)="deleteAccountConfirmed()">Yes</button>
+      <button (click)="cancelDeleteAccount()">No</button>
+    </div>
   </div>
 
   <!-- Following Section -->
   <div *ngIf="followMode" class="following-section">
     <h2>Following</h2>
-    <input type="text" placeholder="Search..." [(ngModel)]="searchTerm" />
-    <button type="button" (click)="filterFollowing(searchTerm)" class="btn">Search</button>
+    <input type="text" placeholder="Search..." [(ngModel)]="searchTerm" class="search-input" />
+    <div class="search-container">
+    </div>
+    <button type="button" (click)="filterFollowing(searchTerm)" class="btn search-btn">Search</button>
     <div *ngFor="let username of filteredFollowing" class="user">
       <a [routerLink]="[username === user?.username ? '/profile' : '/another', username]" class="user-link">
         <p>{{ username }}</p>
       </a>
-      <button type="button" (click)="unfollowUser(username)" class="btn unfollow-btn">Unfollow</button>
+      <div class="info-group">
+        <button type="button" (click)="confirmUnfollowUser(username)" class="btn unfollow-btn">Unfollow</button>
+      </div>
     </div>
-    <button type="button" (click)="cancelAction()" class="btn">Return</button>
+    <button type="button" (click)="cancelAction()" class="btn return-btn">Return</button>
+  </div>
+
+  <!-- Confirmation Popup -->
+  <div *ngIf="showConfirmUnfollowPopup" class="popup-overlay">
+    <div class="popup-content">
+      <p>Are you sure you want to unfollow {{ userToUnfollow }}?</p>
+      <button (click)="unfollowUser(userToUnfollow)">Yes</button>
+      <button (click)="cancelUnfollow()">No</button>
+    </div>
   </div>
 
 
@@ -154,7 +187,6 @@
   <div *ngIf="uploadMode" class="content-section">
     <h2>Uploaded Content</h2>
 
-    <!-- Sort Options -->
     <!-- Sort Options -->
     <div class="sort-options">
       <label>
@@ -169,19 +201,29 @@
       </label>
     </div>
 
-    <div *ngFor="let post of sortedContent" class="post">
-      <p>{{ post.description }}</p>
-      <div *ngIf="post.image">
-        <img [src]="post.image" alt="Post Image">
+    <div class="content-section">
+      <div class="post" *ngFor="let post of sortedContent">
+        <div class="post-header">
+          <a [routerLink]="['/another', user?.username]" class="user-link">
+            <img [src]="'../../../../assets/icons/userprofile.svg'" alt="Profile Image" class="profile-image" width="35"
+              height="35">
+            <strong>{{ user?.firstName }} {{ user?.lastName }} ({{ user?.username }})</strong>
+          </a>
+          <span class="post-date">{{ post.createdAt | date:'short' }}</span>
+        </div>
+        <p class="post-description" [ngStyle]="{'direction': getTextDirection(post.description)}">
+          {{ post.description }}
+        </p>
+        <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image" width="120"
+          height="120">
+        <div class="info-group">
+          <p>Likes: {{ post.likes.length }}</p>
+          <p>Shares: {{ post.shares.length }}</p>
+          <button type="button" (click)="deletePost(post)" class="btnDelete">Delete Content</button>
+        </div>
       </div>
-      <p>author : {{user?.username}}</p>
-      <p>Likes: {{ post.likes.length }}</p>
-      <p>Shares: {{ post.shares.length }}</p>
-      <p>Created At: {{ post.createdAt | date:'medium' }}</p>
-      <button type="button" (click)="deletePost(post)" class="btnDelete">Delete Content</button>
     </div>
   </div>
-
   <!-- Favorite Content Section -->
   <!-- favorite-content.component.html -->
 
