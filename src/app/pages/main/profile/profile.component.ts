@@ -42,6 +42,12 @@ export class ProfileComponent implements OnInit {
   passwordForm!: FormGroup;
   hide = true;// Form for password change
 
+
+  showConfirmUnfollowPopup: boolean = false; // משתנה לניהול חלון ה-Pop-up
+  userToUnfollow: string = ''; // שם המשתמש למחיקה
+  deletePassword: string = ''; // משתנה לשמירת הסיסמה לאישור מחיקת חשבון
+  showConfirmDeletePopup: boolean = false; // משתנה לניהול חלון ה-Pop-up למחיקת החשבון
+
   private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
 
   constructor(private sanitizer: DomSanitizer, private fb: FormBuilder, private userService: UserService, private authService: AuthService, private http: HttpClient) { }
@@ -373,7 +379,43 @@ export class ProfileComponent implements OnInit {
       console.log(`Removed content with ID ${contentId}`);
     });
   }
+  // Confirm and cancel actions for account deletion
+  confirmDeleteAccount(): void {
+    this.showConfirmDeletePopup = true;
+  }
 
+  logout() {
+    this.authService.logout();
+  }
+
+  // Confirm and cancel actions
+  deleteAccountConfirmed(): void {
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    const currentPassword = (document.querySelector('.password-input') as HTMLInputElement).value;
+    console.log(currentPassword);
+
+    // שליחת בקשת מחיקה עם הסיסמה
+    this.http.delete(`${this.apiUrl}/delete-account`, {
+      headers,
+      body: currentPassword // העברת הסיסמה ב-body
+    }).pipe(
+      catchError(error => {
+        console.error('Error deleting account:', error);
+        return [];
+      })
+    ).subscribe(() => {
+      this.router.navigate(['login']);
+      this.showConfirmDeletePopup = false;
+    });
+  }
+
+
+  cancelDeleteAccount(): void {
+    this.showConfirmDeletePopup = false;
+    this.cancelAction();
+  }
 
   cancelAction(): void {
     this.editMode = false;
