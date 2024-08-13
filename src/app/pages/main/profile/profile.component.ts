@@ -463,8 +463,8 @@ export class ProfileComponent implements OnInit {
     this.removeUploadedContent(this.postToDeleteId);
     this.showConfirmDeletePostPopup = false;
     this.postToDeleteId = null;
-    this.loadUploadedContent();
-  }
+    this.loadUploadedContent()
+    }
 
   // פונקציה לביטול המחיקה אם המשתמש בחר "No"
   cancelDeletePost(): void {
