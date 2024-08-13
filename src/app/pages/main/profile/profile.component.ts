@@ -47,6 +47,10 @@ export class ProfileComponent implements OnInit {
   userToUnfollow: string = ''; // שם המשתמש למחיקה
   deletePassword: string = ''; // משתנה לשמירת הסיסמה לאישור מחיקת חשבון
   showConfirmDeletePopup: boolean = false; // משתנה לניהול חלון ה-Pop-up למחיקת החשבון
+  showPasswordMismatchPopup: boolean = false;
+
+  usernameExists: boolean = false;
+  emailExists: boolean = false;
 
   private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
 
@@ -54,6 +58,15 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit(): void {
     this.initForms();
+    // Listener for username changes
+    this.userForm.get('username')?.valueChanges.subscribe((value) => {
+      this.checkUsernameExists(value);
+    });
+
+    // Listener for email changes
+    this.userForm.get('email')?.valueChanges.subscribe((value) => {
+      this.checkEmailExists(value);
+    });
     this.loadUserData();
   }
 
@@ -69,9 +82,9 @@ export class ProfileComponent implements OnInit {
   // Initialize the forms
   private initForms(): void {
     this.userForm = this.fb.group({
-      username: ['', Validators.required],
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
+      username: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(20)]],
+      firstName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(20), Validators.pattern('^[A-Za-z]+$')]],
+      lastName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(20), Validators.pattern('^[A-Za-z]+$')]],
       email: ['', [Validators.required, Validators.email]],
       pet: ['No Pets']
     });
@@ -181,30 +194,81 @@ export class ProfileComponent implements OnInit {
     }
   }
 
-  // Handle form submissions
-  onSubmitUserDetails(): void {
-    if (this.userForm.invalid) {
+  // מתודות לבדיקה אסינכרונית של שם משתמש ואימייל
+  async checkUsernameExists(username: string): Promise<void> {
+    if (username === this.user?.username) {
+      this.usernameExists = false;
       return;
     }
 
+    try {
+      const response: any = await firstValueFrom(this.http.post(`${this.apiUrl}/check-username`, { username }));
+      this.usernameExists = response === true;
+    } catch (error) {
+      console.error('Error checking username existence', error);
+      this.usernameExists = false;
+    }
+  }
+
+  async checkEmailExists(email: string): Promise<void> {
+    if (email === this.user?.email) {
+      this.emailExists = false;
+      return;
+    }
+
+    try {
+      const response: any = await firstValueFrom(this.http.post(`${this.apiUrl}/check-email`, { email }));
+      this.emailExists = response === true;
+    } catch (error) {
+      console.error('Error checking email existence', error);
+      this.emailExists = false;
+    }
+  }
+
+  // Handle form submissions
+  async onSubmitUserDetails(): Promise<void> {
+    // Reset existing error messages
+    this.usernameExists = false;
+    this.emailExists = false;
+
+    const username = this.userForm.get('username')?.value;
+    const email = this.userForm.get('email')?.value;
+
+    // Check if username or email already exists
+    await this.checkUsernameExists(username);
+    await this.checkEmailExists(email);
+
+    // If form is invalid or username/email already exists, stop submission
+    if (this.userForm.invalid || this.usernameExists || this.emailExists) {
+      console.error('Form is invalid or username/email already exists');
+
+      // Set all fields as touched to trigger validation messages
+      Object.keys(this.userForm.controls).forEach(field => {
+        const control = this.userForm.get(field);
+        control?.markAsTouched({ onlySelf: true });
+      });
+
+      return; // Stop the form submission if there are errors
+    }
+
+    // If no errors, proceed to send the update request
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    this.http.put(`${this.apiUrl}/user-details`, this.userForm.value, { headers }).subscribe(
-      response => {
-        console.log('User details updated successfully');
-        // Handle success
-        this.editMode = false;
-        this.loadUserData();
-        this.uploadMode = true;
-      },
-      error => {
-        console.error('Error updating user details', error);
-        // Handle error
-      }
-    );
-    window.location.reload();
+    try {
+      const response = await firstValueFrom(this.http.put(`${this.apiUrl}/user-details`, this.userForm.value, { headers, responseType: 'text' }));
+      console.log('User details updated successfully');
+      // Redirect the user back to the personal-area page
+      this.editMode = false;
+      this.loadUserData();
+      this.uploadMode = true;
+    } catch (error: any) {
+      console.error('Error updating user details', error);
+      // Handle other errors as necessary
+    }
   }
+
+
 
   onSubmitPasswordChange(): void {
     if (this.passwordForm.valid) {
@@ -363,36 +427,43 @@ export class ProfileComponent implements OnInit {
     });
   }
 
+  logout() {
+    this.authService.logout();
+  }
+
+  closePasswordMismatchPopup(): void {
+    this.showPasswordMismatchPopup = false;
+  }
+
   // Confirm and cancel actions for account deletion
   confirmDeleteAccount(): void {
     this.showConfirmDeletePopup = true;
   }
 
-  logout() {
-    this.authService.logout();
-  }
-
-  // Confirm and cancel actions
   deleteAccountConfirmed(): void {
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     const currentPassword = (document.querySelector('.password-input') as HTMLInputElement).value;
-    console.log(currentPassword);
 
-    // שליחת בקשת מחיקה עם הסיסמה
-    this.http.delete(`${this.apiUrl}/delete-account`, {
-      headers,
-      body: currentPassword // העברת הסיסמה ב-body
-    }).pipe(
-      catchError(error => {
-        console.error('Error deleting account:', error);
-        return [];
-      })
-    ).subscribe(() => {
-      this.router.navigate(['login']);
-      this.showConfirmDeletePopup = false;
-    });
+    const body = { password: currentPassword };
+
+    this.http.post(`${this.apiUrl}/delete-account`, body, { headers, responseType: 'text' }) // הוספת responseType: 'text'
+      .pipe(
+        catchError(error => {
+          console.error('Error deleting account:', error);
+          if (error.status === 400) {
+            this.showConfirmDeletePopup = false;
+            this.showPasswordMismatchPopup = true;
+          }
+          return [];
+        })
+      ).subscribe(response => {
+        if (response === 'Account deleted') {
+          this.showConfirmDeletePopup = false;
+          this.router.navigate(['login']);
+        }
+      });
   }
 
 
