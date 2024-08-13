@@ -5,62 +5,54 @@ $success-color: #28a745;
 $success-hover: #218838;
 $danger-color: #dc3545;
 $danger-hover: #c82333;
-$secondary-color: #6c757d;
+$secondary-color: #f74c4c;
 $secondary-hover: #5a6268;
 $background-color: #f9f9f9;
 $text-color: #333;
 $font-family: 'Roboto', sans-serif;
 
+// Gradient Colors
+$gradient-start: #fc360a;
+$gradient-end: #d45d5d;
+
+// Base styles
+body {
+    font-family: $font-family;
+    background-color: $background-color;
+    color: $text-color;
+    margin: 0;
+    padding: 0;
+}
+
+// Personal area container
 .personal-area {
-    max-width: 900px;
-    margin: 0 auto;
+    max-width: 1000px;
+    margin: 20px auto;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    font-family: $font-family;
+    background-color: #fff;
 
     h1,
     h2 {
-        color: #0056b3;
+        color: $primary-color;
         text-align: center;
         margin-bottom: 20px;
     }
 
-    .user-details {
-        margin-bottom: 30px;
-
-        p {
-            color: #0056b3;
-            margin: 10px 0;
-            font-size: 1.1rem;
-        }
-    }
-
-
-
-
+    // Sidebar styles
     .sidebar {
         position: fixed;
         left: 0;
         top: 132px;
 
         @media (max-width: 1400px) {
-            @media (max-width: 1400px) {
-                top: 82px;
-            }
+            top: 82px;
         }
 
         background-color: #efebdf;
         transition: left 0.3s ease;
         padding: 0px 20px;
-
-        .close-btn {
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 24px;
-            cursor: pointer;
-        }
 
         button {
             display: block;
@@ -70,129 +62,192 @@ $font-family: 'Roboto', sans-serif;
             text-align: left;
             cursor: pointer;
             width: 100%;
+            color: $text-color;
+            font-size: 1rem;
+            transition: background 0.3s, color 0.3s;
 
             &:hover {
-                background: #ebebeb;
+                background: $primary-color;
+                color: #fff;
             }
+        }
 
-
+        .icon {
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            color: $primary-color;
+            margin-bottom: 10px;
         }
     }
 
-    .icon {
-        cursor: pointer;
-        width: 20px;
-        height: 20px;
-        color: #0056b3;
+    // User details section
+    .user-details {
+        margin-bottom: 30px;
+        background-color: $background-color;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+        p {
+            color: $primary-color;
+            margin: 10px 0;
+            font-size: 1.1rem;
+        }
     }
 
-    mat-form-field {
-        width: 240px;
-    }
-
-
-
-
+    // Form styles (edit, password, delete)
     .edit-form,
     .password-form,
     .delete-form,
     .following-section,
     .content-section,
     .favorite-content-section,
-    .saved-content-section {
+    .saved-content-section,
+    .statistics-section {
         margin-bottom: 30px;
+        padding: 20px;
+        border-radius: 10px;
+        background-color: #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
         .form-group,
         div {
             display: flex;
             flex-direction: column;
             margin-bottom: 15px;
-        }
 
-        input[type="text"],
-        input[type="email"] {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            width: 100%;
-            max-width: 400px;
-        }
-
-        button[type="submit"],
-        button[type="button"] {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-
-            &:not([type="button"]) {
-                background-color: $success-color;
-                color: white;
-
-                &:hover {
-                    background-color: $success-hover;
-                }
+            label {
+                margin-bottom: 5px;
+                font-weight: bold;
             }
 
-            &[type="button"] {
-                background-color: $secondary-color;
-                color: white;
-
-                &:hover {
-                    background-color: $secondary-hover;
-                }
+            input[type="text"],
+            input[type="email"],
+            select {
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                width: 100%;
+                max-width: 400px;
+                margin-bottom: 15px;
             }
-        }
 
-        .error {
-            color: red;
-            font-size: 0.9rem;
-            margin-top: -10px;
-        }
-    }
+            button[type="submit"],
+            button[type="button"] {
+                padding: 10px 20px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 1rem;
+                transition: background-color 0.3s;
 
-    .following-section,
-    .content-section,
-    .favorite-content-section,
-    .saved-content-section {
-        max-height: 600px;
-        overflow-y: auto;
-        border: 1px solid #ccc;
-        margin: 20px 0;
-        background-color: #ffffff;
-        border-radius: 8px;
-        padding: 15px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-
-        ul {
-            list-style-type: none;
-            padding: 0;
-
-            li {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 8px 0;
-                border-bottom: 1px solid #ddd;
-
-                span {
-                    cursor: pointer;
-                    transition: color 0.3s;
+                &:not([type="button"]) {
+                    background: linear-gradient(45deg, $gradient-start, $gradient-end);
+                    color: white;
 
                     &:hover {
-                        color: $primary-color;
+                        background: linear-gradient(45deg, $gradient-end, $gradient-start);
                     }
                 }
 
-                button {
-                    padding: 5px 10px;
-                    background-color: $danger-color;
+                &[type="button"] {
+                    background-color: $secondary-color;
                     color: white;
-                    border: none;
-                    border-radius: 5px;
-                    cursor: pointer;
-                    font-size: 0.9rem;
+
+                    &:hover {
+                        background-color: $secondary-hover;
+                    }
+                }
+            }
+
+            .error {
+                color: red;
+                font-size: 0.9rem;
+                margin-top: -10px;
+            }
+        }
+
+        .scrollable-content {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .post {
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+            .post-image {
+                max-width: 100%;
+                height: auto;
+                border-radius: 10px;
+                margin-bottom: 15px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            .post-description {
+                font-size: 1.1rem;
+                margin-bottom: 10px;
+                color: $text-color;
+            }
+
+            .post-author {
+                font-size: 0.9rem;
+                color: $secondary-color;
+                margin-bottom: 10px;
+            }
+
+            .post-author a {
+                text-decoration: none;
+                color: $primary-color;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+
+            .sort-options {
+                display: flex;
+                align-items: center;
+                margin-bottom: 20px;
+
+                label {
+                    margin-right: 15px;
+                    display: flex;
+                    align-items: center;
+
+                    input {
+                        margin-right: 5px;
+                    }
+                }
+            }
+
+            .btn,
+            .btnDelete {
+                padding: 10px 15px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+                font-size: 0.9rem;
+
+                &.btn {
+                    background: linear-gradient(45deg, $gradient-start, $gradient-end);
+                    color: #fff;
+
+                    &:hover {
+                        background: linear-gradient(45deg, $gradient-end, $gradient-start);
+                    }
+                }
+
+                &.btnDelete {
+                    background-color: $danger-color;
+                    color: #fff;
 
                     &:hover {
                         background-color: $danger-hover;
@@ -200,112 +255,18 @@ $font-family: 'Roboto', sans-serif;
                 }
             }
         }
-
-        input[type="text"] {
-            margin-bottom: 10px;
-        }
-
     }
 
     .statistics-section {
-        margin: 20px;
-      
-        h2 {
-          margin-bottom: 20px;
-        }
-      
-        div {
-          margin-bottom: 30px;
-        }
-      
         canvas {
-          max-width: 100%;
-        }
-      
-        .btn {
-          display: inline-block;
-          padding: 10px 20px;
-          margin-top: 20px;
-          background-color: #007bff;
-          color: #fff;
-          border: none;
-          border-radius: 5px;
-          cursor: pointer;
-      
-          &:hover {
-            background-color: #0056b3;
-          }
-        }
-      }
-      
-}
-
-.post {
-    background: #fff;
-    border: 1px solid #ddd;
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
-    /* Add top margin here */
-
-}
-
-.post-image {
-    max-width: 100%;
-    height: auto;
-    border-radius: 5px;
-    margin-bottom: 15px;
-}
-
-.post-description {
-    font-size: 16px;
-    margin-bottom: 10px;
-}
-
-.post-author {
-    font-size: 14px;
-    color: #555;
-    margin-bottom: 10px;
-}
-
-.post-author a {
-    text-decoration: none;
-    color: #007bff;
-}
-
-.post:last-child {
-    margin-bottom: 0;
-}
-
-.sort-options {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-
-    label {
-        margin-right: 15px;
-        display: flex;
-        align-items: center;
-
-        input {
-            margin-right: 5px;
+            width: 100%;
+            height: 300px;
+            margin-bottom: 20px;
         }
     }
 }
 
-.btnDelete {
-    background-color: #dc3545;
-    color: #fff;
-    right: 10px;
-    bottom: 10px;
-}
-
-.btnDelete:hover {
-    background-color: #b62b39;
-}
-
+// Angular Material form fields customization
 ::ng-deep {
     .mat-mdc-text-field-wrapper {
         background-color: transparent !important;
@@ -314,4 +275,368 @@ $font-family: 'Roboto', sans-serif;
     .mat-mdc-form-field-error-wrapper {
         padding: 0;
     }
+}
+
+// Content section
+.content-section {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+
+    .post {
+        background: #f9f9f9;
+        border: 1px solid #ddd;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+
+            .user-link {
+                display: flex;
+                align-items: center;
+                text-decoration: none;
+                color: #007bff;
+
+                .profile-image {
+                    margin-right: 10px;
+                    border-radius: 50%;
+                }
+
+                strong {
+                    font-size: 1.1rem;
+                }
+            }
+
+            .post-date {
+                font-size: 0.9rem;
+                color: #888;
+            }
+        }
+
+        .post-description {
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .post-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .info-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            p {
+                margin: 0 10px;
+                font-size: 0.9rem;
+            }
+
+            .btnDelete {
+                background-color: #dc3545;
+                color: #fff;
+                border: none;
+                border-radius: 5px;
+                padding: 5px 10px;
+                cursor: pointer;
+                font-size: 0.9rem;
+
+                &:hover {
+                    background-color: #b62b39;
+                }
+            }
+        }
+    }
+}
+
+// Following section
+.following-section {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+
+    h2 {
+        color: #007bff;
+        margin-bottom: 20px;
+    }
+
+    .search-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+
+        .search-input {
+            width: 70%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px 0 0 5px;
+            font-size: 1rem;
+        }
+
+        .search-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            font-size: 1rem;
+
+            &:hover {
+                background-color: #0056b3;
+            }
+        }
+    }
+
+    .user {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 15px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+        .user-link {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .unfollow-btn {
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 0.9rem;
+
+            &:hover {
+                background-color: #b62b39;
+            }
+        }
+    }
+
+    .return-btn {
+        margin-top: 20px;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        background-color: #6c757d;
+        color: #fff;
+        cursor: pointer;
+        font-size: 1rem;
+
+        &:hover {
+            background-color: #5a6268;
+        }
+    }
+}
+
+// Delete form
+.delete-form {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+
+    h2 {
+        color: #dc3545;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+
+        .password-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+    }
+
+    .button-group {
+        display: flex;
+        justify-content: space-between;
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+
+            &.confirm-btn {
+                background-color: #ff182f;
+                color: #fff;
+
+                &:hover {
+                    background-color: #b62b39;
+                }
+            }
+
+            &.cancel-btn {
+                background-color: #6c757d;
+                color: #fff;
+
+                &:hover {
+                    background-color: #5a6268;
+                }
+            }
+        }
+    }
+}
+
+/* General Button Styles */
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+/* Cancel Button Specific Styles */
+.cancel-btn {
+    background-color: #acacac;
+    /* Red background color */
+    color: #000000;
+    /* White text color */
+    border: 1px solid #cfcfcf;
+    /* Slightly darker red border */
+
+    &:hover {
+        background-color: #7e7e7e;
+        /* Darker red on hover */
+    }
+}
+
+/* General Input Styles */
+input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+/* Search Input Specific Styles */
+.search-input {
+    width: 100%;
+    /* Full width */
+    max-width: 300px;
+    /* Max width for the input */
+    padding: 10px 15px;
+    /* Padding inside the input */
+    border: 2px solid #007bff;
+    /* Blue border color */
+    border-radius: 25px;
+    /* Rounded corners */
+    font-size: 1rem;
+    /* Font size */
+    transition: border-color 0.3s, box-shadow 0.3s;
+    /* Smooth transitions for border and shadow */
+
+    &:focus {
+        border-color: #0056b3;
+        /* Darker blue border on focus */
+        box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+        /* Blue glow on focus */
+        outline: none;
+        /* Remove default outline */
+    }
+
+    &::placeholder {
+        color: #888;
+        /* Placeholder text color */
+        font-style: italic;
+        /* Placeholder text style */
+    }
+}
+
+
+/* General Button Styles */
+button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+/* Search Button Specific Styles */
+.search-btn {
+    background-color: #aec8e4;
+    /* Blue background color */
+    color: #fff;
+    /* White text color */
+    border-radius: 25px;
+    /* Rounded corners */
+    padding: 10px 20px;
+    /* Padding inside the button */
+    font-size: 1rem;
+    /* Font size */
+    transition: background-color 0.3s, transform 0.3s;
+    /* Smooth transitions for background and transform */
+
+    &:hover {
+        background-color: #577492;
+        /* Darker blue background on hover */
+        transform: scale(1.05);
+        /* Slightly enlarge the button on hover */
+    }
+
+    &:active {
+        background-color: #86a5c9;
+        /* Even darker blue background on click */
+        transform: scale(1);
+        /* Reset the size on click */
+    }
+}
+
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.popup-content {
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
 }
