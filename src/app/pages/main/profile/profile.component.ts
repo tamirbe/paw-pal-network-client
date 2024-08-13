@@ -9,6 +9,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../../../auth.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { firstValueFrom } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -42,12 +43,33 @@ export class ProfileComponent implements OnInit {
   passwordForm!: FormGroup;
   hide = true;// Form for password change
 
+  showConfirmUnfollowPopup: boolean = false; // משתנה לניהול חלון ה-Pop-up
+  userToUnfollow: string = ''; // שם המשתמש למחיקה
+  deletePassword: string = ''; // משתנה לשמירת הסיסמה לאישור מחיקת חשבון
+  showConfirmDeletePopup: boolean = false; // משתנה לניהול חלון ה-Pop-up למחיקת החשבון
+  showPasswordMismatchPopup: boolean = false;
+
+  showConfirmDeletePostPopup: boolean = false; // משתנה לניהול חלון ה-Pop-up למחיקת פוסט
+  postToDeleteId: string | null = null; // משתנה לשמירת מזהה הפוסט למחיקה
+
+  usernameExists: boolean = false;
+  emailExists: boolean = false;
+
   private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
 
-  constructor(private sanitizer: DomSanitizer, private fb: FormBuilder, private userService: UserService, private authService: AuthService, private http: HttpClient) { }
+  constructor(private sanitizer: DomSanitizer, private fb: FormBuilder, private userService: UserService, private authService: AuthService, private http: HttpClient, private router: Router) { }
 
   ngOnInit(): void {
     this.initForms();
+    // Listener for username changes
+    this.userForm.get('username')?.valueChanges.subscribe((value) => {
+      this.checkUsernameExists(value);
+    });
+
+    // Listener for email changes
+    this.userForm.get('email')?.valueChanges.subscribe((value) => {
+      this.checkEmailExists(value);
+    });
     this.loadUserData();
   }
 
@@ -60,13 +82,12 @@ export class ProfileComponent implements OnInit {
     return this.sanitizer.bypassSecurityTrustUrl(url);
   }
 
-
   // Initialize the forms
   private initForms(): void {
     this.userForm = this.fb.group({
-      username: ['', Validators.required],
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
+      username: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(20)]],
+      firstName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(20), Validators.pattern('^[A-Za-z]+$')]],
+      lastName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(20), Validators.pattern('^[A-Za-z]+$')]],
       email: ['', [Validators.required, Validators.email]],
       pet: ['No Pets']
     });
@@ -170,36 +191,87 @@ export class ProfileComponent implements OnInit {
     if (!searchTerm) {
       this.filteredFollowing = this.following;
     } else {
-      this.filteredFollowing = this.following.filter(username => 
+      this.filteredFollowing = this.following.filter(username =>
         username.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
   }
 
-  // Handle form submissions
-  onSubmitUserDetails(): void {
-    if (this.userForm.invalid) {
+  // מתודות לבדיקה אסינכרונית של שם משתמש ואימייל
+  async checkUsernameExists(username: string): Promise<void> {
+    if (username === this.user?.username) {
+      this.usernameExists = false;
       return;
     }
 
+    try {
+      const response: any = await firstValueFrom(this.http.post(`${this.apiUrl}/check-username`, { username }));
+      this.usernameExists = response === true;
+    } catch (error) {
+      console.error('Error checking username existence', error);
+      this.usernameExists = false;
+    }
+  }
+
+  async checkEmailExists(email: string): Promise<void> {
+    if (email === this.user?.email) {
+      this.emailExists = false;
+      return;
+    }
+
+    try {
+      const response: any = await firstValueFrom(this.http.post(`${this.apiUrl}/check-email`, { email }));
+      this.emailExists = response === true;
+    } catch (error) {
+      console.error('Error checking email existence', error);
+      this.emailExists = false;
+    }
+  }
+
+  // Handle form submissions
+  async onSubmitUserDetails(): Promise<void> {
+    // Reset existing error messages
+    this.usernameExists = false;
+    this.emailExists = false;
+
+    const username = this.userForm.get('username')?.value;
+    const email = this.userForm.get('email')?.value;
+
+    // Check if username or email already exists
+    await this.checkUsernameExists(username);
+    await this.checkEmailExists(email);
+
+    // If form is invalid or username/email already exists, stop submission
+    if (this.userForm.invalid || this.usernameExists || this.emailExists) {
+      console.error('Form is invalid or username/email already exists');
+
+      // Set all fields as touched to trigger validation messages
+      Object.keys(this.userForm.controls).forEach(field => {
+        const control = this.userForm.get(field);
+        control?.markAsTouched({ onlySelf: true });
+      });
+
+      return; // Stop the form submission if there are errors
+    }
+
+    // If no errors, proceed to send the update request
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    this.http.put(`${this.apiUrl}/user-details`, this.userForm.value, { headers }).subscribe(
-      response => {
-        console.log('User details updated successfully');
-        // Handle success
-        this.editMode = false;
-        this.loadUserData();
-        this.uploadMode = true;
-      },
-      error => {
-        console.error('Error updating user details', error);
-        // Handle error
-      }
-    );
-    window.location.reload();
+    try {
+      const response = await firstValueFrom(this.http.put(`${this.apiUrl}/user-details`, this.userForm.value, { headers, responseType: 'text' }));
+      console.log('User details updated successfully');
+      // Redirect the user back to the personal-area page
+      this.editMode = false;
+      this.loadUserData();
+      this.uploadMode = true;
+    } catch (error: any) {
+      console.error('Error updating user details', error);
+      // Handle other errors as necessary
+    }
   }
+
+
 
   onSubmitPasswordChange(): void {
     if (this.passwordForm.valid) {
@@ -223,7 +295,6 @@ export class ProfileComponent implements OnInit {
       console.error('Password form is invalid');
     }
   }
-
   // Menu toggle
   toggleMenu() {
     this.showMenu = !this.showMenu;
@@ -298,7 +369,7 @@ export class ProfileComponent implements OnInit {
     this.loadFavoriteContent();
   }
 
-  showFollowing(): void{
+  showFollowing(): void {
     this.favoriteMode = false;
     this.savedMode = false;
     this.statsMode = false;
@@ -325,6 +396,11 @@ export class ProfileComponent implements OnInit {
   }
 
   // Unfollow user
+  confirmUnfollowUser(username: string): void {
+    this.showConfirmUnfollowPopup = true;
+    this.userToUnfollow = username;
+  }
+
   unfollowUser(username: string): void {
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
@@ -340,9 +416,14 @@ export class ProfileComponent implements OnInit {
       this.filteredFollowing = [...data];
       console.log(`Unfollowed ${username}`);
     });
+    this.showConfirmUnfollowPopup = false;
     this.showFollowing();
     this.showFollowing();
+  }
 
+  cancelUnfollow(): void {
+    this.showConfirmUnfollowPopup = false;
+    this.userToUnfollow = '';
   }
 
   // Remove uploaded content
@@ -351,31 +432,89 @@ export class ProfileComponent implements OnInit {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     this.http.delete(`${this.apiUrl}/uploaded-content/${contentId}`, { headers }).pipe(
-      switchMap(() => this.http.get<any[]>(`${this.apiUrl}/uploaded-content`, { headers })),
+      switchMap(() => {
+        console.log(`Post with ID ${contentId} deleted from server.`);
+        return this.http.get<any[]>(`${this.apiUrl}/uploaded-content`, { headers });
+      }),
       catchError(error => {
         console.error('Error removing content:', error);
+        console.log(contentId);
         return [];
       })
     ).subscribe(data => {
       this.uploadedContent = data;
-      console.log(`Removed content with ID ${contentId}`);
+      console.log('Updated uploaded content:', this.uploadedContent);
     });
   }
 
-  // Confirm and cancel actions
+  // פונקציה להצגת ה-Pop-up למחיקת פוסט
+  confirmDeletePost(postId: string): void {
+    this.postToDeleteId = postId;
+    this.showConfirmDeletePostPopup = true;
+  }
+
+  // פונקציה לביצוע מחיקת הפוסט לאחר אישור
+  deletePostConfirmed(): void {
+    if (!this.postToDeleteId) {
+      console.error('Post ID is missing, cannot delete the post.');
+      return;
+    }
+    console.log(`Deleting post with ID: ${this.postToDeleteId}`);
+    this.removeUploadedContent(this.postToDeleteId);
+    this.showConfirmDeletePostPopup = false;
+    this.postToDeleteId = null;
+    this.loadUploadedContent();
+  }
+
+  // פונקציה לביטול המחיקה אם המשתמש בחר "No"
+  cancelDeletePost(): void {
+    this.postToDeleteId = null;
+    this.showConfirmDeletePostPopup = false;
+  }
+
+  logout() {
+    this.authService.logout();
+  }
+
+  closePasswordMismatchPopup(): void {
+    this.showPasswordMismatchPopup = false;
+  }
+
+  // Confirm and cancel actions for account deletion
   confirmDeleteAccount(): void {
+    this.showConfirmDeletePopup = true;
+  }
+
+  deleteAccountConfirmed(): void {
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    this.http.delete(`${this.apiUrl}/delete-account`, { headers }).pipe(
-      catchError(error => {
-        console.error('Error deleting account:', error);
-        return [];
-      })
-    ).subscribe(() => {
-      console.log('Account deleted successfully');
-      // Handle post-deletion logic
-    });
+    const currentPassword = (document.querySelector('.password-input') as HTMLInputElement).value;
+
+    const body = { password: currentPassword };
+
+    this.http.post(`${this.apiUrl}/delete-account`, body, { headers, responseType: 'text' }) // הוספת responseType: 'text'
+      .pipe(
+        catchError(error => {
+          console.error('Error deleting account:', error);
+          if (error.status === 400) {
+            this.showConfirmDeletePopup = false;
+            this.showPasswordMismatchPopup = true;
+          }
+          return [];
+        })
+      ).subscribe(response => {
+        if (response === 'Account deleted') {
+          this.showConfirmDeletePopup = false;
+          this.router.navigate(['login']);
+        }
+      });
+  }
+
+
+  cancelDeleteAccount(): void {
+    this.showConfirmDeletePopup = false;
+    this.cancelAction();
   }
 
   cancelAction(): void {
@@ -389,12 +528,11 @@ export class ProfileComponent implements OnInit {
     this.uploadMode = true;
   }
 
+
   cancelEdit(): void {
     this.loadUserData();
     this.cancelAction();
   }
-
-
 
   async deletePost(post: Post) {
     if (!post) {
@@ -415,12 +553,11 @@ export class ProfileComponent implements OnInit {
     this.loadUploadedContent();
   }
 
-  
   async unsavePost(post: Post) {
     if (!post) {
       return;
     }
-  
+
     try {
       console.log('Starting unsave process for post:', post._id);
       const token = this.authService.getToken();
