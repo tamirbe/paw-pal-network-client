@@ -278,9 +278,30 @@ export class ProfileComponent implements OnInit {
       const { currentPassword, newPassword } = this.passwordForm.value;
       const token = this.authService.getToken();
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-      // Add your password change logic here
+
+      this.http.post(`${this.apiUrl}/change-password`, { currentPassword, newPassword }, { headers, responseType: 'text' }).pipe(
+        catchError(error => {
+          if (error.status === 400) {
+            // wrong currentPassword
+            this.passwordForm.get('currentPassword')?.setErrors({ invalidCurrentPassword: true });
+          }
+          return [];
+        })
+      ).subscribe(response => {
+        if (response) {
+          // console.log("Password changed successfully, response:", response);
+          this.cancelAction();
+          // this.router.navigate(['/personal-area']);
+        } else {
+          console.error("Unexpected response:", response);
+        }
+      });
     }
   }
+
+
+
+
   // Menu toggle
   toggleMenu() {
     this.showMenu = !this.showMenu;
