@@ -5,6 +5,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../../auth.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import {HeaderComponent} from '../../../components/header/header.component';
 
 interface Post {
   _id?: string;

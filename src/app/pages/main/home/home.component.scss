@@ -1,47 +1,124 @@
+
+
+
+:host {
+  display: block;
+  background: linear-gradient(135deg, #e0e6ee, #fffbfb); /* גרדיאנט ליניארי */
+  padding: 20px;
+  border-radius: 10px;
+  background-attachment: fixed;
+  font-family: Arial, sans-serif;
+
+}
+
+
 .home-container {
-  
+  margin-top: 70px; /* גובה שמתאים לגובה סרגל הכלים */
+  background: linear-gradient(135deg, #e0e6ee, #fffbfb); /* גרדיאנט ליניארי */
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
   font-family: Arial, sans-serif;
   background-color: #fcfcfc;
+  border-radius: 20px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
 
-  @media screen {
-    background-color: #fcfcfc;
+/* עיצוב תמונות הצדדים */
+.side-image {
+  position: fixed; /* מיקום קבוע */
+  top: 20%; /* מיקום התמונות מבחינת גובה */
+  height: auto;
+  z-index: 100; /* לוודא שהן מעל הרקע אבל מאחורי התוכן */
+  pointer-events: none; /* לוודא שהתמונות לא יפריעו לאינטראקציה עם התוכן */
+}
 
+/* תמונת צד שמאל */
+.left-side-image {
+  left: 10x; /* מיקום שמאלי */
+}
+
+/* תמונת צד ימין */
+.right-side-image {
+  right: 10px; /* מיקום ימני */
+}
+
+/* רק עבור מחשבים */
+@media (max-width: 768px) {
+  .side-image {
+    display: none; /* הסתרת התמונות במובייל */
   }
 }
 
+
 h2 {
+  font-family: Arial, sans-serif;
+
   text-align: center;
   margin-bottom: 20px;
 }
-
 .search-container {
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin-bottom: 20px;
+  max-width: 100%;
 }
 
 .search-container input {
-  width: 70%;
-  padding: 10px;
-  margin-right: 10px;
+  width: calc(70% - 50px); /* הגדלת רוחב שדה החיפוש */
+  padding: 15px 20px; /* הגדלת הפדינג בתוך שדה החיפוש */
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 50px; /* פינות עגולות לחלוטין */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  font-size: 18px; /* הגדלת גודל הטקסט */
+  outline: none;
+}
+
+.search-container input:focus {
+  border-color: #007bff;
+  box-shadow: 0 6px 12px rgba(0, 123, 255, 0.2);
 }
 
 .search-container button {
-  padding: 10px 20px;
+  padding: 15px 25px;
   border: none;
   background-color: #007bff;
   color: #fff;
-  border-radius: 5px;
+  border-radius: 50px; /* גם לכפתור יהיו פינות עגולות לחלוטין */
   cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  font-size: 18px; /* התאמת גודל הטקסט לכפתור */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  outline: none;
+  margin-left: -1px; /* ביטול הרווח בין הכפתור לשדה החיפוש */
 }
 
 .search-container button:hover {
   background-color: #0056b3;
+  box-shadow: 0 6px 12px rgba(0, 86, 179, 0.2);
 }
+
+@media (max-width: 768px) {
+  .search-container {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .search-container input {
+    width: 50%;
+    border-radius: 50px;
+    margin-right: 0;
+  }
+
+  .search-container button {
+    width: 30%;
+    border-radius: 50px;
+    margin-left: 0;
+  }
+}
+
 
 .content-section {
   margin-bottom: 30px;
@@ -198,12 +275,6 @@ h2 {
   margin-top: 20px;
 }
 
-.info-button.delete-button {
-  background-color: #dc3545; 
-  color: #fff;
-  right: 10px;
-  bottom: 10px;
-}
 
 .info-button.delete-button:hover {
   background-color: #b62b39; 
@@ -402,13 +473,27 @@ h2 {
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(10px) scale(0.95); /* הזזה ושינוי גודל */
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(1px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
+
+
 
 .home-container {
   max-width: 800px;
@@ -442,17 +527,6 @@ h2 {
   animation: fadeIn 1.6s ease-out; /* הוספת אנימציה */
 }
 
-/* אנימציה עבור הפוסטים */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
 
 
@@ -481,7 +555,7 @@ h2 {
   margin-bottom: 0px; 
   margin-top: 60px; 
   position: relative; 
-
+  
 }
 
 .user-wrapper {
@@ -501,6 +575,7 @@ h2 {
 
 .post-header .user-link {
   margin-right: auto;
+
 }
 
 .post-description {
@@ -518,7 +593,7 @@ h2 {
   padding: 10px 15px;
   border: none; 
   background-color: #007bff; 
-  color: white; 
+  color: rgb(0, 0, 0); 
   border-radius: 5px; 
   cursor: pointer;
 }
@@ -531,17 +606,13 @@ h2 {
   height: 78px; /* ניתן לשנות בהתאם לצורך */
 }
 
-.select-wrapper {
-  position:  absolute;
-  top: 1px; /* המרחק מהחלק העליון של הקונטיינר */
-  right: 10px; /* המרחק מהחלק הימני של הקונטיינר */
-  z-index: 10; /* כדי לוודא שהוא יושב מעל אלמנטים אחרים */
-}
 
 .form-group {
   margin-bottom: 20px;
   font-family: 'Arial', sans-serif;
 }
+
+
 
 .interest-label {
   display: block;
@@ -551,10 +622,6 @@ h2 {
   color: #2C3E50;
 }
 
-.custom-select-container {
-  position: relative;
-  width: 100%;
-}
 
 .custom-select {
   appearance: none;
@@ -579,3 +646,87 @@ h2 {
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
   }
 }
+
+
+.info-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* רווח בין האייקון לטקסט */
+  padding: 10px 15px;
+  border: none;
+  background-color: #b4bfcc;
+  color: #000000;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+
+    img {
+      width: 20px; /* גודל האייקון */
+      height: 20px;
+      transition: transform 0.3s ease; /* אנימציה להגדלה בעת מעבר עם העכבר */
+  }
+
+  &:hover {
+      background-color: #48719c;
+      color: #fff;
+
+      img {
+          transform: scale(1.1); /* הגדלת האייקון בעת מעבר עם העכבר */
+      }
+  }
+}
+
+.edit-button {
+  background-color: #7ebe8d;
+  color: #000000;
+
+  &:hover {
+    background-color: #29aa3a;
+    color: #e4e6eb;
+}
+}
+
+
+.info-button.delete-button {
+  background-color: #da4554; 
+  color: #181818;
+  right: 10px;
+  bottom: 10px;
+  &:hover {
+    background-color: #ee0101;
+    color: #e4e6eb;
+  }
+}
+
+
+.info-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+
+@media (max-width: 768px) {
+  .info-group {
+    display: flex;
+    flex-direction: row; /* הצגת הכפתורים בשורה אחת */
+    flex-wrap: wrap; /* מאפשר לכפתורים לרדת לשורה חדשה במידת הצורך */
+    gap: 5px; /* רווחים קטנים יותר בין הכפתורים בניידים */
+  }
+
+  .info-button {
+    display: flex;
+    justify-content: center;
+    padding: 8px 12px; /* התאמה של הפדינג לכפתורים בניידים */
+    font-size: 14px; /* גודל טקסט קטן יותר */
+    flex: 1 1 auto; /* הכפתורים יתפסו מקום שווה וירדו שורה במידת הצורך */
+    
+    img {
+      width: 18px; /* התאמה של גודל האייקון לניידים */
+      height: 18px;
+    }
+  }
+}
+
+
+

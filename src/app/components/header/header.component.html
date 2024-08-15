@@ -1,7 +1,22 @@
 <div class="header-section">
-    <button mat-button color="primary" (click)="home()">Home</button>
-    <button mat-button color="primary" (click)="toInterests()">Interests</button>
-    <button mat-button color="primary" (click)="toProfile()">My profile</button>
-    <button mat-button color="primary" (click)="toAbout()">About</button>
-    <button mat-button color="primary" (click)="logout()">Logout</button>
+    <div class="nav-button" (click)="home()">
+        <img src="../../../assets/icons/home2.svg" alt="Home Icon">
+        <span>דף הבית</span>
+    </div>
+    <div class="nav-button" (click)="toInterests()">
+        <img src="../../../assets/icons/group.svg" alt="Interests Icon">
+        <span>התחביבים שלי</span>
+    </div>
+    <div class="nav-button" (click)="toProfile()">
+        <img src="../../../assets/icons/about.svg" alt="Profile Icon">
+        <span>הפרופיל שלי</span>
+    </div>
+    <div class="nav-button" (click)="toAbout()">
+        <img src="../../../assets/icons/information.svg" alt="About Icon">
+        <span>אודות</span>
+    </div>
+    <div class="nav-button" (click)="logout()">
+        <img src="../../../assets/icons/logout.svg" alt="Logout Icon">
+        <span>התנתקות</span>
+    </div>
 </div>

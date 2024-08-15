@@ -1,3 +1,5 @@
+
+
 // Variables for colors and fonts
 $primary-color: #007bff;
 $primary-hover: #0056b3;
@@ -7,7 +9,7 @@ $danger-color: #dc3545;
 $danger-hover: #c82333;
 $secondary-color: #f74c4c;
 $secondary-hover: #5a6268;
-$background-color: #f9f9f9;
+$background-color: #eff2f8;
 $text-color: #333;
 $font-family: 'Roboto', sans-serif;
 
@@ -15,8 +17,19 @@ $font-family: 'Roboto', sans-serif;
 $gradient-start: #fc360a;
 $gradient-end: #d45d5d;
 
+
+:host {
+  display: block;
+  background: linear-gradient(135deg, #e0e6ee, #fffbfb); /* גרדיאנט ליניארי */
+  padding: 20px;
+  border-radius: 10px;
+  background-attachment: fixed;
+  font-family: Arial, sans-serif;
+
+}
 // Base styles
 body {
+  background: linear-gradient(135deg, #e0e6ee, #fffbfb); /* גרדיאנט ליניארי */
   font-family: $font-family;
   background-color: $background-color;
   color: $text-color;
@@ -26,6 +39,8 @@ body {
 
 // Personal area container
 .personal-area {
+  background: linear-gradient(135deg, #e0e6ee, #fffbfb); /* גרדיאנט ליניארי */
+
   max-width: 1000px;
   margin: 20px auto;
   padding: 20px;
@@ -108,7 +123,7 @@ body {
     margin-bottom: 30px;
     padding: 20px;
     border-radius: 10px;
-    background-color: #fff;
+    background: linear-gradient(135deg, #e0e6ee, #fffbfb); /* גרדיאנט ליניארי */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
     .form-group,

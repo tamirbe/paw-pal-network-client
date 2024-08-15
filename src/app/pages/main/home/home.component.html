@@ -1,4 +1,12 @@
 
+  <!-- תמונות צד ימין ושמאל -->
+  <div class="side-image left-side-image">
+    <img src="../../../../assets/images/cat.png" alt="Left Side Image" width="50" height="50">
+  </div>
+  <div class="side-image right-side-image">
+    <img src="../../../../assets/images/pet.png" alt="Right Side Image" width="50" height="50">
+  </div>
+
 <div class="home-container">
   <h2>Welcome {{ currentUserFirstName }}</h2>
   <div class="search-container">
@@ -8,36 +16,31 @@
     </form>
   </div>
 
-
-
   <div class="form-container">
     <h4>Share things with your friends</h4>
     <form [formGroup]="postForm" (ngSubmit)="onSubmit()">
       <div class="file-upload-container">
         <input id="file-upload" type="file" (change)="onFileChange($event)" />
       </div>
-  
+      <div class="a">
 
-      <div class="container">
-        <span class="select-wrapper">
-          <div class="form-group">
-            <label for="interest" class="interest-label">Select Interest:</label>
-            <div class="custom-select-container">
-              <select id="interest" formControlName="interestId" class="custom-select">
-                <option value="">Without interest</option>
-                <option *ngFor="let interest of followingInterests" [value]="interest._id">{{ interest.name }}</option>
-              </select>
-            </div>
-          </div>
-        </span>
-      </div>
+      <span class="select-wrapper">
+
+  <div class="form-group">
+    <label for="interest" class="interest-label">Select Interest:</label>
+      <select id="interest" formControlName="interestId" class="custom-select">
+        <option value="">Without interest</option>
+        <option *ngFor="let interest of followingInterests" [value]="interest._id">{{ interest.name }}</option>
+      </select>
+  </div>
+</span>
+  </div>
       
       <textarea formControlName="description" placeholder="Write something... {{currentUserFirstName}}" (input)="onTextAreaInput($event)"></textarea>
       <label for="file-upload" class="custom-file-upload">
         <img src="../../../../assets/icons/addimage.svg" alt="Upload Icon" class="upload-icon">
       </label>
       <div *ngIf="selectedFileName" class="file-name">{{ selectedFileName }}</div>
-
         
       <div class="button-container">
         <button type="submit">Upload</button>
@@ -77,11 +80,12 @@
         
           <div class="info-group">
             <button class="info-button" (click)="likePost(post)">
+              <img src="../../../../assets/icons/like.svg" alt="Like Icon">
               {{ post.liked ? 'Unlike' : 'Like' }} ({{ post.likes.length }})
             </button>
-            <button class="info-button delete-button" 
+            <button class="info-button delete-button" (click)="confirmUnshare(post, post.shares[0].user, post.shares[0].createdAt)"
                     *ngIf="post.author.username === currentUser" 
-                    (click)="confirmUnshare(post, post.shares[0].user, post.shares[0].createdAt)">Unshare</button>
+                    (click)="confirmUnshare(post, post.shares[0].user, post.shares[0].createdAt)"><img src="../../../../assets/icons/unshare.svg" alt="Save Icon">Unshare</button>
           </div>
         </div>
       </div>
@@ -127,16 +131,25 @@
   
         <div *ngIf="!post.systemPost" class="info-group">
           <button class="info-button" (click)="likePost(post)">
+            <img src="../../../../assets/icons/like.svg" alt="Like Icon">
             {{ post.liked ? 'Unlike' : 'Like' }} ({{ post.likes.length }})
           </button>
           <button class="info-button" (click)="sharePost(post)">
+            <img src="../../../../assets/icons/share.svg" alt="Share Icon">
             Share ({{ post.shares.length }})
           </button>
           <button class="info-button" (click)="savePost(post)">
+            <img src="../../../../assets/icons/save.svg" alt="Save Icon">
             {{ post.saved ? 'Unsave' : 'Save' }}
           </button>
-          <button class="info-button edit-button" *ngIf="post.author.username === currentUser" (click)="editPost(post)">Edit</button>
-          <button class="info-button delete-button" *ngIf="post.author.username === currentUser" (click)="confirmDelete(post)">Delete</button>
+          <button class="info-button edit-button" *ngIf="post.author.username === currentUser" (click)="editPost(post)">
+            <img src="../../../../assets/icons/edit.svg" alt="Edit Icon">
+            Edit
+          </button>
+          <button class="info-button delete-button" *ngIf="post.author.username === currentUser" (click)="confirmDelete(post)">
+            <img src="../../../../assets/icons/delete.svg" alt="Delete Icon">
+            Delete
+          </button>
         </div>
       </ng-template>
     </div>

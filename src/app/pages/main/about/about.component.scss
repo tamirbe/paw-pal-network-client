@@ -1,3 +1,14 @@
+
+:host {
+  display: block;
+  background: linear-gradient(135deg, #e0e6ee, #fffbfb); /* גרדיאנט ליניארי */
+  padding: 20px;
+  border-radius: 10px;
+  background-attachment: fixed;
+  font-family: Arial, sans-serif;
+
+}
+
 body {
   font-family: 'Helvetica Neue', Arial, sans-serif;
   background-color: #f4f4f4;
@@ -16,7 +27,7 @@ h2 {
   max-width: 1200px;
   margin: 50px auto;
   padding: 20px;
-  background: white;
+  background: linear-gradient(135deg, #e0e6ee, #fffbfb); /* גרדיאנט ליניארי */
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
