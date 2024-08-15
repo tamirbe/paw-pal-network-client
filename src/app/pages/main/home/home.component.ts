@@ -62,6 +62,7 @@ export class HomeComponent implements OnInit {
   selectedFile: File | null = null;
   selectedFileName: string | null = null;
   followingInterests: Interest[] = [];
+  remainingCharacters: number = 200; // הגבלת התווים ל-200
 
 
   private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
@@ -255,7 +256,11 @@ export class HomeComponent implements OnInit {
     const text = event.target.value;
     const isHebrew = /[\u0590-\u05FF]/.test(text);
     event.target.style.direction = isHebrew ? 'rtl' : 'ltr';
+  
+    // Update remaining characters
+    this.remainingCharacters = 200 - text.length;
   }
+  
 
   getTextDirection(text: string): string {
     return /[\u0590-\u05FF]/.test(text) ? 'rtl' : 'ltr';
@@ -453,4 +458,5 @@ async confirmUnshare(post: Post, userId: string, createdAt: Date) {
   onSearch() {
     this.router.navigate(['/search'], { queryParams: { query: this.searchQuery } });
   }
+  
 }

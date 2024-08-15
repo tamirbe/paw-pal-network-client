@@ -1,26 +1,119 @@
 
 
 .search-container {
-  text-align: center;
+  margin-top: 30px;
+  display: flex; /* הצגת האלמנטים באותה שורה */
+  justify-content: center;
+  align-items: center;
   margin-bottom: 20px;
+  max-width: 100%;
+  gap: 10px; /* רווח בין החיפוש לכפתור */
 }
 
 .search-container input {
+  flex-grow: 1; /* החיפוש יתפוס את כל המקום הנדרש */
+  padding: 15px 20px;
+  border: 1px solid #ccc;
+  border-radius: 50px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  font-size: 18px;
+  outline: none;
+}
+
+.search-container button {
+  padding: 15px 25px;
+  border: none;
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  font-size: 18px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  outline: none;
+}
+.search-container button:hover {
+  background-color: #0056b3;
+  box-shadow: 0 6px 12px rgba(0, 86, 179, 0.2);
+}
+
+@media (max-width: 768px) {
+  .search-container {
+    display: flex; /* מציג את הילדים (הכפתורים) בשורה אחת */
+    flex-direction: row; /* מסדר את הכפתורים בשורה אופקית */
+    justify-content: center; /* מרכז את הכפתורים בשורה */
+    gap: 10px; /* מרווח בין הכפתורים */
+  }
+
+
+  .search-container input {
+    width: 50%;
+    border-radius: 50px;
+    margin-right: 0;
+  }
+
+  .search-container button {
+    width: 30%;
+    border-radius: 50px;
+    margin-left: 0;
+  }
+
+  .search-container button {
+    width: auto; /* נותן לכפתור גודל אוטומטי שיתאים לתוכן שלו */
+    border-radius: 50px;
+    margin-left: 0;
+    padding: 10px 20px; /* התאמת הפדינג לכפתור בנייד */
+  }
+
+}
+
+.search-input {
   width: 40%;
   padding: 10px;
-  border: 1px solid #1753a1;
+  border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
   transition: box-shadow 0.3s ease;
-  
+
   &:focus {
     outline: none;
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
   }
 }
-  
-.search-container button:hover {
-  background-color: #0056b3;
+
+.search-button, .back-button {
+  padding: 10px 20px;
+  margin-left: 10px;
+  border: none;
+  border-radius: 4px;
+  background-color: #506b88;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #0056b3;
+  }
+}
+
+.back-button {
+  background-color: #6c757d;
+
+  &:hover {
+    background-color: #5a6268;
+  }
+}
+
+.search-results-container {
+  font-family: Arial, sans-serif;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 

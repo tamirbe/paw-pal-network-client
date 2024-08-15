@@ -1,7 +1,7 @@
 <div class="search-container">
   <form (ngSubmit)="onSearch()">
     <input type="text" placeholder="Search users..." [(ngModel)]="searchQuery" name="query" (input)="onTextAreaInput($event)"/>
-    <button type="submit">Search</button>
+    <button type="submit"><img [src]="'../../../../assets/icons/search2.svg'" alt="search icon" width="15" height="15">Search</button>
   </form>
 </div>
 

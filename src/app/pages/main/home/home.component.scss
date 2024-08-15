@@ -238,6 +238,38 @@ h2 {
 
 }
 
+
+.textarea-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* הצמדת הטקסט למספר התווים לקצה הימני */
+  width: 100%;
+}
+
+.textarea-container textarea {
+  resize: none;
+  overflow-y: auto;
+  min-height: 100px;
+  max-height: 300px;
+  width: 100%;
+  padding: 15px 20px;
+  background: #ffffff;
+  border: 2px solid #007bff;
+  border-radius: 10px;
+  color: #000000;
+  font-size: 16px;
+  line-height: 1.5;
+  box-sizing: 40px;
+  transition: border-color 0.3s ease;
+  margin-bottom: 1px; /* רווח תחתון בין הטקסט לאזור הספירה */
+}
+
+.textarea-container .char-count {
+  font-size: 12px;
+  color: #000000;
+}
+
+
 .edit-dialog textarea {
   width: 100%;
   padding: 10px;
@@ -554,17 +586,16 @@ h2 {
   background-color: #f9f9f9;
   margin-bottom: 0px; 
   margin-top: 60px; 
-  position: relative; 
   
 }
 
 .user-wrapper {
-  position: absolute;
-  top: -60px;
-  left: -10px;
+  transform: translate(-10px, -60px);
   padding: 5px 10px; 
   border-radius: 10px; 
+  z-index: 2; 
 }
+
 
 
 .post-header {

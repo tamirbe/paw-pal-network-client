@@ -12,7 +12,7 @@
   <div class="search-container">
     <form (ngSubmit)="onSearch()">
       <input type="text" placeholder="Search users..." [(ngModel)]="searchQuery" name="query" (input)="onTextAreaInput($event)"/>
-      <button type="submit">Search</button>
+      <button type="submit"><img [src]="'../../../../assets/icons/search2.svg'" alt="search icon" width="15" height="15">Search</button>
     </form>
   </div>
 
@@ -22,7 +22,7 @@
       <div class="file-upload-container">
         <input id="file-upload" type="file" (change)="onFileChange($event)" />
       </div>
-      <div class="a">
+      <div class="dont-touch">
 
       <span class="select-wrapper">
 
@@ -35,15 +35,23 @@
   </div>
 </span>
   </div>
-      
-      <textarea formControlName="description" placeholder="Write something... {{currentUserFirstName}}" (input)="onTextAreaInput($event)"></textarea>
+
+  <div class="textarea-container">
+    <textarea formControlName="description" 
+              placeholder="Write something... {{currentUserFirstName}}" 
+              maxlength="200"
+              (input)="onTextAreaInput($event)">
+    </textarea>
+    <div class="char-count">{{ remainingCharacters }} characters left</div>
+</div>
+
       <label for="file-upload" class="custom-file-upload">
         <img src="../../../../assets/icons/addimage.svg" alt="Upload Icon" class="upload-icon">
       </label>
       <div *ngIf="selectedFileName" class="file-name">{{ selectedFileName }}</div>
         
       <div class="button-container">
-        <button type="submit">Upload</button>
+        <button type="submit"><img [src]="'../../../../assets/icons/upload.svg'" alt="search icon" width="30" height="30"></button>
       </div>
     </form>
   </div>
