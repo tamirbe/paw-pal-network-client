@@ -81,7 +81,7 @@ export class InterestsComponent implements OnInit {
     try {
       const token = this.authService.getToken();
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-      this.posts = await firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/followed-interests-posts`, { headers }));
+      this.posts = await firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/interests-posts`, { headers }));
     } catch (error) {
       console.error('Error loading posts:', error);
     }
