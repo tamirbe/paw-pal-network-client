@@ -15,6 +15,28 @@ interface Category {
   interests: Interest[];
 }
 
+interface Post {
+  author: string; // או authorName
+  authorName: string;
+  authorProfileImage: string; 
+  createdAt: Date;
+  description: string;
+  image?: string;
+  likes: any[];
+  shares: any[];
+  liked?: boolean;
+  shared?: boolean;
+  interests?: Interest;
+}
+
+export interface User {
+  username: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  pet: string;
+}
+
 @Component({
   selector: 'app-interests',
   templateUrl: './interests.component.html',
@@ -22,6 +44,8 @@ interface Category {
 })
 export class InterestsComponent implements OnInit {
   interests: Interest[] = [];
+  user?: User | null;
+  posts: Post[] = [];
   popularInterests: Interest[] = [];
   filteredInterests: Interest[] = [];
   followingInterests: Interest[] = [];
@@ -37,6 +61,7 @@ export class InterestsComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.loading = true; // Start loading indicator
     this.loadUserFollowingInterests();
+    this.loadFollowedInterestsPosts();
     this.loadInterests();
     this.loadPopularInterests();
     this.loadCategories();
@@ -46,6 +71,21 @@ export class InterestsComponent implements OnInit {
   showSection(section: string): void {
     this.currentSection = section;
   }
+
+  getTextDirection(text: string): string {
+    const isHebrew = /[\u0590-\u05FF]/.test(text);
+    return isHebrew ? 'rtl' : 'ltr';
+  }
+
+  async loadFollowedInterestsPosts() {
+    try {
+      const token = this.authService.getToken();
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+      this.posts = await firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/followed-interests-posts`, { headers }));
+    } catch (error) {
+      console.error('Error loading posts:', error);
+    }
+  }  
 
   async loadInterests() {
     try {
