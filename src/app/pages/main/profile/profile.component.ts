@@ -85,7 +85,7 @@ export class ProfileComponent implements OnInit {
   // Initialize the forms
   private initForms(): void {
     this.userForm = this.fb.group({
-      username: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(20)]],
+      username: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(20), Validators.pattern('^[A-Za-z]+$')]],
       firstName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(20), Validators.pattern('^[A-Za-z]+$')]],
       lastName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(20), Validators.pattern('^[A-Za-z]+$')]],
       email: ['', [Validators.required, Validators.email]],
@@ -328,6 +328,18 @@ export class ProfileComponent implements OnInit {
     this.statsMode = false;
     this.deleteMode = false;
     this.followMode = false;
+  }
+
+  uploadModeonly(): void {
+    this.deleteMode = false;
+    this.passwordMode = false;
+    this.editMode = false;
+    this.favoriteMode = false;
+    this.uploadMode = true;
+    this.savedMode = false;
+    this.statsMode = false;
+    this.followMode = false;
+
   }
 
   deleteAccount(): void {

@@ -7,6 +7,7 @@
       <button mat-button color="primary" (click)="editPersonalDetails()">Edit Personal Details</button>
       <button mat-button color="primary" (click)="changePassword()">Change Password</button>
       <button mat-button color="primary" (click)="viewStatistics()">View Statistics</button>
+      <button mat-button color="primary" (click)="uploadModeonly()">Uploaded Content</button>
       <button mat-button color="primary" (click)="savedPosts()">Saved Content</button>
       <button mat-button color="primary" (click)="favoritePosts()">Favorite Content</button>
       <button mat-button color="primary" (click)="showFollowing()">Following</button>
@@ -37,6 +38,7 @@
           <small *ngIf="userForm.get('username')?.hasError('minlength')">Username must be at least 2 characters
             long.</small>
           <small *ngIf="userForm.get('username')?.hasError('maxlength')">Username cannot exceed 20 characters.</small>
+          <small *ngIf="userForm.get('username')?.hasError('pattern')">First Name can only contain letters.</small>
         </div>
         <!-- הודעת שגיאה במקרה שהשם משתמש כבר קיים במערכת -->
         <div *ngIf="usernameExists">
