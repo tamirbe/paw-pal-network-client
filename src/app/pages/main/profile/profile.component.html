@@ -38,7 +38,8 @@
           <small *ngIf="userForm.get('username')?.hasError('minlength')">Username must be at least 2 characters
             long.</small>
           <small *ngIf="userForm.get('username')?.hasError('maxlength')">Username cannot exceed 20 characters.</small>
-          <small *ngIf="userForm.get('username')?.hasError('pattern')">First Name can only contain letters.</small>
+          <small *ngIf="userForm.get('username')?.hasError('pattern')">Username can only contain letters and
+            numbers</small>
         </div>
         <!-- הודעת שגיאה במקרה שהשם משתמש כבר קיים במערכת -->
         <div *ngIf="usernameExists">

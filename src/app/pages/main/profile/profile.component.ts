@@ -85,7 +85,7 @@ export class ProfileComponent implements OnInit {
   // Initialize the forms
   private initForms(): void {
     this.userForm = this.fb.group({
-      username: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(20), Validators.pattern('^[A-Za-z]+$')]],
+      username: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(20), Validators.pattern('^[A-Za-z1-9]+$')]],
       firstName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(20), Validators.pattern('^[A-Za-z]+$')]],
       lastName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(20), Validators.pattern('^[A-Za-z]+$')]],
       email: ['', [Validators.required, Validators.email]],
