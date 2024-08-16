@@ -65,7 +65,7 @@ export class HomeComponent implements OnInit {
   remainingCharacters: number = 200; // הגבלת התווים ל-200
 
 
-  private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
+  private apiUrl = 'https://paw-pal-network-server.onrender.com'; // Adjust this to your backend URL
 
   constructor(
     private sanitizer: DomSanitizer,

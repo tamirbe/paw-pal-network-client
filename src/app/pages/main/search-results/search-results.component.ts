@@ -22,7 +22,7 @@ export class SearchResultsComponent implements OnInit {
   query: string = '';
   currentUsername: string = ''; // הוסף משתנה לשם המשתמש הנוכחי
 
-  private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
+  private apiUrl = 'https://paw-pal-network-server.onrender.com'; // Adjust this to your backend URL
 
   constructor(
     private route: ActivatedRoute,
