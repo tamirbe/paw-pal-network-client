@@ -1,18 +1,31 @@
+<!-- תיבת מודעה -->
+<div class="ad-container">
+  <div class="ad-box">
+    <img src="../../../../assets/images/image_peta_ds.webp" alt="Ad Image" class="ad-image">
+    <div class="ad-content">
+      <h4>Welcome to our platform! Stay tuned for updates</h4>
+      <p>link</p>
+      <a href="https://paw-pal-network-client.onrender.com/#/login" target="_blank">paw-pal-network</a>
+    </div>
+  </div>
+  <div class="ad-box">
+    <img src="../../../../assets/images/image_peta_ds2.webp" alt="Another Ad" class="ad-image">
+    <div class="ad-content">
+      <h4>Your Profile</h4>
+      <p>visit your profile</p>
+      <a [href]="'/#/profile/:username'" class="user-link">Go to page</a>
+    </div>
+  </div>
+    <!-- אפשר להוסיף עוד מודעות כאן -->
+</div>
 
-  <!-- תמונות צד ימין ושמאל -->
-  <div class="side-image left-side-image">
-    <img src="../../../../assets/images/cat.png" alt="Left Side Image" width="50" height="50">
-  </div>
-  <div class="side-image right-side-image">
-    <img src="../../../../assets/images/pet.png" alt="Right Side Image" width="50" height="50">
-  </div>
 
 <div class="home-container">
   <h2>Welcome {{ currentUserFirstName }}</h2>
   <div class="search-container">
     <form (ngSubmit)="onSearch()">
       <input type="text" placeholder="Search users..." [(ngModel)]="searchQuery" name="query" (input)="onTextAreaInput($event)"/>
-      <button type="submit"><img [src]="'../../../../assets/icons/search2.svg'" alt="search icon" width="15" height="15">Search</button>
+      <button type="submit">Search</button>
     </form>
   </div>
 

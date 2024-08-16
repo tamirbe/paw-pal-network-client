@@ -24,29 +24,70 @@
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
-/* עיצוב תמונות הצדדים */
-.side-image {
-  position: fixed; /* מיקום קבוע */
-  top: 20%; /* מיקום התמונות מבחינת גובה */
-  height: auto;
-  z-index: 100; /* לוודא שהן מעל הרקע אבל מאחורי התוכן */
-  pointer-events: none; /* לוודא שהתמונות לא יפריעו לאינטראקציה עם התוכן */
+.ad-container {
+  position: fixed;
+  top: 30%;
+  right: 20; /* מיקום ימני */
+  z-index: 100;
+  width: 300px; /* קביעת רוחב תיבת המודעה */
+  background-color: #d7dee6; /* צבע רקע */
+  border-radius: 10px; /* פינות מעוגלות */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* צל עדין */
+  padding: 15px; /* רווח פנימי */
+  overflow-y: auto; /* גלילה אנכית במידת הצורך */
+  color: #f5f5f5; /* צבע טקסט */
+  font-family: Arial, sans-serif; /* גופן כללי */
 }
 
-/* תמונת צד שמאל */
-.left-side-image {
-  left: 10x; /* מיקום שמאלי */
+/* תיבת מודעה */
+.ad-box {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px; /* מרווח בין המודעות */
+  border-bottom: 1px solid #444; /* קו תחתון להפרדה בין מודעות */
+  padding-bottom: 10px; /* רווח פנימי בתחתית */
 }
 
-/* תמונת צד ימין */
-.right-side-image {
-  right: 10px; /* מיקום ימני */
+.ad-box:last-child {
+  margin-bottom: 0;
+  border-bottom: none;
 }
 
-/* רק עבור מחשבים */
-@media (max-width: 768px) {
-  .side-image {
-    display: none; /* הסתרת התמונות במובייל */
+/* תמונה במודעה */
+.ad-image {
+  width: 80px; /* רוחב התמונה */
+  height: 80px; /* גובה התמונה */
+  border-radius: 10px; /* פינות מעוגלות לתמונה */
+  margin-right: 10px; /* רווח בין התמונה לטקסט */
+}
+
+/* עיצוב תוכן המודעה */
+.ad-content h4 {
+  margin: 0;
+  font-size: 16px;
+  color: #ffffff; /* צבע הכותרת */
+}
+
+.ad-content p {
+  margin: 5px 0;
+  font-size: 14px;
+  color: #b0b0b0; /* צבע טקסט משנה */
+}
+
+.ad-content a {
+  color: #007bff; /* צבע הקישור */
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.ad-content a:hover {
+  text-decoration: underline; /* קו תחתון בעת מעבר עכבר */
+}
+
+/* הסתרת המודעות במובייל */
+@media (max-width: 1545px) {
+  .ad-container {
+    display: none;
   }
 }
 
