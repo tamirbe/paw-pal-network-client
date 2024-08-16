@@ -5,24 +5,35 @@ import { AuthService } from '../../auth.service';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrl: './header.component.scss'
+  styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent {
   constructor(private router: Router, private authService: AuthService) { }
 
   logout() {
     this.authService.logout();
+    this.router.navigate(['/login']);
   }
+
   toProfile() {
-    this.router.navigate(['profile/:username']);
+    this.reloadCurrentRoute('profile/:username');
   }
+
   toAbout() {
-    this.router.navigate(['about']);
+    this.reloadCurrentRoute('about');
   }
+
   home() {
-    this.router.navigate(['home-page']);
+    this.reloadCurrentRoute('home-page');
   }
+
   toInterests() {
-    this.router.navigate(['interests']);
+    this.reloadCurrentRoute('interests');
+  }
+
+  private reloadCurrentRoute(route: string) {
+    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      this.router.navigate([route]);
+    });
   }
 }
