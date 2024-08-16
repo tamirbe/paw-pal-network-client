@@ -12,32 +12,17 @@ export class HeaderComponent {
 
   logout() {
     this.authService.logout();
-    this.router.navigate(['/login']).then(() => {
-      location.reload(); // מבצע רענון מלא של הדף לאחר הניווט
-    });
   }
-
   toProfile() {
-    this.router.navigate(['profile/:username']).then(() => {
-      location.reload();
-    });
+    this.router.navigate(['profile/:username']);
   }
-
   toAbout() {
-    this.router.navigate(['about']).then(() => {
-      location.reload();
-    });
+    this.router.navigate(['about']);
   }
-
   home() {
-    this.router.navigate(['home-page']).then(() => {
-      location.reload();
-    });
+    this.router.navigate(['home-page']);
   }
-
   toInterests() {
-    this.router.navigate(['interests']).then(() => {
-      location.reload();
-    });
+    this.router.navigate(['interests']);
   }
 }
