@@ -26,10 +26,12 @@
 
 .ad-container {
   position: fixed;
+  
   top: 30%;
   right: 20; /* מיקום ימני */
   z-index: 100;
   width: 300px; /* קביעת רוחב תיבת המודעה */
+  height: 500px;
   background-color: #d7dee6; /* צבע רקע */
   border-radius: 10px; /* פינות מעוגלות */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* צל עדין */
@@ -37,6 +39,35 @@
   overflow-y: auto; /* גלילה אנכית במידת הצורך */
   color: #f5f5f5; /* צבע טקסט */
   font-family: Arial, sans-serif; /* גופן כללי */
+  overflow: hidden; /* ביטול גלילה ידנית והסתרת פס הגלילה */
+  animation: fadeInSlideUp 1s ease-in-out; /* אנימציית כניסה */
+
+}
+
+.ad-box-wrapper {
+  display: flex;
+  flex-direction: column;
+  animation: scrollInfinite 20s linear infinite;
+}
+
+@keyframes scrollInfinite {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes fadeInSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* תיבת מודעה */
@@ -65,13 +96,13 @@
 .ad-content h4 {
   margin: 0;
   font-size: 16px;
-  color: #ffffff; /* צבע הכותרת */
+  color: #585858; /* צבע הכותרת */
 }
 
 .ad-content p {
   margin: 5px 0;
   font-size: 14px;
-  color: #b0b0b0; /* צבע טקסט משנה */
+  color: #979797; /* צבע טקסט משנה */
 }
 
 .ad-content a {
