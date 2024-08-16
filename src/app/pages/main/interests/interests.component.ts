@@ -16,6 +16,7 @@ interface Category {
 }
 
 interface Post {
+  _id?: string;
   author: string; // או authorName
   authorName: string;
   authorProfileImage: string; 
@@ -26,6 +27,8 @@ interface Post {
   shares: any[];
   liked?: boolean;
   shared?: boolean;
+  saves: string[];
+  saved: boolean;
   interests?: Interest;
 }
 
@@ -43,6 +46,7 @@ export interface User {
   styleUrls: ['./interests.component.scss']
 })
 export class InterestsComponent implements OnInit {
+  currentUser: string = '';
   interests: Interest[] = [];
   user?: User | null;
   posts: Post[] = [];
@@ -51,6 +55,8 @@ export class InterestsComponent implements OnInit {
   followingInterests: Interest[] = [];
   categories: Category[] = [];
   searchQuery: string = '';
+  saveSuccess: boolean = false;
+  unsaveSuccess: boolean = false;
   loading: boolean = false;
   currentSection: string = 'allInterests';
 
@@ -75,6 +81,79 @@ export class InterestsComponent implements OnInit {
   getTextDirection(text: string): string {
     const isHebrew = /[\u0590-\u05FF]/.test(text);
     return isHebrew ? 'rtl' : 'ltr';
+  }
+
+  async likePost(post: Post) {
+    try {
+      const token = this.authService.getToken();
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+      
+      
+      if (post.liked) {
+        post.liked = false;
+        post.likes = post.likes.filter(like => like !== this.currentUser); // מסיר את המשתמש מרשימת הלייקים
+        } 
+        else {
+        post.liked = true;
+        post.likes.push(this.currentUser);
+      }
+      await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/like`, {}, { headers }));
+      this.updateLikes(post);
+
+    } catch (error) {
+      console.error('Error liking/unliking post:', error);
+    }
+  }
+
+  updateLikes(post: Post) {
+    const updatedPostIndex = this.posts.findIndex(p => p._id === post._id);
+    if (updatedPostIndex !== -1) {
+      this.posts[updatedPostIndex] = { ...post };
+    }
+  }
+
+  
+
+  async sharePost(post: Post) {
+    try {
+      const token = this.authService.getToken();
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        
+      const sharedPost: Post = await firstValueFrom(this.http.post<Post>(`${this.apiUrl}/posts/${post._id}/share`, {}, { headers }));
+
+      this.posts.push(sharedPost); 
+    } catch (error) {
+      console.error('Error sharing/unsharing post:', error);
+    }
+  }
+
+  async savePost(post: Post) {
+    try {
+      const token = this.authService.getToken();
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+      if (!post.saves) {
+        post.saves = [];
+      }
+
+      if (post.saved) {
+        post.saved = false;
+        post.saves = post.saves.filter(save => save !== this.currentUser);
+      } else {
+        post.saved = true;
+        post.saves.push(this.currentUser);
+      }
+      await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/save`, {}, { headers }));
+      if (post.saved){
+        this.unsaveSuccess = false;
+        this.saveSuccess = true; }
+      else {
+        this.saveSuccess = false; 
+        this.unsaveSuccess = true;
+      }
+    } catch (error) {
+      console.error('Error save/unsave post:', error);
+    }
   }
 
   async loadFollowedInterestsPosts() {

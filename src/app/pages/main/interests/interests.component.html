@@ -27,6 +27,15 @@
               <p>Likes: {{ post.likes.length }}</p>
               <p>Shares: {{ post.shares.length }}</p>
             </div>
+            <button class="info-button" (click)="likePost(post)">
+                {{ post.liked ? 'Unlike' : 'Like' }} ({{ post.likes.length }})
+              </button>
+              <button class="info-button" (click)="sharePost(post)">
+                Share ({{ post.shares.length }})
+              </button>
+              <button class="info-button" (click)="savePost(post)">
+                {{ post.saved ? 'Unsave' : 'Save' }}
+              </button>
           </div>
       </div>
     
