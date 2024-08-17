@@ -5,39 +5,35 @@ import { AuthService } from '../../auth.service';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrl: './header.component.scss'
+  styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent {
   constructor(private router: Router, private authService: AuthService) { }
 
   logout() {
     this.authService.logout();
-    this.router.navigate(['/login']).then(() => {
-      location.reload(); // מבצע רענון מלא של הדף לאחר הניווט
-    });
+    this.router.navigate(['/login']);
   }
 
   toProfile() {
-    this.router.navigate(['profile/:username']).then(() => {
-      location.reload();
-    });
+    this.reloadCurrentRoute('profile/:username');
   }
 
   toAbout() {
-    this.router.navigate(['about']).then(() => {
-      location.reload();
-    });
+    this.reloadCurrentRoute('about');
   }
 
   home() {
-    this.router.navigate(['home-page']).then(() => {
-      location.reload();
-    });
+    this.reloadCurrentRoute('home-page');
   }
 
   toInterests() {
-    this.router.navigate(['interests']).then(() => {
-      location.reload();
+    this.reloadCurrentRoute('interests');
+  }
+
+  private reloadCurrentRoute(route: string) {
+    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      this.router.navigate([route]);
     });
   }
 }
