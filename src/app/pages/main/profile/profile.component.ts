@@ -85,7 +85,7 @@ export class ProfileComponent implements OnInit {
   // Initialize the forms
   private initForms(): void {
     this.userForm = this.fb.group({
-      username: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(20)]],
+      username: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(20), Validators.pattern('^[A-Za-z1-9]+$')]],
       firstName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(20), Validators.pattern('^[A-Za-z]+$')]],
       lastName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(20), Validators.pattern('^[A-Za-z]+$')]],
       email: ['', [Validators.required, Validators.email]],
@@ -279,22 +279,29 @@ export class ProfileComponent implements OnInit {
       const token = this.authService.getToken();
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-      this.http.post(`${this.apiUrl}/change-password`, { currentPassword, newPassword }, { headers }).pipe(
+      this.http.post(`${this.apiUrl}/change-password`, { currentPassword, newPassword }, { headers, responseType: 'text' }).pipe(
         catchError(error => {
-          console.error('Error changing password:', error);
+          if (error.status === 400) {
+            // wrong currentPassword
+            this.passwordForm.get('currentPassword')?.setErrors({ invalidCurrentPassword: true });
+          }
           return [];
         })
-      ).subscribe(() => {
-        console.log('Password changed successfully');
+      ).subscribe(response => {
+        if (response) {
+          // console.log("Password changed successfully, response:", response);
+          this.cancelAction();
+          // this.router.navigate(['/personal-area']);
+        } else {
+          console.error("Unexpected response:", response);
+        }
       });
-      this.passwordMode = false;
-      this.loadUserData();
-      this.uploadMode = true;
-      this.passwordForm.reset();
-    } else {
-      console.error('Password form is invalid');
     }
   }
+
+
+
+
   // Menu toggle
   toggleMenu() {
     this.showMenu = !this.showMenu;
@@ -321,6 +328,18 @@ export class ProfileComponent implements OnInit {
     this.statsMode = false;
     this.deleteMode = false;
     this.followMode = false;
+  }
+
+  uploadModeonly(): void {
+    this.deleteMode = false;
+    this.passwordMode = false;
+    this.editMode = false;
+    this.favoriteMode = false;
+    this.uploadMode = true;
+    this.savedMode = false;
+    this.statsMode = false;
+    this.followMode = false;
+
   }
 
   deleteAccount(): void {
@@ -463,8 +482,8 @@ export class ProfileComponent implements OnInit {
     this.removeUploadedContent(this.postToDeleteId);
     this.showConfirmDeletePostPopup = false;
     this.postToDeleteId = null;
-    this.loadUploadedContent()
-    }
+    this.loadUploadedContent();
+  }
 
   // פונקציה לביטול המחיקה אם המשתמש בחר "No"
   cancelDeletePost(): void {
