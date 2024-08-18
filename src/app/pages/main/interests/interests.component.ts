@@ -62,7 +62,7 @@ export class InterestsComponent implements OnInit {
 
   currentSection: string = 'allInterests';
 
-  private apiUrl = 'https://paw-pal-network-server.onrender.com'; // Adjust this to your backend URL
+  private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
 
   constructor(private http: HttpClient, private authService: AuthService, private sanitizer: DomSanitizer) {}
 
@@ -91,12 +91,10 @@ export class InterestsComponent implements OnInit {
       const token = this.authService.getToken();
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
       
-      
       if (post.liked) {
         post.liked = false;
         post.likes = post.likes.filter(like => like !== this.currentUser); // מסיר את המשתמש מרשימת הלייקים
-        } 
-        else {
+      } else {
         post.liked = true;
         post.likes.push(this.currentUser);
       }
@@ -106,7 +104,8 @@ export class InterestsComponent implements OnInit {
     } catch (error) {
       console.error('Error liking/unliking post:', error);
     }
-  }
+}
+
 
   updateLikes(post: Post) {
     const updatedPostIndex = this.posts.findIndex(p => p._id === post._id);
@@ -149,15 +148,15 @@ export class InterestsComponent implements OnInit {
       await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/save`, {}, { headers }));
       if (post.saved){
         this.unsaveSuccess = false;
-        this.saveSuccess = true; }
-      else {
+        this.saveSuccess = true; 
+      } else {
         this.saveSuccess = false; 
         this.unsaveSuccess = true;
       }
     } catch (error) {
-      console.error('Error save/unsave post:', error);
+      console.error('Error saving/unsaving post:', error);
     }
-  }
+}
 
   async loadFollowedInterestsPosts() {
     try {
