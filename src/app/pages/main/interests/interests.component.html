@@ -16,7 +16,7 @@
                 <a [routerLink]="post.author === currentUserName ? ['/profile', currentUserName] : ['/profile', post.author]" class="user-link">
                   <strong>{{ post.author === currentUserName ? currentUserName : post.authorName }}</strong>
                 </a>
-                <span class="post-date">           {{ post.createdAt | date:'short' }}</span>
+                <span class="post-date">{{ post.createdAt | date:'short' }}</span>
               </div>
               <p class="post-description" [ngStyle]="{'direction': getTextDirection(post.description)}">
                 {{ post.description }}
