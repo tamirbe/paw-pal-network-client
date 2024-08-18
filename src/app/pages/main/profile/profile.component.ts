@@ -213,7 +213,9 @@ export class ProfileComponent implements OnInit {
 
   // מתודות לבדיקה אסינכרונית של שם משתמש ואימייל
   async checkUsernameExists(username: string): Promise<void> {
-    if (username === this.user?.username && username===this.currentUserName) {
+    if (username === this.user?.username &&(username===this.currentUserName)) {
+      console.log(username);
+      console.log(this.currentUserName);
       this.usernameExists = false;
       return;
     }
