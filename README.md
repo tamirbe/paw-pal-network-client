@@ -1,27 +1,52 @@
-# PawPalNetworkClient
+Client README
+Project Name: Interest-Based Social Network Client
+Overview
+This project is the frontend client for an interest-based social network where users can interact with posts related to their interests. The frontend is built using Angular.
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.1.0.
+Features
+User login and registration.
+Users can search for interests and follow/unfollow them.
+Users can see posts related to their followed interests.
+Users can like, unlike, share, and save posts.
+The UI is dynamically updated to reflect the user's interactions with posts.
+Posts are displayed with details like author, creation date, likes, shares, and the ability to save.
+Prerequisites
+Node.js
+Angular CLI
+Git
+Installation and Setup
+Clone the repository:
 
-## Development server
+bash
+Copy code
+git clone <client-repo-url>
+cd <client-repo-directory>
+Install dependencies:
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+bash
+Copy code
+npm install
+Configure environment variables:
+Update the src/environments/environment.ts file with the API URL:
 
-## Code scaffolding
+typescript
+Copy code
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:3000'
+};
+Start the client:
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+bash
+Copy code
+npm run start
+The client will be running at http://localhost:4200.
 
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Usage
+After starting the server and client, open http://localhost:4200 in your browser.
+Register or log in with your credentials.
+Navigate through the application to explore interests, follow them, and interact with posts.
+Troubleshooting
+Ensure the backend server is running and accessible at the specified apiUrl.
+Make sure all dependencies are installed correctly with npm install.
+If any errors occur, refer to the browser console or terminal output for more details.
