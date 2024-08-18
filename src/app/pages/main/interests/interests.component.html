@@ -13,11 +13,23 @@
             <h2>Posts Related to Your Interests</h2>
             <div class="post" *ngFor="let post of posts">
               <div class="post-header">
-                <a [routerLink]="post.author === currentUserName ? ['/profile', currentUserName] : ['/profile', post.author]" class="user-link">
-                  <strong>{{ post.author === currentUserName ? currentUserName : post.authorName }}</strong>
-                </a>
+                <ng-container *ngIf="post.authorName === currentUserName; else otherProfile">
+                  <!-- אם זה הפוסט של המשתמש הנוכחי -->
+                  <a [routerLink]="['/profile/:username']" class="user-link">
+                    <strong>{{ currentUserName }}</strong>
+                  </a>
+                </ng-container>
+                
+                <ng-template #otherProfile>
+                  <!-- אם זה פוסט של משתמש אחר -->
+                  <a [routerLink]="['/another', post.authorName]" class="user-link">
+                    <strong>{{ post.authorName }}</strong>
+                  </a>
+                </ng-template>
+                
                 <span class="post-date">{{ post.createdAt | date:'short' }}</span>
               </div>
+
               <p class="post-description" [ngStyle]="{'direction': getTextDirection(post.description)}">
                 {{ post.description }}
               </p>
