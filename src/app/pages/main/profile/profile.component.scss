@@ -55,20 +55,22 @@ body {
     margin-bottom: 20px;
   }
 
-  // Sidebar styles
   .sidebar {
     position: fixed;
     left: 0;
     top: 190px;
-
-    @media (max-width: 1400px) {
-      top: 82px;
+  
+    @media (max-width: 457px) {
+      top: 120px;
     }
-
-    background-color: #efebdf;
-    transition: left 0.3s ease;
+  
+    background-color: #eff2f8;
     padding: 0px 20px;
-
+    border: 2px solid #ccc; // מסגרת מסביב ל-sidebar
+    border-radius: 8px; // פינות מעוגלות למסגרת
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); // הוספת הצללה למסגרת
+    transition: left 0.3s ease; // השארת ההנפשה על left
+  
     button {
       display: block;
       background: none;
@@ -80,13 +82,12 @@ body {
       color: $text-color;
       font-size: 1rem;
       transition: background 0.3s, color 0.3s;
-
+  
       &:hover {
         background: $primary-color;
         color: #fff;
       }
     }
-
     .icon {
       cursor: pointer;
       width: 24px;
@@ -95,7 +96,7 @@ body {
       margin-bottom: 10px;
     }
   }
-
+  
   // User details section
   .user-details {
     margin-bottom: 30px;
