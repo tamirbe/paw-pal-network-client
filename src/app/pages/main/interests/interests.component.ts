@@ -88,31 +88,31 @@ export class InterestsComponent implements OnInit {
 
   async likePost(post: Post) {
     try {
-      const token = this.authService.getToken();
-      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-      
-      if (post.liked) {
-        post.liked = false;
-        post.likes = post.likes.filter(like => like !== this.currentUser); // מסיר את המשתמש מרשימת הלייקים
-      } else {
-        post.liked = true;
-        post.likes.push(this.currentUser);
-      }
-      await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/like`, {}, { headers }));
-      this.updateLikes(post);
+        const token = this.authService.getToken();
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+        // שליחת הבקשה לשרת וקבלת התגובה
+        const response: any = await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/like`, {}, { headers }));
+
+        // עדכון המידע בממשק בהתאם לתגובה מהשרת
+        post.liked = response.liked;
+        post.likes.length = response.likesCount;
+
+        // עדכון המספר של הלייקים בתצוגה לאחר קבלת התגובה מהשרת
+        this.updateLikes(post);
 
     } catch (error) {
-      console.error('Error liking/unliking post:', error);
+        console.error('Error liking/unliking post:', error);
     }
 }
 
 
-  updateLikes(post: Post) {
-    const updatedPostIndex = this.posts.findIndex(p => p._id === post._id);
-    if (updatedPostIndex !== -1) {
-      this.posts[updatedPostIndex] = { ...post };
+updateLikes(post: Post) {
+    const postIndex = this.posts.findIndex(p => p._id === post._id);
+    if (postIndex !== -1) {
+        this.posts[postIndex] = { ...post };
     }
-  }
+}
 
   
 
