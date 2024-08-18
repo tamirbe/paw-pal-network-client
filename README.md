@@ -1,27 +1,71 @@
-# PawPalNetworkClient
+Interest-Based Social Network - Client
+Overview
+This project is the frontend client for an interest-based social network, where users can follow interests, like posts, share posts, and interact with content shared by other users. The client is built using Angular, and it connects to a Node.js and Express backend server.
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.1.0.
+Features
+User Authentication: Login and registration with form validation.
+Interest Management: Users can follow and unfollow interests, and view posts related to these interests.
+Post Interactions: Users can create, like, unlike, share, and save posts.
+Dynamic Feed: The feed includes system posts, user posts, interest-based posts, and shared posts.
+Profile Management: Users can edit their profile, change their password, manage their posts, and view their saved posts and followed interests.
+Search Functionality: Users can search for other users and follow/unfollow them.
+Responsiveness: The UI is responsive and adapts to different screen sizes.
+Prerequisites
+Node.js
+Angular CLI
+Git
+Installation and Setup
+Clone the repository:
+bash
+Copy code
+git clone <client-repo-url>
+cd <client-repo-directory>
+Install dependencies:
+bash
+Copy code
+npm install
+Configure environment variables:
+Ensure the backend server is running and update the apiUrl in the services to point to the correct backend server URL.
 
-## Development server
+Start the client:
+bash
+Copy code
+npm run start
+The client will be running at http://localhost:4200.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Note: If you are running the server on a free hosting service, the server may take approximately 40 seconds to start initially. Please be patient.
 
-## Code scaffolding
+Project Structure
+src/app/components/: Contains reusable components like headers and footers.
+src/app/pages/: Contains the main pages, such as home, profile, interests, search results, and about.
+src/app/services/: Contains services that interact with the backend API for authentication, post management, etc.
+src/app/models/: Contains interfaces for data models like Post, User, Interest, etc.
+src/app/guards/: Contains route guards for protecting certain routes based on authentication status.
+Running the Client
+To start the client locally, run the following command after installing dependencies:
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+bash
+Copy code
+npm run start
+The client will start on http://localhost:4200.
 
-## Build
+API Integration
+The client interacts with the backend API to handle various features like user authentication, post interactions, and interest management. Ensure the backend server is running before starting the client.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Troubleshooting
+Ensure the backend server is up and running, and the apiUrl is correctly set.
+Check the console for any errors or warnings during the startup process.
+For any authentication issues, ensure the JWT token is valid and correctly stored in local storage.
+Example Configuration
+In your Angular services or environment configuration, make sure the apiUrl points to your backend server:
 
-## Running unit tests
+typescript
+Copy code
+private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
+This README provides a comprehensive overview of the client setup, features, and usage. It is structured to be clear and informative for anyone setting up or working with the client project.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-## Running end-to-end tests
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
 
-## Further help
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
