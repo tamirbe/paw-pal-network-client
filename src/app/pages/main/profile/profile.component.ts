@@ -58,7 +58,7 @@ export class ProfileComponent implements OnInit {
   showPasswordError: boolean = false;
   passwordErrorMessage: string = '';
 
-  private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
+  private apiUrl = 'https://paw-pal-network-server.onrender.com'; // Adjust this to your backend URL
 
   constructor(private sanitizer: DomSanitizer, private fb: FormBuilder, private userService: UserService, private authService: AuthService, private http: HttpClient, private router: Router) { }
 
