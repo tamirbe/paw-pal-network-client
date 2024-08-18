@@ -13,21 +13,24 @@
             <h2>Posts Related to Your Interests</h2>
             <div class="post" *ngFor="let post of posts">
               <div class="post-header">
-                <a [routerLink]="['/profile/:username',]" class="user-link">
-                    <img [src]="'../../../../assets/icons/userprofile.svg'" alt="Profile Image" class="profile-image" width="35" height="35">
-                    <strong>{{ currentUserName }}</strong>
-                  </a>
-                <span class="post-date">{{ post.createdAt | date:'short' }}</span>
+                <a [routerLink]="post.author === currentUserName ? ['/profile', currentUserName] : ['/profile', post.author]" class="user-link">
+                  <strong>{{ post.author === currentUserName ? currentUserName : post.authorName }}</strong>
+                </a>
+                <span class="post-date">           {{ post.createdAt | date:'short' }}</span>
               </div>
               <p class="post-description" [ngStyle]="{'direction': getTextDirection(post.description)}">
                 {{ post.description }}
               </p>
               <img class="post-image" [src]="sanitizeImageUrl(post.image)" alt="Post image" *ngIf="post.image" width="120" height="120">
+          
               <div class="info-group">
                 <p>Likes: {{ post.likes.length }}</p>
                 <p>Shares: {{ post.shares.length }}</p>
               </div>
-              <button class="info-button" (click)="likePost(post)">
+              
+              <!-- כפתורים מיושרים באותה שורה -->
+              <div class="button-container">
+                <button class="info-button" (click)="likePost(post)">
                   {{ post.liked ? 'Unlike' : 'Like' }} ({{ post.likes.length }})
                 </button>
                 <button class="info-button" (click)="sharePost(post)">
@@ -36,9 +39,10 @@
                 <button class="info-button" (click)="savePost(post)">
                   {{ post.saved ? 'Unsave' : 'Save' }}
                 </button>
+              </div>
             </div>
-        </div>
-      
+          </div>
+                
         <!-- All Interests -->
         <div *ngIf="currentSection === 'allInterests'">
             <h2>All Interests</h2>
@@ -93,4 +97,3 @@
         </div>
     </div>
   </div>
-  
