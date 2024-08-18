@@ -20,14 +20,14 @@ export class AboutComponent implements OnInit {
   aboutContent$!: Observable<AboutContent>;
   messageForm!: FormGroup;
   messageSent: boolean = false;
-  currentUserName: string = ''; // הוספת משתנה לאחסון שם המשתמש הנוכחי
+  currentUserName: string = ''; 
   private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
 
   constructor(private http: HttpClient, private fb: FormBuilder, private authService: AuthService) { }
 
   ngOnInit(): void {
     this.initForm();
-    this.loadUserDetails(); // קריאה לפונקציה לטעינת פרטי המשתמש
+    this.loadUserDetails(); 
   }
 
 
@@ -39,7 +39,7 @@ export class AboutComponent implements OnInit {
     });
   }
 
-  loadUserDetails() { // פונקציה לטעינת פרטי המשתמש
+  loadUserDetails() { 
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 

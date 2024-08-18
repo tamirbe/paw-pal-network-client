@@ -17,7 +17,7 @@ interface Category {
 
 interface Post {
   _id?: string;
-  author: string; // או authorName
+  author: string; 
   authorName: string;
   authorProfileImage: string; 
   createdAt: Date;
@@ -58,7 +58,7 @@ export class InterestsComponent implements OnInit {
   saveSuccess: boolean = false;
   unsaveSuccess: boolean = false;
   loading: boolean = false;
-  currentUserName: string = ''; // הוספת משתנה לאחסון שם המשתמש הנוכחי
+  currentUserName: string = ''; 
 
   currentSection: string = 'allInterests';
 
@@ -91,14 +91,11 @@ export class InterestsComponent implements OnInit {
         const token = this.authService.getToken();
         const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-        // שליחת הבקשה לשרת וקבלת התגובה
         const response: any = await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/like`, {}, { headers }));
 
-        // עדכון המידע בממשק בהתאם לתגובה מהשרת
         post.liked = response.liked;
         post.likes.length = response.likesCount;
 
-        // עדכון המספר של הלייקים בתצוגה לאחר קבלת התגובה מהשרת
         this.updateLikes(post);
 
     } catch (error) {

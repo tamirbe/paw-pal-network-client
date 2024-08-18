@@ -25,8 +25,8 @@ interface Post {
   sharedAt?: Date;
   sharedBy?: { firstName: string, lastName: string };
   interestId?: string;
-  postType?: string; // הוסף את postType
-  interestName?: string; // הוסף את interestName
+  postType?: string; 
+  interestName?: string; 
 
 }
 
@@ -62,7 +62,7 @@ export class HomeComponent implements OnInit {
   selectedFile: File | null = null;
   selectedFileName: string | null = null;
   followingInterests: Interest[] = [];
-  remainingCharacters: number = 200; // הגבלת התווים ל-200
+  remainingCharacters: number = 200; 
 
 
   private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
@@ -77,14 +77,14 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.postForm = this.fb.group({
-      description: ['', Validators.required], // מלל הוא חובה
-      image: [null], // תמונה היא אופציונלית
-      interestId: [''] // תחום עניין הוא אופציונלי
+      description: ['', Validators.required],
+      image: [null], 
+      interestId: [''] 
     });
   
     this.loadFeed();
     this.setCurrentUser(); 
-    this.loadUserInterests(); // לטעינת תחומי העניין שהמשתמש עוקב אחריהם
+    this.loadUserInterests();
   }
 
   async loadFeed() {
@@ -92,12 +92,11 @@ export class HomeComponent implements OnInit {
       const token = this.authService.getToken();
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
       
-      // קודם נטען את userPosts ולאחר מכן נשתמש בו ב-loadInterestPosts
       const userPosts = await firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/feed`, { headers }));
       
       const [sharedPosts, interestPosts] = await Promise.all([
         this.loadSharedPosts(headers),
-        this.loadInterestPosts(headers, userPosts) // מעביר את userPosts לפונקציה
+        this.loadInterestPosts(headers, userPosts)
       ]);
       
       const systemPosts: Post[] = [
@@ -114,7 +113,6 @@ export class HomeComponent implements OnInit {
           systemPost: true,
           interests: [],
         },
-        // הוסף פוסטים נוספים של המערכת כאן
       ];
       
       this.posts = [...systemPosts, ...userPosts, ...sharedPosts, ...interestPosts].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
@@ -129,7 +127,7 @@ export class HomeComponent implements OnInit {
     try {
       const interestPosts = await firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/interests-posts`, { headers }));
       return interestPosts
-        .filter(post => !userPosts.some(userPost => userPost._id === post._id)) // סינון פוסטים שכבר קיימים ב-userPosts
+        .filter(post => !userPosts.some(userPost => userPost._id === post._id))
         .map(post => {
         const interestName = Array.isArray(post.interests) && post.interests.length > 0 && typeof post.interests[0] === 'object' && 'name' in post.interests[0]
           ? (post.interests[0] as any).name
@@ -137,7 +135,7 @@ export class HomeComponent implements OnInit {
   
         return {
           ...post,
-          postType: 'Interest', // מוסיף שדה שמציין שזה פוסט מתחום עניין
+          postType: 'Interest',
           interestName
         };
       });
@@ -271,14 +269,11 @@ export class HomeComponent implements OnInit {
         const token = this.authService.getToken();
         const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-        // שליחת הבקשה לשרת וקבלת התגובה
         const response: any = await firstValueFrom(this.http.post(`${this.apiUrl}/posts/${post._id}/like`, {}, { headers }));
 
-        // עדכון המידע בממשק בהתאם לתגובה מהשרת
         post.liked = response.liked;
         post.likes.length = response.likesCount;
 
-        // עדכון המספר של הלייקים בתצוגה לאחר קבלת התגובה מהשרת
         this.updateLikes(post);
 
     } catch (error) {
@@ -377,7 +372,7 @@ export class HomeComponent implements OnInit {
   }
 
 
-  closeSaveSuccessDialog() { // חדש: סגירת דיאלוג הצלחה של שמירת פוסט
+  closeSaveSuccessDialog() {
     this.saveSuccess = false;
   }
 
@@ -396,7 +391,6 @@ export class HomeComponent implements OnInit {
 
 
 
-// פונקציה להסרת שיתוף
 async confirmUnshare(post: Post, userId: string, createdAt: Date) {
   if (!post || !userId || !createdAt) {
     return;
@@ -408,7 +402,6 @@ async confirmUnshare(post: Post, userId: string, createdAt: Date) {
     await firstValueFrom(this.http.delete(`${this.apiUrl}/Unshare/${post._id}/${userId}/${createdAt}`, { headers }));
     console.log('Share deleted successfully');
     
-    // עדכון רשימת השיתופים בלוקלי
     post.shares = post.shares.filter(s => s.user !== userId || new Date(s.createdAt).getTime() !== new Date(createdAt).getTime());
     
     this.postToDelete = null;

@@ -18,9 +18,9 @@ interface User {
 })
 export class SearchResultsComponent implements OnInit {
   users: User[] = [];
-  following: string[] = []; // הוספת משתנה following
+  following: string[] = [];
   query: string = '';
-  currentUsername: string = ''; // הוסף משתנה לשם המשתמש הנוכחי
+  currentUsername: string = '';
 
   private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
 

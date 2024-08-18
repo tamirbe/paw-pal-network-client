@@ -14,7 +14,7 @@ interface User {
 }
 
 interface Post {
-  author: string; // או authorName
+  author: string; 
   authorName: string;
   authorProfileImage: string; 
   createdAt: Date;
@@ -33,14 +33,14 @@ interface Post {
 })
 export class UserProfileComponent implements OnInit {
   user: User | null = null;
-  userPosts: Post[] = []; // משתנה לשמירת הפוסטים של המשתמש
-  isCurrentUser: boolean = false; // משתנה לבדיקה אם זה המשתמש הנוכחי
-  following: string[] = []; // משתנה לשמירת רשימת העוקבים
+  userPosts: Post[] = []; 
+  isCurrentUser: boolean = false; 
+  following: string[] = []; 
   private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
   uploadedContent: any[] = [];
   sortedContent: Post[] = [];
   sortOption: string = 'date';
-  currentUsername: string = ''; // משתנה לשם המשתמש הנוכחי
+  currentUsername: string = ''; 
   searchQuery: string = ''; // add
 
   constructor(
@@ -54,10 +54,10 @@ export class UserProfileComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe(async params => {
       const username = params['username'];
-      this.setCurrentUser(); // הגדרת המשתמש הנוכחי
+      this.setCurrentUser();
       await this.loadUserProfile(username);
       await this.loadPublicUserPosts(username);
-      await this.loadFollowingList(); // טעינת רשימת העוקבים
+      await this.loadFollowingList(); 
     });
   }
 
@@ -90,10 +90,8 @@ export class UserProfileComponent implements OnInit {
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
       this.user = await firstValueFrom(this.http.get<User>(`${this.apiUrl}/users/${username}`, { headers }));
       
-// שליחת בקשה לשרת לקבל את רשימת העוקבים של המשתמש הנוכחי
       const followingResponse = await firstValueFrom(this.http.get<{ following: string[] }>(`${this.apiUrl}/current-user-following`, { headers }));
       
-// בדיקה אם המשתמש שהפרופיל שלו נצפה נמצא ברשימת העוקבים
       this.user.isFollowing = followingResponse.following.includes(username);
     } catch (error) {
       console.error('Error loading user profile:', error);
@@ -196,6 +194,6 @@ export class UserProfileComponent implements OnInit {
 
 
   goBack() {
-    this.router.navigate(['/home-page']); // Change '/previous-page' to the actual route you want to go back to
+    this.router.navigate(['/home-page']);
   }
 }
