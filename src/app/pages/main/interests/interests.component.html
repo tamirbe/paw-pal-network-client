@@ -13,10 +13,10 @@
             <h2>Posts Related to Your Interests</h2>
             <div class="post" *ngFor="let post of posts">
               <div class="post-header">
-                <a [routerLink]="['/another', user?.username]" class="user-link">
-                  <img [src]="'../../../../assets/icons/userprofile.svg'" alt="Profile Image" class="profile-image" width="35" height="35">
-                  <strong>{{ user?.firstName }} {{ user?.lastName }} ({{ user?.username }})</strong>
-                </a>
+                <a [routerLink]="['/profile/:username',]" class="user-link">
+                    <img [src]="'../../../../assets/icons/userprofile.svg'" alt="Profile Image" class="profile-image" width="35" height="35">
+                    <strong>{{ currentUserName }}</strong>
+                  </a>
                 <span class="post-date">{{ post.createdAt | date:'short' }}</span>
               </div>
               <p class="post-description" [ngStyle]="{'direction': getTextDirection(post.description)}">

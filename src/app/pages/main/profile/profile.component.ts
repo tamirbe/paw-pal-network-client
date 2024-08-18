@@ -615,4 +615,6 @@ export class ProfileComponent implements OnInit {
     }
     this.favoritePosts();
   }
+
+  
 }
