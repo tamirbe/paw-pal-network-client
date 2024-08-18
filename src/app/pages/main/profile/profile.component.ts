@@ -51,12 +51,14 @@ export class ProfileComponent implements OnInit {
 
   showConfirmDeletePostPopup: boolean = false; // משתנה לניהול חלון ה-Pop-up למחיקת פוסט
   postToDeleteId: string | null = null; // משתנה לשמירת מזהה הפוסט למחיקה
-  currentUserName: string = ''; // הוספת משתנה לאחסון שם המשתמש הנוכחי
 
   usernameExists: boolean = false;
   emailExists: boolean = false;
 
-  private apiUrl = 'https://paw-pal-network-server.onrender.com'; // Adjust this to your backend URL
+  showPasswordError: boolean = false;
+  passwordErrorMessage: string = '';
+
+  private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
 
   constructor(private sanitizer: DomSanitizer, private fb: FormBuilder, private userService: UserService, private authService: AuthService, private http: HttpClient, private router: Router) { }
 
@@ -101,7 +103,7 @@ export class ProfileComponent implements OnInit {
         Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*])[A-Za-z\\d!@#$%^&*].{8,}$')
       ]],
       confirmPassword: ['', Validators.required]
-    });
+    }, { validator: ProfileComponent.passwordMatchValidator });
   }
 
   // Validator to ensure new and confirm passwords match
@@ -181,19 +183,6 @@ export class ProfileComponent implements OnInit {
       });
 
   }
-  loadUserDetails() { // פונקציה לטעינת פרטי המשתמש
-    const token = this.authService.getToken();
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
-    this.http.get<any>(`${this.apiUrl}/profile`, { headers }).subscribe(
-      data => {
-        this.currentUserName = data.username;
-      },
-      error => {
-        console.error('Error loading user details:', error);
-      }
-    );
-  }
 
   goToUserProfile(username: string) {
     // Implement navigation or logic to view user profile
@@ -213,7 +202,7 @@ export class ProfileComponent implements OnInit {
 
   // מתודות לבדיקה אסינכרונית של שם משתמש ואימייל
   async checkUsernameExists(username: string): Promise<void> {
-    if (username === this.user?.username &&!(username===this.currentUserName)) {
+    if (username === this.user?.username) {
       this.usernameExists = false;
       return;
     }
@@ -516,23 +505,22 @@ export class ProfileComponent implements OnInit {
   // Confirm and cancel actions for account deletion
   confirmDeleteAccount(): void {
     this.showConfirmDeletePopup = true;
+    this.showPasswordError = false;
   }
+
 
   deleteAccountConfirmed(): void {
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const body = { password: this.deletePassword };
 
-    const currentPassword = (document.querySelector('.password-input') as HTMLInputElement).value;
-
-    const body = { password: currentPassword };
-
-    this.http.post(`${this.apiUrl}/delete-account`, body, { headers, responseType: 'text' }) // הוספת responseType: 'text'
+    this.http.post(`${this.apiUrl}/delete-account`, body, { headers, responseType: 'text' })
       .pipe(
         catchError(error => {
-          console.error('Error deleting account:', error);
           if (error.status === 400) {
             this.showConfirmDeletePopup = false;
-            this.showPasswordMismatchPopup = true;
+            this.showPasswordError = true;
+            this.passwordErrorMessage = 'The password you entered is incorrect. Please try again.';
           }
           return [];
         })
@@ -542,13 +530,13 @@ export class ProfileComponent implements OnInit {
           this.router.navigate(['login']);
         }
       });
+    this.showConfirmDeletePopup = false;
   }
-
 
   cancelDeleteAccount(): void {
     this.showConfirmDeletePopup = false;
-    this.cancelAction();
   }
+
 
   cancelAction(): void {
     this.editMode = false;
