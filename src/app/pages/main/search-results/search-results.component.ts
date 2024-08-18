@@ -18,9 +18,9 @@ interface User {
 })
 export class SearchResultsComponent implements OnInit {
   users: User[] = [];
-  following: string[] = []; // הוספת משתנה following
+  following: string[] = [];
   query: string = '';
-  currentUsername: string = ''; // הוסף משתנה לשם המשתמש הנוכחי
+  currentUsername: string = '';
 
   private apiUrl = 'https://paw-pal-network-server.onrender.com'; // Adjust this to your backend URL
 
@@ -124,7 +124,6 @@ export class SearchResultsComponent implements OnInit {
       this.following = this.following.filter(u => u !== username);
       console.log(`Unfollowed user: ${username}`);
       
-      // עדכון מצב המשתמש המקומי
       const user = this.users.find(user => user.username === username);
       if (user) {
         user.isFollowing = false;
