@@ -20,7 +20,7 @@ export class ProfileComponent implements OnInit {
 
   user?: User | null;
   post?: Post | null;
-  postToDelete: Post | null = null; // משתנה לשמירת הפוסט למחיקה
+  postToDelete: Post | null = null;
   following: string[] = [];
   filteredFollowing: string[] = [];
   searchTerm: string = '';
@@ -43,14 +43,14 @@ export class ProfileComponent implements OnInit {
   passwordForm!: FormGroup;
   hide = true;// Form for password change
 
-  showConfirmUnfollowPopup: boolean = false; // משתנה לניהול חלון ה-Pop-up
-  userToUnfollow: string = ''; // שם המשתמש למחיקה
-  deletePassword: string = ''; // משתנה לשמירת הסיסמה לאישור מחיקת חשבון
-  showConfirmDeletePopup: boolean = false; // משתנה לניהול חלון ה-Pop-up למחיקת החשבון
+  showConfirmUnfollowPopup: boolean = false; 
+  userToUnfollow: string = '';
+  deletePassword: string = '';
+  showConfirmDeletePopup: boolean = false;
   showPasswordMismatchPopup: boolean = false;
 
-  showConfirmDeletePostPopup: boolean = false; // משתנה לניהול חלון ה-Pop-up למחיקת פוסט
-  postToDeleteId: string | null = null; // משתנה לשמירת מזהה הפוסט למחיקה
+  showConfirmDeletePostPopup: boolean = false;
+  postToDeleteId: string | null = null;
 
   usernameExists: boolean = false;
   emailExists: boolean = false;
@@ -200,7 +200,6 @@ export class ProfileComponent implements OnInit {
     }
   }
 
-  // מתודות לבדיקה אסינכרונית של שם משתמש ואימייל
   async checkUsernameExists(username: string): Promise<void> {
     if (username === this.user?.username) {
       this.usernameExists = false;
@@ -469,13 +468,11 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  // פונקציה להצגת ה-Pop-up למחיקת פוסט
   confirmDeletePost(postId: string): void {
     this.postToDeleteId = postId;
     this.showConfirmDeletePostPopup = true;
   }
 
-  // פונקציה לביצוע מחיקת הפוסט לאחר אישור
   deletePostConfirmed(): void {
     if (!this.postToDeleteId) {
       console.error('Post ID is missing, cannot delete the post.');
@@ -488,7 +485,6 @@ export class ProfileComponent implements OnInit {
     this.loadUploadedContent();
   }
 
-  // פונקציה לביטול המחיקה אם המשתמש בחר "No"
   cancelDeletePost(): void {
     this.postToDeleteId = null;
     this.showConfirmDeletePostPopup = false;
