@@ -43,10 +43,10 @@
               <!-- כפתורים מיושרים באותה שורה -->
               <div class="button-container">
                 <button class="info-button" (click)="likePost(post)">
-                  {{ post.liked ? 'Unlike' : 'Like' }} ({{ post.likes.length }})
+                  {{ post.liked ? 'Unlike' : 'Like' }}
                 </button>
                 <button class="info-button" (click)="sharePost(post)">
-                  Share ({{ post.shares.length }})
+                  Share
                 </button>
                 <button class="info-button" (click)="savePost(post)">
                   {{ post.saved ? 'Unsave' : 'Save' }}
