@@ -3,6 +3,10 @@
   min-height: 100vh;
   font-family: 'Roboto', sans-serif;
 
+  .post-date {
+    margin-left: 50px; /* דחיפה של תאריך לפריסה מלאה */
+  }
+  
   .sidebar {
     width: 250px;
     background-color: #7387a3;
@@ -108,6 +112,65 @@
     }
   }
 }
+.button-container {
+  display: flex;
+  align-items: center;
+  gap: 0rem; /* רווחים בין הכפתורים */
+  flex-wrap: wrap; /* אם הכפתורים לא נכנסים בשורה אחת, הם יעברו לשורה הבאה */
+}
+
+.info-button {
+  display: flex;
+  align-items: center;
+  gap: 1rem; /* רווח בין האייקון לטקסט */
+  padding: 10px 15px;
+  border: none;
+  background-color: #b4bfcc;
+  color: #000000;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+
+  img {
+    width: 20px; /* גודל האייקון */
+    height: 20px;
+    transition: transform 0.3s ease; /* אנימציה להגדלה בעת מעבר עם העכבר */
+  }
+
+  &:hover {
+    background-color: #48719c;
+    color: #fff;
+
+    img {
+      transform: scale(1.1); /* הגדלת האייקון בעת מעבר עם העכבר */
+    }
+  }
+}
+
+
+@media (max-width: 768px) {
+
+  .info-group {
+    display: flex;
+    flex-direction: row; /* הצגת הכפתורים בשורה אחת */
+    flex-wrap: wrap; /* מאפשר לכפתורים לרדת לשורה חדשה במידת הצורך */
+    gap: 5px; /* רווחים קטנים יותר בין הכפתורים בניידים */
+  }
+
+  .info-button {
+    display: flex;
+    justify-content: center;
+    padding: 8px 12px; /* התאמה של הפדינג לכפתורים בניידים */
+    font-size: 14px; /* גודל טקסט קטן יותר */
+    flex: 1 1 auto; /* הכפתורים יתפסו מקום שווה וירדו שורה במידת הצורך */
+    
+    img {
+      width: 18px; /* התאמה של גודל האייקון לניידים */
+      height: 18px;
+    }
+  }
+}
+
 
 
 @media (max-width: 768px) {
