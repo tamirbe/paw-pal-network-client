@@ -55,6 +55,9 @@ export class ProfileComponent implements OnInit {
   usernameExists: boolean = false;
   emailExists: boolean = false;
 
+  showPasswordError: boolean = false;
+  passwordErrorMessage: string = '';
+
   private apiUrl = 'http://localhost:3000'; // Adjust this to your backend URL
 
   constructor(private sanitizer: DomSanitizer, private fb: FormBuilder, private userService: UserService, private authService: AuthService, private http: HttpClient, private router: Router) { }
@@ -100,7 +103,7 @@ export class ProfileComponent implements OnInit {
         Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*])[A-Za-z\\d!@#$%^&*].{8,}$')
       ]],
       confirmPassword: ['', Validators.required]
-    });
+    }, { validator: ProfileComponent.passwordMatchValidator });
   }
 
   // Validator to ensure new and confirm passwords match
@@ -502,23 +505,22 @@ export class ProfileComponent implements OnInit {
   // Confirm and cancel actions for account deletion
   confirmDeleteAccount(): void {
     this.showConfirmDeletePopup = true;
+    this.showPasswordError = false;
   }
+
 
   deleteAccountConfirmed(): void {
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const body = { password: this.deletePassword };
 
-    const currentPassword = (document.querySelector('.password-input') as HTMLInputElement).value;
-
-    const body = { password: currentPassword };
-
-    this.http.post(`${this.apiUrl}/delete-account`, body, { headers, responseType: 'text' }) // הוספת responseType: 'text'
+    this.http.post(`${this.apiUrl}/delete-account`, body, { headers, responseType: 'text' })
       .pipe(
         catchError(error => {
-          console.error('Error deleting account:', error);
           if (error.status === 400) {
             this.showConfirmDeletePopup = false;
-            this.showPasswordMismatchPopup = true;
+            this.showPasswordError = true;
+            this.passwordErrorMessage = 'The password you entered is incorrect. Please try again.';
           }
           return [];
         })
@@ -528,13 +530,13 @@ export class ProfileComponent implements OnInit {
           this.router.navigate(['login']);
         }
       });
+    this.showConfirmDeletePopup = false;
   }
-
 
   cancelDeleteAccount(): void {
     this.showConfirmDeletePopup = false;
-    this.cancelAction();
   }
+
 
   cancelAction(): void {
     this.editMode = false;
