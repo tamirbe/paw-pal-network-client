@@ -58,6 +58,8 @@ export class InterestsComponent implements OnInit {
   saveSuccess: boolean = false;
   unsaveSuccess: boolean = false;
   loading: boolean = false;
+  currentUserName: string = ''; // הוספת משתנה לאחסון שם המשתמש הנוכחי
+
   currentSection: string = 'allInterests';
 
   private apiUrl = 'https://paw-pal-network-server.onrender.com'; // Adjust this to your backend URL
@@ -71,6 +73,7 @@ export class InterestsComponent implements OnInit {
     this.loadInterests();
     this.loadPopularInterests();
     this.loadCategories();
+    this.loadUserDetails()
     this.loading = false; // Stop loading indicator
   }
 
@@ -237,6 +240,19 @@ export class InterestsComponent implements OnInit {
     } catch (error) {
       console.error('Error unfollowing interest:', error);
     }
+  }
+  loadUserDetails() { // פונקציה לטעינת פרטי המשתמש
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    this.http.get<any>(`${this.apiUrl}/profile`, { headers }).subscribe(
+      data => {
+        this.currentUserName = data.username;
+      },
+      error => {
+        console.error('Error loading user details:', error);
+      }
+    );
   }
 
   sanitizeImageUrl(url: string): SafeUrl {
