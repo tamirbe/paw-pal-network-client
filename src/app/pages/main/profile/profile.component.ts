@@ -51,6 +51,7 @@ export class ProfileComponent implements OnInit {
 
   showConfirmDeletePostPopup: boolean = false; // משתנה לניהול חלון ה-Pop-up למחיקת פוסט
   postToDeleteId: string | null = null; // משתנה לשמירת מזהה הפוסט למחיקה
+  currentUserName: string = ''; // הוספת משתנה לאחסון שם המשתמש הנוכחי
 
   usernameExists: boolean = false;
   emailExists: boolean = false;
@@ -180,6 +181,19 @@ export class ProfileComponent implements OnInit {
       });
 
   }
+  loadUserDetails() { // פונקציה לטעינת פרטי המשתמש
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    this.http.get<any>(`${this.apiUrl}/profile`, { headers }).subscribe(
+      data => {
+        this.currentUserName = data.username;
+      },
+      error => {
+        console.error('Error loading user details:', error);
+      }
+    );
+  }
 
   goToUserProfile(username: string) {
     // Implement navigation or logic to view user profile
@@ -199,7 +213,7 @@ export class ProfileComponent implements OnInit {
 
   // מתודות לבדיקה אסינכרונית של שם משתמש ואימייל
   async checkUsernameExists(username: string): Promise<void> {
-    if (username === this.user?.username) {
+    if (username === this.user?.username &&!(username===this.currentUserName)) {
       this.usernameExists = false;
       return;
     }
