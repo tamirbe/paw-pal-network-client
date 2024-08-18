@@ -112,6 +112,49 @@
     }
   }
 }
+
+.post {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 10px; /* צמצום ה-padding */
+  margin-bottom: 10px; /* צמצום ה-margin */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* צמצום הצל */
+  max-width: 600px; /* צמצום הרוחב */
+  font-size: 14px; /* הקטנת גודל הטקסט */
+}
+
+
+.post-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.post-header .user-link {
+  font-weight: bold;
+  color: #3b5998;
+  margin-right: auto;
+  text-decoration: none;
+}
+
+.post-header .user-link:hover {
+  text-decoration: underline;
+}
+
+.post-description {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.post-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
 .button-container {
   display: flex;
   align-items: center;
